@@ -1,0 +1,6 @@
+{
+  "name": "Meme Vault Defense",
+  "description": "A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and earn massive passive coins.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

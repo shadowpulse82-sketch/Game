@@ -1,0 +1,2534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Meme Vault Defense</title>
+  <meta name="description" content="A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and earn massive passive coins." />
+  <meta property="og:title" content="Meme Vault Defense" />
+  <meta property="og:description" content="A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and earn massive passive coins." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    /* ==========================================================================
+       1. BASE RESET & TOUCH LOCKS
+       Disable double-tap zoom, text selection, long-press menus, and page scroll
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+      background: linear-gradient(180deg, #1B1040 0%, #271558 52%, #3A1C71 100%);
+      color: #FFFFFF;
+      font-family: 'Trebuchet MS', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Full-screen particle & starfield canvas behind/over UI */
+    #star-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #fx-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 25;
+    }
+
+    /* ==========================================================================
+       2. MAIN APP SHELL (Fits 360x640 portrait & 1280x720 landscape with 0 scroll)
+       ========================================================================== */
+    #app {
+      position: relative;
+      z-index: 10;
+      width: 100vw;
+      height: 100dvh;
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px 8px;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       3. TOP BAR: BIG COINS, INCOME PER SECOND & MUTE BUTTON
+       ========================================================================== */
+    .top-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: linear-gradient(180deg, rgba(42, 24, 92, 0.94) 0%, rgba(24, 13, 56, 0.96) 100%);
+      border: 2px solid rgba(53, 224, 255, 0.38);
+      border-radius: 18px;
+      padding: 5px 12px;
+      min-height: 54px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 2px 1px rgba(255, 255, 255, 0.18);
+      flex-shrink: 0;
+    }
+
+    .coin-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .coin-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%, #FFF5B8 0%, #FFD34D 45%, #E08B00 90%);
+      border: 2px solid #FFF2A6;
+      box-shadow: 0 0 14px rgba(255, 211, 77, 0.75), inset 0 -3px 0 rgba(168, 92, 0, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .coin-badge.bump {
+      transform: scale(1.22);
+    }
+
+    .coin-stats {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+
+    .coin-amount {
+      font-size: clamp(23px, 4.5vw, 32px);
+      font-weight: 900;
+      color: #FFD34D;
+      text-shadow: 0 2px 0 #703800, 0 0 14px rgba(255, 211, 77, 0.55);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .income-rate {
+      font-size: clamp(12px, 2.2vw, 15px);
+      color: #5CFF9D;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 8px rgba(92, 255, 157, 0.45);
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+
+    .top-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .stat-chip {
+      display: none;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 12px;
+      color: #D8CEFF;
+      padding-right: 4px;
+    }
+
+    .stat-chip span {
+      color: #35E0FF;
+      font-size: 13px;
+    }
+
+    /* ==========================================================================
+       4. 3D CANDY BUTTON SYSTEM (At least 48px tall, 16px radius, shine + bottom edge)
+       ========================================================================== */
+    .btn-3d {
+      position: relative;
+      min-height: 48px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.38);
+      padding: 6px 12px;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
+      transition: transform 0.1s ease, filter 0.15s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* Top glossy shine highlight */
+    .btn-3d::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 6%;
+      right: 6%;
+      height: 42%;
+      border-radius: 12px 12px 50% 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.04) 100%);
+      pointer-events: none;
+    }
+
+    .btn-3d:active:not(.disabled) {
+      transform: translateY(3px) scale(0.97);
+    }
+
+    /* Pink Candy Accent Button (Hatch) */
+    .btn-pink {
+      background: linear-gradient(180deg, #FF70B8 0%, #FF4FA3 55%, #D9237B 100%);
+      box-shadow: 0 5px 0 #8F0D4C, 0 8px 16px rgba(255, 79, 163, 0.35);
+    }
+
+    /* Gold/Amber Candy Button (Upgrade) */
+    .btn-gold {
+      background: linear-gradient(180deg, #FFE066 0%, #FFB020 55%, #E08200 100%);
+      color: #2A1205;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      box-shadow: 0 5px 0 #8A4B00, 0 8px 16px rgba(255, 176, 32, 0.35);
+    }
+
+    /* Cyan Vault Button (Buy Slot / Collect) */
+    .btn-cyan {
+      background: linear-gradient(180deg, #6FF0FF 0%, #35E0FF 55%, #00A8D6 100%);
+      color: #092235;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      box-shadow: 0 5px 0 #00668A, 0 8px 16px rgba(53, 224, 255, 0.35);
+    }
+
+    /* Mute Button */
+    .btn-mute {
+      min-width: 48px;
+      min-height: 48px;
+      padding: 0 12px;
+      background: linear-gradient(180deg, #4E328C 0%, #351E69 100%);
+      box-shadow: 0 4px 0 #1B0D3D, 0 6px 12px rgba(0, 0, 0, 0.35);
+      font-size: 20px;
+    }
+
+    /* Affordable pulse glow */
+    @keyframes affordablePulsePink {
+      0%, 100% {
+        box-shadow: 0 5px 0 #8F0D4C, 0 0 12px rgba(255, 79, 163, 0.55), 0 0 24px rgba(255, 79, 163, 0.35);
+      }
+      50% {
+        box-shadow: 0 5px 0 #8F0D4C, 0 0 22px rgba(255, 79, 163, 0.95), 0 0 36px rgba(255, 211, 77, 0.55);
+      }
+    }
+
+    @keyframes affordablePulseGold {
+      0%, 100% {
+        box-shadow: 0 5px 0 #8A4B00, 0 0 12px rgba(255, 211, 77, 0.55), 0 0 24px rgba(255, 176, 32, 0.35);
+      }
+      50% {
+        box-shadow: 0 5px 0 #8A4B00, 0 0 22px rgba(255, 211, 77, 0.95), 0 0 36px rgba(255, 211, 77, 0.65);
+      }
+    }
+
+    @keyframes affordablePulseCyan {
+      0%, 100% {
+        box-shadow: 0 5px 0 #00668A, 0 0 12px rgba(53, 224, 255, 0.55), 0 0 24px rgba(53, 224, 255, 0.35);
+      }
+      50% {
+        box-shadow: 0 5px 0 #00668A, 0 0 22px rgba(53, 224, 255, 0.95), 0 0 36px rgba(53, 224, 255, 0.65);
+      }
+    }
+
+    .btn-pink.affordable {
+      animation: affordablePulsePink 1.6s infinite ease-in-out;
+    }
+
+    .btn-gold.affordable {
+      animation: affordablePulseGold 1.6s infinite ease-in-out;
+    }
+
+    .btn-cyan.affordable {
+      animation: affordablePulseCyan 1.6s infinite ease-in-out;
+    }
+
+    /* Greyed out state when unaffordable or locked (high-legibility text!) */
+    .btn-3d.disabled {
+      background: linear-gradient(180deg, #554D74 0%, #3E3759 60%, #2D2742 100%) !important;
+      color: #E2DDF5 !important;
+      border-color: rgba(255, 255, 255, 0.25) !important;
+      box-shadow: 0 4px 0 #1B172B !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
+      animation: none !important;
+      cursor: default;
+    }
+
+    /* ==========================================================================
+       5. NOTIFICATION BANNER (Large centered dark rounded pill with gold border)
+       Just below the top bar, pop-in animation, stays visible for 3 seconds.
+       ========================================================================== */
+    @keyframes bannerPopIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-14px) scale(0.68);
+      }
+      65% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(2px) scale(1.06);
+      }
+      85% {
+        transform: translateX(-50%) translateY(-1px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+    }
+
+    #status-banner {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-12px) scale(0.85);
+      z-index: 80;
+      background: linear-gradient(180deg, rgba(24, 13, 56, 0.98) 0%, rgba(14, 7, 36, 0.98) 100%);
+      border: 3px solid #FFD34D;
+      border-radius: 999px;
+      padding: 9px 20px;
+      color: #FFFFFF;
+      font-size: clamp(13px, 3.2vw, 17px);
+      font-weight: 900;
+      text-align: center;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
+      box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.75),
+        0 0 22px rgba(255, 211, 77, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      pointer-events: none;
+      opacity: 0;
+      width: max-content;
+      max-width: 94vw;
+      line-height: 1.2;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+    }
+
+    #status-banner.show {
+      opacity: 1;
+      animation: bannerPopIn 0.34s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* ==========================================================================
+       6. MIDDLE ARENA: BIG CENTRAL HERO VAULT + COMPACT 4x3 CREATURE BLOCK
+       ========================================================================== */
+    .arena {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Hero Vault Section: Vault is the glowing central hero of the screen */
+    .vault-deck {
+      width: 100%;
+      max-width: 680px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(180deg, rgba(35, 20, 79, 0.82) 0%, rgba(22, 12, 52, 0.9) 100%);
+      border: 2px solid rgba(53, 224, 255, 0.38);
+      border-radius: 22px;
+      padding: 6px 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 28px rgba(53, 224, 255, 0.15);
+      flex-shrink: 0;
+    }
+
+    .vault-stats-side {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .vault-title {
+      font-size: clamp(12px, 2.8vw, 16px);
+      font-weight: 900;
+      color: #35E0FF;
+      text-shadow: 0 0 10px rgba(53, 224, 255, 0.65);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .vault-sub {
+      font-size: clamp(11px, 2.4vw, 14px);
+      color: #E2D9FF;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .vault-sub strong {
+      color: #FFD34D;
+    }
+
+    .vault-center-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 4px;
+    }
+
+    /* Glowing Cyan Vault Core Hero Button */
+    @keyframes vaultPulseGlow {
+      0%, 100% {
+        box-shadow:
+          0 0 24px rgba(53, 224, 255, 0.9),
+          0 0 48px rgba(53, 224, 255, 0.45),
+          0 5px 0 #004E75,
+          inset 0 4px 10px rgba(255, 255, 255, 0.8);
+      }
+      50% {
+        box-shadow:
+          0 0 34px rgba(53, 224, 255, 1),
+          0 0 64px rgba(53, 224, 255, 0.65),
+          0 5px 0 #004E75,
+          inset 0 4px 12px rgba(255, 255, 255, 0.95);
+      }
+    }
+
+    #vault-btn {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 3.5px solid #C4FAFF;
+      background: radial-gradient(circle at 35% 28%, #DDFDFF 0%, #35E0FF 42%, #0088CC 82%, #003865 100%);
+      animation: vaultPulseGlow 2.4s infinite ease-in-out;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.1s ease;
+    }
+
+    #vault-btn::after {
+      content: '';
+      position: absolute;
+      inset: -7px;
+      border-radius: 50%;
+      border: 2.5px dashed rgba(53, 224, 255, 0.65);
+      animation: spinSlow 14s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .vault-icon {
+      font-size: 36px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+    }
+
+    .vault-tap-tag {
+      font-size: 10px;
+      font-weight: 900;
+      color: #062338;
+      background: #FFD34D;
+      padding: 1px 7px;
+      border-radius: 8px;
+      margin-top: 2px;
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.03em;
+    }
+
+    .vault-action-side {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    #buy-slot-btn {
+      font-size: clamp(11px, 2.4vw, 14px);
+      padding: 8px 10px;
+      min-height: 48px;
+      width: 100%;
+      max-width: 150px;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.15;
+    }
+
+    /* Squash and stretch animation */
+    @keyframes squashStretch {
+      0% { transform: scale(1, 1); }
+      30% { transform: scale(1.24, 0.78); }
+      60% { transform: scale(0.88, 1.14); }
+      80% { transform: scale(1.06, 0.96); }
+      100% { transform: scale(1, 1); }
+    }
+
+    .squash {
+      animation: squashStretch 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ==========================================================================
+       7. COMPACT 4x3 CREATURE GRID CENTERED UNDER THE VAULT
+       3 rows placed close together as one compact block; large glossy plates;
+       easy-to-read creature name and income text underneath each plate.
+       ========================================================================== */
+    .slots-grid {
+      width: 100%;
+      max-width: 680px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, auto);
+      gap: 6px 6px;
+      align-items: start;
+      justify-items: center;
+      align-content: center;
+      padding: 4px 2px;
+      flex-shrink: 0;
+    }
+
+    .slot-cell {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    /* Glossy Circular Plate - Larger to use available column width */
+    .slot-plate {
+      position: relative;
+      width: clamp(76px, 20.5vw, 94px);
+      height: clamp(76px, 20.5vw, 94px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.38) 0%, rgba(56, 33, 114, 0.94) 48%, rgba(20, 10, 48, 0.98) 100%);
+      border: 3.5px solid var(--ring-color, rgba(176, 184, 197, 0.4));
+      box-shadow:
+        0 0 15px var(--ring-glow, rgba(0, 0, 0, 0.35)),
+        inset 0 4px 8px rgba(255, 255, 255, 0.3),
+        inset 0 -5px 10px rgba(0, 0, 0, 0.65),
+        0 4px 8px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Glossy top arc reflection on plate */
+    .slot-plate::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 14%;
+      right: 14%;
+      height: 30%;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 100%);
+      pointer-events: none;
+    }
+
+    /* Mythic Animated Rainbow Ring */
+    @keyframes mythicRainbow {
+      0% {
+        border-color: #FF4FA3;
+        box-shadow: 0 0 18px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4);
+      }
+      25% {
+        border-color: #FFD34D;
+        box-shadow: 0 0 18px #FFD34D, inset 0 4px 8px rgba(255, 255, 255, 0.4);
+      }
+      50% {
+        border-color: #5CFF9D;
+        box-shadow: 0 0 18px #5CFF9D, inset 0 4px 8px rgba(255, 255, 255, 0.4);
+      }
+      75% {
+        border-color: #35E0FF;
+        box-shadow: 0 0 18px #35E0FF, inset 0 4px 8px rgba(255, 255, 255, 0.4);
+      }
+      100% {
+        border-color: #FF4FA3;
+        box-shadow: 0 0 18px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .slot-plate.mythic-ring {
+      animation: mythicRainbow 2.4s linear infinite;
+    }
+
+    /* Creature Emoji: At least 56px */
+    @keyframes creatureBob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .creature-emoji {
+      font-size: 56px;
+      line-height: 1;
+      display: block;
+      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.45));
+      animation: creatureBob 2.2s ease-in-out infinite;
+      animation-delay: var(--bob-delay, 0s);
+      will-change: transform;
+    }
+
+    /* Level tag on slot */
+    .slot-level-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: linear-gradient(180deg, #3A1C71 0%, #160B36 100%);
+      border: 1.5px solid var(--ring-color, #B0B8C5);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 1px 6px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+      z-index: 2;
+    }
+
+    /* Larger, easy-to-read creature name and income text under each plate */
+    .slot-caption {
+      margin-top: 3px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.12;
+      text-align: center;
+    }
+
+    .slot-name {
+      font-size: clamp(12px, 2.8vw, 14px);
+      font-weight: 900;
+      color: #FFFFFF;
+      text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.95);
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .slot-income {
+      font-size: clamp(11px, 2.6vw, 13px);
+      font-weight: 900;
+      color: #FFD34D;
+      text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.95);
+      white-space: nowrap;
+    }
+
+    /* Empty Unlocked Plate */
+    .slot-plate.empty-plate {
+      background: radial-gradient(circle at 50% 45%, rgba(53, 224, 255, 0.16) 0%, rgba(24, 14, 54, 0.8) 100%);
+      border: 2.5px dashed rgba(53, 224, 255, 0.48);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .empty-plus {
+      font-size: 24px;
+      color: rgba(53, 224, 255, 0.55);
+    }
+
+    /* Next Buyable Slot Plate */
+    .slot-plate.buy-plate {
+      background: radial-gradient(circle at 50% 40%, rgba(53, 224, 255, 0.3) 0%, rgba(30, 18, 68, 0.94) 100%);
+      border: 3px solid #35E0FF;
+      box-shadow: 0 0 15px rgba(53, 224, 255, 0.5);
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .buy-plate-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .buy-plate-cost {
+      font-size: 12px;
+      color: #FFD34D;
+      font-weight: 900;
+      text-shadow: 0 1px 2px #000;
+    }
+
+    /* Locked Future Slot Plate */
+    .slot-plate.locked-plate {
+      background: radial-gradient(circle at 50% 50%, rgba(32, 20, 62, 0.65) 0%, rgba(18, 10, 38, 0.82) 100%);
+      border: 2.5px solid rgba(255, 255, 255, 0.16);
+      box-shadow: none;
+      opacity: 0.72;
+    }
+
+    .locked-icon {
+      font-size: 22px;
+      opacity: 0.75;
+    }
+
+    /* ==========================================================================
+       8. BOTTOM BAR: HATCH, UPGRADE, DEFENSE (LOCKED), BOOK (LOCKED)
+       High-contrast, easy-to-read labels across all 4 buttons
+       ========================================================================== */
+    .bottom-bar {
+      display: grid;
+      grid-template-columns: 1.15fr 1.25fr 0.95fr 0.95fr;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .bottom-bar .btn-3d {
+      width: 100%;
+      min-height: 52px;
+      padding: 4px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      line-height: 1.12;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .btn-main-label {
+      font-size: clamp(12px, 2.6vw, 15px);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .btn-sub-label {
+      font-size: clamp(11px, 2.2vw, 13px);
+      font-weight: 800;
+      color: #FFE89E;
+    }
+
+    .btn-3d.disabled .btn-sub-label {
+      color: #CFC8EB;
+    }
+
+    /* ==========================================================================
+       9. DESKTOP LANDSCAPE ADAPTATION (e.g. 1280x720)
+       Vault remains the central glowing hero above the compact 4x3 grid block!
+       ========================================================================== */
+    @media (min-width: 760px) and (min-height: 540px) {
+      #app {
+        padding: 10px 20px;
+        gap: 8px;
+      }
+
+      .stat-chip {
+        display: flex;
+      }
+
+      .arena {
+        gap: 10px;
+      }
+
+      .vault-deck {
+        max-width: 760px;
+        padding: 8px 20px;
+      }
+
+      #vault-btn {
+        width: 102px;
+        height: 102px;
+      }
+
+      .vault-icon {
+        font-size: 44px;
+      }
+
+      .vault-tap-tag {
+        font-size: 11px;
+        padding: 2px 9px;
+      }
+
+      #buy-slot-btn {
+        max-width: 180px;
+        font-size: 14px;
+      }
+
+      .slots-grid {
+        max-width: 760px;
+        gap: 8px 16px;
+        background: rgba(20, 11, 48, 0.42);
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        border-radius: 22px;
+        padding: 8px 18px;
+      }
+
+      .slot-plate {
+        width: 88px;
+        height: 88px;
+      }
+
+      .creature-emoji {
+        font-size: 58px;
+      }
+
+      .slot-name {
+        font-size: 14px;
+      }
+
+      .slot-income {
+        font-size: 13px;
+      }
+
+      .bottom-bar {
+        grid-template-columns: 1.2fr 1.2fr 1fr 1fr;
+        gap: 12px;
+      }
+
+      .bottom-bar .btn-3d {
+        min-height: 54px;
+        flex-direction: row;
+        gap: 8px;
+      }
+
+      .btn-main-label {
+        font-size: 16px;
+      }
+
+      .btn-sub-label {
+        font-size: 14px;
+      }
+    }
+
+    /* ==========================================================================
+       10. POPUP MODALS (Creature Upgrade, Egg Hatch Reveal, Offline Welcome)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(12, 6, 30, 0.78);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(180deg, #2D1863 0%, #1B1040 100%);
+      border: 3px solid #35E0FF;
+      border-radius: 24px;
+      padding: 20px 18px;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 28px rgba(53, 224, 255, 0.35);
+      transform: scale(0.85);
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-backdrop.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.35);
+      color: #FFFFFF;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-plate {
+      margin: 4px auto 12px;
+      width: 104px;
+      height: 104px;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .modal-rarity {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .modal-stats-box {
+      background: rgba(13, 7, 32, 0.65);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .modal-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-stat-row span:first-child {
+      color: #C4B5FD;
+    }
+
+    .modal-stat-row strong {
+      color: #FFD34D;
+    }
+
+    /* Egg Hatch Animation Styles */
+    #hatch-flash {
+      position: fixed;
+      inset: 0;
+      background: #FFFFFF;
+      z-index: 60;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.28s ease-out;
+    }
+
+    #hatch-flash.flash {
+      opacity: 0.92;
+      transition: none;
+    }
+
+    @keyframes eggShakeAnim {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      20% { transform: rotate(-14deg) scale(1.06); }
+      40% { transform: rotate(14deg) scale(1.08); }
+      60% { transform: rotate(-18deg) scale(1.12); }
+      80% { transform: rotate(18deg) scale(1.14); }
+    }
+
+    @keyframes creaturePopOut {
+      0% { transform: scale(0.1); opacity: 0; }
+      60% { transform: scale(1.32); opacity: 1; }
+      80% { transform: scale(0.92); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .egg-stage {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
+    }
+
+    .egg-emoji {
+      font-size: 76px;
+      line-height: 1;
+      filter: drop-shadow(0 0 20px rgba(255, 79, 163, 0.7));
+    }
+
+    .egg-emoji.shaking {
+      animation: eggShakeAnim 0.45s ease-in-out infinite;
+    }
+
+    .hatched-pop {
+      animation: creaturePopOut 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .hatch-outcome-note {
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFF7D6;
+      background: rgba(255, 211, 77, 0.16);
+      border: 1.5px solid #FFD34D;
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Drifting Background Stars Canvas -->
+  <canvas id="star-canvas"></canvas>
+
+  <!-- Foreground Flying Coins & Floating Numbers Canvas -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- White Flash Overlay for Egg Hatch -->
+  <div id="hatch-flash"></div>
+
+  <!-- Large Centered Notification Banner (just below top bar, 3s queue) -->
+  <div id="status-banner" role="status" aria-live="polite"></div>
+
+  <!-- Main Non-Scrolling Game Container -->
+  <main id="app">
+    <!-- 1. TOP BAR -->
+    <header class="top-bar">
+      <div class="coin-cluster">
+        <div id="coin-target" class="coin-badge" aria-hidden="true">🪙</div>
+        <div class="coin-stats">
+          <div id="coin-display" class="coin-amount">120</div>
+          <div id="income-display" class="income-rate">+0/sec</div>
+        </div>
+      </div>
+
+      <div class="top-right-controls">
+        <div class="stat-chip">
+          <div>Discovered: <span id="discovered-count">0/12</span></div>
+          <div>Total Earned: <span id="total-earned-display">120</span></div>
+        </div>
+        <button id="mute-btn" class="btn-3d btn-mute" type="button" aria-label="Toggle Sound">
+          🔊
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. MIDDLE ARENA: HERO CYAN VAULT + COMPACT 4x3 CREATURE BLOCK -->
+    <section class="arena" aria-label="Meme Vault">
+      <div class="vault-deck">
+        <div class="vault-stats-side">
+          <div class="vault-title">MEME VAULT</div>
+          <div class="vault-sub">Tap: <strong id="tap-power-display">+1</strong></div>
+          <div class="vault-sub">Slots: <strong id="slots-count-display">0/4</strong></div>
+        </div>
+
+        <div class="vault-center-wrap">
+          <button id="vault-btn" type="button" aria-label="Tap Vault for Coins">
+            <span class="vault-icon">💎</span>
+            <span class="vault-tap-tag">TAP!</span>
+          </button>
+        </div>
+
+        <div class="vault-action-side">
+          <button id="buy-slot-btn" class="btn-3d btn-cyan" type="button">
+            + Slot 5 · 🪙 500
+          </button>
+        </div>
+      </div>
+
+      <!-- Compact 4x3 Creature Slots Block Centered Under the Vault -->
+      <div id="slots-grid" class="slots-grid"></div>
+    </section>
+
+    <!-- 3. BOTTOM BAR -->
+    <nav class="bottom-bar" aria-label="Game Actions">
+      <button id="hatch-btn" class="btn-3d btn-pink" type="button">
+        <span class="btn-main-label">🥚 Hatch</span>
+        <span id="hatch-cost-label" class="btn-sub-label">🪙 50</span>
+      </button>
+
+      <button id="quick-upgrade-btn" class="btn-3d btn-gold disabled" type="button">
+        <span id="quick-upgrade-main" class="btn-main-label">Nothing to upgrade</span>
+        <span id="quick-upgrade-sub" class="btn-sub-label"></span>
+      </button>
+
+      <button id="defense-btn" class="btn-3d disabled" type="button">
+        <span class="btn-main-label">🔒 Defense</span>
+        <span class="btn-sub-label">Locked</span>
+      </button>
+
+      <button id="book-btn" class="btn-3d disabled" type="button">
+        <span class="btn-main-label">🔒 Book</span>
+        <span id="book-sub-label" class="btn-sub-label">0/12</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- CREATURE UPGRADE POPUP -->
+  <div id="upgrade-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="upgrade-modal-title">
+    <div class="modal-card">
+      <button id="upgrade-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
+      <div id="upgrade-modal-plate" class="slot-plate modal-plate">
+        <span id="upgrade-modal-emoji" class="creature-emoji">🐱</span>
+      </div>
+      <div id="upgrade-modal-title" class="modal-title">Noodle Cat</div>
+      <div id="upgrade-modal-rarity" class="modal-rarity">Common</div>
+      <div class="modal-stats-box">
+        <div class="modal-stat-row">
+          <span>Current Level</span>
+          <strong id="upgrade-modal-level">Lv. 1 / 10</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Current Income</span>
+          <strong id="upgrade-modal-income">+1/sec</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Next Level Income</span>
+          <strong id="upgrade-modal-next">+2/sec</strong>
+        </div>
+      </div>
+      <button id="modal-upgrade-btn" class="btn-3d btn-gold" style="width: 100%;" type="button">
+        ⬆️ Upgrade · 🪙 32
+      </button>
+    </div>
+  </div>
+
+  <!-- EGG HATCH POPUP -->
+  <div id="hatch-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="hatch-modal-title">
+    <div class="modal-card">
+      <div id="hatch-modal-title" class="modal-title">Hatching Basic Egg...</div>
+      <div id="hatch-modal-rarity" class="modal-rarity" style="min-height: 18px;"></div>
+      <div id="hatch-stage" class="egg-stage">
+        <div id="hatch-egg-visual" class="egg-emoji shaking">🥚</div>
+      </div>
+      <div id="hatch-outcome-box" class="hatch-outcome-note" style="display: none;"></div>
+      <button id="hatch-continue-btn" class="btn-3d btn-cyan" style="width: 100%; display: none;" type="button">
+        Awesome!
+      </button>
+    </div>
+  </div>
+
+  <!-- OFFLINE EARNINGS POPUP -->
+  <div id="offline-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="offline-modal-title">
+    <div class="modal-card">
+      <div class="egg-stage" style="height: 86px;">
+        <span style="font-size: 62px;">🪙</span>
+      </div>
+      <div id="offline-modal-title" class="modal-title">Welcome back!</div>
+      <p id="offline-modal-text" style="color: #E2D9FF; font-size: 15px; margin: 8px 0 16px;">
+        Welcome back! You earned <strong style="color: #FFD34D;">0</strong>
+      </p>
+      <button id="offline-collect-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
+        Collect
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. CONFIG OBJECT
+       Every balance number, rarity odd, creature definition, and limit lives here.
+       ========================================================================== */
+    const CONFIG = {
+      STORAGE_KEY: 'meme_vault_defense_save_v1',
+      STARTING_COINS: 120,
+      INITIAL_SLOTS: 4,
+      MAX_SLOTS: 12,
+      FIRST_PAID_SLOT: 5,
+      BASE_SLOT_COST: 500,
+      SLOT_COST_MULTIPLIER: 2.5,
+      BASE_EGG_COST: 50,
+      EGG_COST_MULTIPLIER: 1.12,
+      MAX_CREATURE_LEVEL: 10,
+      UPGRADE_BASE_MULTIPLIER: 20,
+      UPGRADE_EXPONENT: 1.6,
+      CONVERSION_MULTIPLIER: 60,
+      VAULT_TAP_FLAT: 1,
+      VAULT_TAP_INCOME_PERCENT: 0.05,
+      MAX_OFFLINE_SECONDS: 7200, // Max 2 hours
+      MIN_OFFLINE_SECONDS: 3,
+      AUTOSAVE_INTERVAL_MS: 10000, // Every 10 seconds
+      MAX_DELTA_MS: 100, // Cap frame delta at 100 ms
+      MAX_PARTICLES: 150, // Total active foreground particles + stars cap
+      STAR_COUNT: 42, // Background drifting stars (part of the 150 cap)
+      COIN_ROLL_SPEED: 14, // Smooth counter interpolation speed
+      HATCH_SHAKE_MS: 650,
+      HATCH_CRACK_MS: 380,
+      BANNER_DURATION_MS: 3000, // 3 seconds visible per banner
+      BANNER_GAP_MS: 140, // Brief pause before next queued banner pops in
+      RARITIES: {
+        Common:    { name: 'Common',    chance: 0.60,  color: '#B0B8C5', glow: 'rgba(176, 184, 197, 0.55)', pitch: 380 },
+        Uncommon:  { name: 'Uncommon',  chance: 0.25,  color: '#5CFF9D', glow: 'rgba(92, 255, 157, 0.60)',  pitch: 460 },
+        Rare:      { name: 'Rare',      chance: 0.10,  color: '#35A7FF', glow: 'rgba(53, 167, 255, 0.68)',  pitch: 540 },
+        Epic:      { name: 'Epic',      chance: 0.04,  color: '#B15CFF', glow: 'rgba(177, 92, 255, 0.75)',  pitch: 640 },
+        Legendary: { name: 'Legendary', chance: 0.009, color: '#FFB020', glow: 'rgba(255, 176, 32, 0.85)',  pitch: 760 },
+        Mythic:    { name: 'Mythic',    chance: 0.001, color: '#FF4FA3', glow: 'rgba(255, 79, 163, 0.92)',  pitch: 900, rainbow: true }
+      },
+      CREATURES: [
+        { id: 'noodle_cat',   name: 'Noodle Cat',   emoji: '🐱', rarity: 'Common',    baseIncome: 1 },
+        { id: 'soggy_toast',  name: 'Soggy Toast',  emoji: '🍞', rarity: 'Common',    baseIncome: 2 },
+        { id: 'disco_duck',   name: 'Disco Duck',   emoji: '🦆', rarity: 'Uncommon',  baseIncome: 5 },
+        { id: 'cactus_bro',   name: 'Cactus Bro',   emoji: '🌵', rarity: 'Uncommon',  baseIncome: 9 },
+        { id: 'cyber_frog',   name: 'Cyber Frog',   emoji: '🐸', rarity: 'Rare',      baseIncome: 20 },
+        { id: 'lava_llama',   name: 'Lava Llama',   emoji: '🦙', rarity: 'Rare',      baseIncome: 35 },
+        { id: 'ghost_burger', name: 'Ghost Burger', emoji: '👻', rarity: 'Epic',      baseIncome: 80 },
+        { id: 'moon_penguin', name: 'Moon Penguin', emoji: '🐧', rarity: 'Epic',      baseIncome: 140 },
+        { id: 'golden_capy',  name: 'Golden Capy',  emoji: '🦫', rarity: 'Legendary', baseIncome: 400 },
+        { id: 'thunder_taco', name: 'Thunder Taco', emoji: '🌮', rarity: 'Legendary', baseIncome: 700 },
+        { id: 'galaxy_jelly', name: 'Galaxy Jelly', emoji: '🪼', rarity: 'Mythic',    baseIncome: 2500 },
+        { id: 'king_pickle',  name: 'King Pickle',  emoji: '🥒', rarity: 'Mythic',    baseIncome: 5000 }
+      ],
+      NUMBER_SUFFIXES: ['', 'K', 'M', 'B', 'T']
+    };
+
+    // Quick lookup map for creatures by ID
+    const CREATURE_MAP = {};
+    for (let i = 0; i < CONFIG.CREATURES.length; i++) {
+      const c = CONFIG.CREATURES[i];
+      CREATURE_MAP[c.id] = c;
+    }
+
+    /* ==========================================================================
+       2. NUMBER FORMATTING & MATH HELPERS
+       Guards against NaN, Infinity, or negative numbers.
+       ========================================================================== */
+    function safeNumber(val, fallback = 0) {
+      const num = Number(val);
+      if (!Number.isFinite(num) || Number.isNaN(num)) return fallback;
+      return Math.max(0, num);
+    }
+
+    function formatNumber(rawValue, allowDecimalUnder1K = false) {
+      const val = safeNumber(rawValue, 0);
+      if (val < 1000) {
+        if (allowDecimalUnder1K && val > 0 && val < 10 && Math.abs(val - Math.round(val)) >= 0.05) {
+          return val.toFixed(1);
+        }
+        return String(Math.floor(val));
+      }
+      let tier = 0;
+      let scaled = val;
+      while (scaled >= 1000 && tier < CONFIG.NUMBER_SUFFIXES.length - 1) {
+        scaled /= 1000;
+        tier++;
+      }
+      return scaled.toFixed(1).replace(/\.0$/, '') + CONFIG.NUMBER_SUFFIXES[tier];
+    }
+
+    function getCreatureIncome(creatureId, level) {
+      const def = CREATURE_MAP[creatureId];
+      if (!def) return 0;
+      const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
+      return def.baseIncome * lvl;
+    }
+
+    function getCreatureUpgradeCost(creatureId, currentLevel) {
+      const def = CREATURE_MAP[creatureId];
+      if (!def) return Infinity;
+      const lvl = Math.max(1, Math.floor(safeNumber(currentLevel, 1)));
+      if (lvl >= CONFIG.MAX_CREATURE_LEVEL) return Infinity;
+      return Math.round(CONFIG.UPGRADE_BASE_MULTIPLIER * def.baseIncome * Math.pow(CONFIG.UPGRADE_EXPONENT, lvl));
+    }
+
+    function getEggCost(hatchCount) {
+      const count = Math.max(0, Math.floor(safeNumber(hatchCount, 0)));
+      return Math.round(CONFIG.BASE_EGG_COST * Math.pow(CONFIG.EGG_COST_MULTIPLIER, count));
+    }
+
+    function getNextSlotCost(currentSlotsUnlocked) {
+      const nextSlotNumber = Math.floor(safeNumber(currentSlotsUnlocked, CONFIG.INITIAL_SLOTS)) + 1;
+      if (nextSlotNumber > CONFIG.MAX_SLOTS) return Infinity;
+      const step = Math.max(0, nextSlotNumber - CONFIG.FIRST_PAID_SLOT);
+      return Math.round(CONFIG.BASE_SLOT_COST * Math.pow(CONFIG.SLOT_COST_MULTIPLIER, step));
+    }
+
+    function getConversionCoins(creatureId, level) {
+      const def = CREATURE_MAP[creatureId];
+      if (!def) return 0;
+      const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
+      return Math.round(CONFIG.CONVERSION_MULTIPLIER * def.baseIncome * lvl);
+    }
+
+    /* ==========================================================================
+       3. GAME STATE & SAFE LOCALSTORAGE PERSISTENCE
+       Includes coins, totalCoinsEarned, hatchCount, slotsUnlocked, ownedCreatures,
+       discoveredCreatures, muted, and lastSavedAt.
+       ========================================================================== */
+    const state = {
+      coins: CONFIG.STARTING_COINS,
+      displayedCoins: CONFIG.STARTING_COINS,
+      totalCoinsEarned: CONFIG.STARTING_COINS,
+      hatchCount: 0,
+      slotsUnlocked: CONFIG.INITIAL_SLOTS,
+      ownedCreatures: [], // Array of { id, level }
+      discoveredCreatures: [], // Array of creature id strings
+      muted: false,
+      lastSavedAt: Date.now()
+    };
+
+    let pendingOfflineCoins = 0;
+    let selectedSlotIndex = -1;
+    let isHatching = false;
+
+    function addCoins(amount) {
+      const gain = safeNumber(amount, 0);
+      if (gain <= 0) return;
+      state.coins = safeNumber(state.coins + gain, state.coins);
+      state.totalCoinsEarned = safeNumber(state.totalCoinsEarned + gain, state.coins);
+    }
+
+    function getTotalIncomePerSecond() {
+      let sum = 0;
+      for (let i = 0; i < state.ownedCreatures.length; i++) {
+        const entry = state.ownedCreatures[i];
+        sum += getCreatureIncome(entry.id, entry.level);
+      }
+      return safeNumber(sum, 0);
+    }
+
+    function getVaultTapReward() {
+      return CONFIG.VAULT_TAP_FLAT + CONFIG.VAULT_TAP_INCOME_PERCENT * getTotalIncomePerSecond();
+    }
+
+    function recordDiscovery(creatureId) {
+      if (CREATURE_MAP[creatureId] && !state.discoveredCreatures.includes(creatureId)) {
+        state.discoveredCreatures.push(creatureId);
+      }
+    }
+
+    function saveGame() {
+      try {
+        state.lastSavedAt = Date.now();
+        const payload = {
+          coins: safeNumber(state.coins, CONFIG.STARTING_COINS),
+          totalCoinsEarned: Math.max(safeNumber(state.totalCoinsEarned, 0), safeNumber(state.coins, 0)),
+          hatchCount: Math.max(0, Math.floor(safeNumber(state.hatchCount, 0))),
+          slotsUnlocked: Math.max(CONFIG.INITIAL_SLOTS, Math.min(CONFIG.MAX_SLOTS, Math.floor(safeNumber(state.slotsUnlocked, CONFIG.INITIAL_SLOTS)))),
+          ownedCreatures: state.ownedCreatures,
+          discoveredCreatures: state.discoveredCreatures,
+          muted: Boolean(state.muted),
+          lastSavedAt: state.lastSavedAt
+        };
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        // Ignore storage errors so private browsing or full quota never crashes the game
+      }
+    }
+
+    function loadGame() {
+      try {
+        const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+
+        state.coins = safeNumber(parsed.coins, CONFIG.STARTING_COINS);
+        state.displayedCoins = state.coins;
+        state.totalCoinsEarned = Math.max(state.coins, safeNumber(parsed.totalCoinsEarned, state.coins));
+        state.hatchCount = Math.max(0, Math.floor(safeNumber(parsed.hatchCount, 0)));
+        state.slotsUnlocked = Math.max(
+          CONFIG.INITIAL_SLOTS,
+          Math.min(CONFIG.MAX_SLOTS, Math.floor(safeNumber(parsed.slotsUnlocked, CONFIG.INITIAL_SLOTS)))
+        );
+        state.muted = Boolean(parsed.muted);
+
+        // Validate ownedCreatures (no duplicates, valid IDs, clamped levels, max slotsUnlocked)
+        const validOwned = [];
+        const seenIds = new Set();
+        if (Array.isArray(parsed.ownedCreatures)) {
+          for (let i = 0; i < parsed.ownedCreatures.length; i++) {
+            const item = parsed.ownedCreatures[i];
+            if (item && typeof item.id === 'string' && CREATURE_MAP[item.id] && !seenIds.has(item.id)) {
+              const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(item.level, 1))));
+              validOwned.push({ id: item.id, level: lvl });
+              seenIds.add(item.id);
+              if (validOwned.length >= state.slotsUnlocked) break;
+            }
+          }
+        }
+        state.ownedCreatures = validOwned;
+
+        // Validate discoveredCreatures and ensure all owned creatures are included
+        const validDiscovered = [];
+        const discSet = new Set();
+        if (Array.isArray(parsed.discoveredCreatures)) {
+          for (let i = 0; i < parsed.discoveredCreatures.length; i++) {
+            const id = parsed.discoveredCreatures[i];
+            if (typeof id === 'string' && CREATURE_MAP[id] && !discSet.has(id)) {
+              discSet.add(id);
+              validDiscovered.push(id);
+            }
+          }
+        }
+        for (let i = 0; i < state.ownedCreatures.length; i++) {
+          const ownedId = state.ownedCreatures[i].id;
+          if (!discSet.has(ownedId)) {
+            discSet.add(ownedId);
+            validDiscovered.push(ownedId);
+          }
+        }
+        state.discoveredCreatures = validDiscovered;
+
+        // Calculate offline earnings with elapsed time clamped to [0, MAX_OFFLINE_SECONDS]
+        const now = Date.now();
+        const savedTime = safeNumber(parsed.lastSavedAt, now);
+        const rawElapsedSec = (now - savedTime) / 1000;
+        const clampedElapsedSec = Math.max(0, Math.min(rawElapsedSec, CONFIG.MAX_OFFLINE_SECONDS));
+        const incomePerSec = getTotalIncomePerSecond();
+
+        if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
+          const earned = Math.floor(incomePerSec * clampedElapsedSec);
+          if (earned >= 1) {
+            pendingOfflineCoins = earned;
+          }
+        }
+        state.lastSavedAt = now;
+      } catch (err) {
+        // Corrupt save gracefully falls back to clean defaults
+      }
+    }
+
+    /* ==========================================================================
+       4. WEBAUDIO SOUND GENERATOR
+       Starts only after the first user tap. Remembers mute state.
+       ========================================================================== */
+    let audioCtx = null;
+
+    function unlockAudio() {
+      if (audioCtx) {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume().catch(() => {});
+        }
+        return;
+      }
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (Ctx) {
+          audioCtx = new Ctx();
+        }
+      } catch (e) {
+        audioCtx = null;
+      }
+    }
+
+    function playTone(freq, endFreq, durationSec, type = 'sine', gainLevel = 0.14, delaySec = 0) {
+      if (state.muted || !audioCtx) return;
+      try {
+        const now = audioCtx.currentTime + delaySec;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(Math.max(40, freq), now);
+        if (endFreq && endFreq !== freq) {
+          osc.frequency.exponentialRampToValueAtTime(Math.max(40, endFreq), now + durationSec);
+        }
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(gainLevel, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + durationSec + 0.02);
+      } catch (e) {}
+    }
+
+    function sfxPop() {
+      playTone(320, 620, 0.08, 'sine', 0.14, 0);
+    }
+
+    function sfxCoin() {
+      playTone(987.77, 987.77, 0.07, 'triangle', 0.12, 0);
+      playTone(1318.5, 1318.5, 0.14, 'sine', 0.14, 0.055);
+    }
+
+    function sfxBanner() {
+      // Short distinct coin-chime pop for conversion/replacement banner
+      playTone(587.33, 880, 0.09, 'triangle', 0.15, 0);
+      playTone(1174.66, 1174.66, 0.14, 'sine', 0.15, 0.065);
+    }
+
+    function sfxEggShake() {
+      playTone(180, 120, 0.06, 'triangle', 0.10, 0);
+    }
+
+    function sfxUpgrade() {
+      playTone(440, 440, 0.08, 'triangle', 0.13, 0);
+      playTone(554.37, 554.37, 0.08, 'triangle', 0.13, 0.07);
+      playTone(659.25, 880, 0.18, 'sine', 0.15, 0.14);
+    }
+
+    function sfxHatchFanfare(rarityName) {
+      const rarity = CONFIG.RARITIES[rarityName] || CONFIG.RARITIES.Common;
+      const base = rarity.pitch || 400;
+      playTone(base, base, 0.1, 'triangle', 0.15, 0);
+      playTone(base * 1.25, base * 1.25, 0.1, 'triangle', 0.15, 0.09);
+      playTone(base * 1.5, base * 1.5, 0.12, 'triangle', 0.16, 0.18);
+      playTone(base * 2, base * 2.05, 0.28, 'sine', 0.18, 0.28);
+    }
+
+    /* ==========================================================================
+       5. PARTICLE & STARFIELD ENGINE (Capped strictly at 150 total particles)
+       Handles drifting stars, flying coins to counter, and floating +N numbers.
+       ========================================================================== */
+    const starCanvas = document.getElementById('star-canvas');
+    const starCtx = starCanvas.getContext('2d');
+    const fxCanvas = document.getElementById('fx-canvas');
+    const fxCtx = fxCanvas.getContext('2d');
+    const coinTargetEl = document.getElementById('coin-target');
+
+    let viewportW = window.innerWidth;
+    let viewportH = window.innerHeight;
+    let coinTargetPos = { x: 40, y: 34 };
+
+    const stars = [];
+    const particles = []; // Foreground particles: max (CONFIG.MAX_PARTICLES - stars.length)
+
+    function updateCanvasSizes() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      viewportW = window.innerWidth;
+      viewportH = window.innerHeight;
+
+      starCanvas.width = Math.floor(viewportW * dpr);
+      starCanvas.height = Math.floor(viewportH * dpr);
+      starCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      fxCanvas.width = Math.floor(viewportW * dpr);
+      fxCanvas.height = Math.floor(viewportH * dpr);
+      fxCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const rect = coinTargetEl.getBoundingClientRect();
+      if (rect.width > 0) {
+        coinTargetPos.x = rect.left + rect.width / 2;
+        coinTargetPos.y = rect.top + rect.height / 2;
+      }
+    }
+
+    function initStars() {
+      stars.length = 0;
+      for (let i = 0; i < CONFIG.STAR_COUNT; i++) {
+        stars.push({
+          x: Math.random() * viewportW,
+          y: Math.random() * viewportH,
+          r: 1 + Math.random() * 2.2,
+          vy: 6 + Math.random() * 14,
+          vx: (Math.random() - 0.5) * 5,
+          alpha: 0.25 + Math.random() * 0.65,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function canSpawnParticle() {
+      return (stars.length + particles.length) < CONFIG.MAX_PARTICLES;
+    }
+
+    function spawnFloatingText(x, y, text, color = '#FFD34D') {
+      if (!canSpawnParticle()) particles.shift();
+      particles.push({
+        type: 'text',
+        x,
+        y,
+        vy: -52,
+        text,
+        color,
+        age: 0,
+        life: 0.95
+      });
+    }
+
+    function spawnFlyingCoin(startX, startY, count = 1) {
+      const maxToSpawn = Math.min(count, 8);
+      for (let i = 0; i < maxToSpawn; i++) {
+        if (!canSpawnParticle()) particles.shift();
+        const spreadX = (Math.random() - 0.5) * 56;
+        const spreadY = (Math.random() - 0.5) * 36;
+        particles.push({
+          type: 'coin',
+          startX: startX + spreadX,
+          startY: startY + spreadY,
+          x: startX + spreadX,
+          y: startY + spreadY,
+          ctrlX: (startX + coinTargetPos.x) * 0.5 + (Math.random() - 0.5) * 90,
+          ctrlY: Math.min(startY, coinTargetPos.y) - 40 - Math.random() * 50,
+          age: 0,
+          life: 0.48 + Math.random() * 0.18
+        });
+      }
+    }
+
+    function spawnBurstSparkles(x, y, color = '#35E0FF', count = 8) {
+      for (let i = 0; i < count; i++) {
+        if (!canSpawnParticle()) particles.shift();
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+        const speed = 45 + Math.random() * 85;
+        particles.push({
+          type: 'spark',
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color,
+          r: 3 + Math.random() * 3,
+          age: 0,
+          life: 0.45 + Math.random() * 0.2
+        });
+      }
+    }
+
+    function updateAndDrawParticles(dtSec) {
+      // 1. Update & Draw Drifting Stars
+      starCtx.clearRect(0, 0, viewportW, viewportH);
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.y -= s.vy * dtSec;
+        s.x += s.vx * dtSec;
+        s.phase += dtSec * 2;
+        if (s.y < -6) s.y = viewportH + 6;
+        if (s.x < -6) s.x = viewportW + 6;
+        if (s.x > viewportW + 6) s.x = -6;
+
+        const twinkle = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(s.phase));
+        starCtx.fillStyle = `rgba(215, 232, 255, ${(s.alpha * twinkle).toFixed(3)})`;
+        starCtx.beginPath();
+        starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        starCtx.fill();
+      }
+
+      // 2. Update & Draw Foreground Particles
+      fxCtx.clearRect(0, 0, viewportW, viewportH);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.age += dtSec;
+        const t = Math.min(1, p.age / Math.max(0.01, p.life));
+
+        if (p.type === 'coin') {
+          const inv = 1 - t;
+          p.x = inv * inv * p.startX + 2 * inv * t * p.ctrlX + t * t * coinTargetPos.x;
+          p.y = inv * inv * p.startY + 2 * inv * t * p.ctrlY + t * t * coinTargetPos.y;
+
+          fxCtx.save();
+          fxCtx.beginPath();
+          fxCtx.arc(p.x, p.y, 9 * (1 - 0.25 * t), 0, Math.PI * 2);
+          fxCtx.fillStyle = '#FFD34D';
+          fxCtx.fill();
+          fxCtx.lineWidth = 2;
+          fxCtx.strokeStyle = '#FFF7C2';
+          fxCtx.stroke();
+          fxCtx.restore();
+
+          if (t >= 1) {
+            coinTargetEl.classList.remove('bump');
+            void coinTargetEl.offsetWidth;
+            coinTargetEl.classList.add('bump');
+            particles.splice(i, 1);
+          }
+        } else if (p.type === 'text') {
+          p.y += p.vy * dtSec;
+          const alpha = 1 - Math.pow(t, 1.5);
+          fxCtx.save();
+          fxCtx.font = "900 18px 'Trebuchet MS', 'Segoe UI', sans-serif";
+          fxCtx.textAlign = 'center';
+          fxCtx.lineWidth = 4;
+          fxCtx.strokeStyle = `rgba(18, 8, 42, ${alpha.toFixed(3)})`;
+          fxCtx.fillStyle = p.color;
+          fxCtx.globalAlpha = Math.max(0, alpha);
+          fxCtx.strokeText(p.text, p.x, p.y);
+          fxCtx.fillText(p.text, p.x, p.y);
+          fxCtx.restore();
+
+          if (t >= 1) particles.splice(i, 1);
+        } else if (p.type === 'spark') {
+          p.x += p.vx * dtSec;
+          p.y += p.vy * dtSec;
+          const alpha = 1 - t;
+          fxCtx.save();
+          fxCtx.globalAlpha = Math.max(0, alpha);
+          fxCtx.fillStyle = p.color;
+          fxCtx.beginPath();
+          fxCtx.arc(p.x, p.y, p.r * (1 - 0.5 * t), 0, Math.PI * 2);
+          fxCtx.fill();
+          fxCtx.restore();
+
+          if (t >= 1) particles.splice(i, 1);
+        }
+      }
+    }
+
+    /* ==========================================================================
+       6. UI RENDERING, SEQUENTIAL BANNER QUEUE & DOM UPDATES
+       ========================================================================== */
+    const coinDisplayEl = document.getElementById('coin-display');
+    const incomeDisplayEl = document.getElementById('income-display');
+    const discoveredCountEl = document.getElementById('discovered-count');
+    const totalEarnedDisplayEl = document.getElementById('total-earned-display');
+    const muteBtnEl = document.getElementById('mute-btn');
+    const vaultBtnEl = document.getElementById('vault-btn');
+    const tapPowerDisplayEl = document.getElementById('tap-power-display');
+    const slotsCountDisplayEl = document.getElementById('slots-count-display');
+    const buySlotBtnEl = document.getElementById('buy-slot-btn');
+    const slotsGridEl = document.getElementById('slots-grid');
+    const hatchBtnEl = document.getElementById('hatch-btn');
+    const hatchCostLabelEl = document.getElementById('hatch-cost-label');
+    const quickUpgradeBtnEl = document.getElementById('quick-upgrade-btn');
+    const quickUpgradeMainEl = document.getElementById('quick-upgrade-main');
+    const quickUpgradeSubEl = document.getElementById('quick-upgrade-sub');
+    const defenseBtnEl = document.getElementById('defense-btn');
+    const bookBtnEl = document.getElementById('book-btn');
+    const bookSubLabelEl = document.getElementById('book-sub-label');
+    const statusBannerEl = document.getElementById('status-banner');
+
+    // Modals
+    const upgradeModalEl = document.getElementById('upgrade-modal');
+    const upgradeModalCloseEl = document.getElementById('upgrade-modal-close');
+    const upgradeModalPlateEl = document.getElementById('upgrade-modal-plate');
+    const upgradeModalEmojiEl = document.getElementById('upgrade-modal-emoji');
+    const upgradeModalTitleEl = document.getElementById('upgrade-modal-title');
+    const upgradeModalRarityEl = document.getElementById('upgrade-modal-rarity');
+    const upgradeModalLevelEl = document.getElementById('upgrade-modal-level');
+    const upgradeModalIncomeEl = document.getElementById('upgrade-modal-income');
+    const upgradeModalNextEl = document.getElementById('upgrade-modal-next');
+    const modalUpgradeBtnEl = document.getElementById('modal-upgrade-btn');
+
+    const hatchModalEl = document.getElementById('hatch-modal');
+    const hatchModalTitleEl = document.getElementById('hatch-modal-title');
+    const hatchModalRarityEl = document.getElementById('hatch-modal-rarity');
+    const hatchStageEl = document.getElementById('hatch-stage');
+    const hatchOutcomeBoxEl = document.getElementById('hatch-outcome-box');
+    const hatchContinueBtnEl = document.getElementById('hatch-continue-btn');
+    const hatchFlashEl = document.getElementById('hatch-flash');
+
+    const offlineModalEl = document.getElementById('offline-modal');
+    const offlineModalTextEl = document.getElementById('offline-modal-text');
+    const offlineCollectBtnEl = document.getElementById('offline-collect-btn');
+
+    // Sequential 3-second Banner Queue (shows multiple replace/convert banners one after another)
+    const bannerQueue = [];
+    let isBannerActive = false;
+    let bannerTimer = null;
+
+    function processNextBanner() {
+      if (bannerQueue.length === 0) {
+        isBannerActive = false;
+        statusBannerEl.classList.remove('show');
+        return;
+      }
+
+      isBannerActive = true;
+      const item = bannerQueue.shift();
+
+      statusBannerEl.classList.remove('show');
+      void statusBannerEl.offsetWidth; // Force reflow so pop-in animation replays cleanly
+      statusBannerEl.textContent = item.message;
+      statusBannerEl.classList.add('show');
+
+      if (item.playSound) {
+        sfxBanner();
+      }
+
+      if (bannerTimer) clearTimeout(bannerTimer);
+      bannerTimer = setTimeout(() => {
+        statusBannerEl.classList.remove('show');
+        setTimeout(processNextBanner, CONFIG.BANNER_GAP_MS);
+      }, CONFIG.BANNER_DURATION_MS);
+    }
+
+    function showBanner(message, isQueuedEvent = false) {
+      if (isQueuedEvent) {
+        bannerQueue.push({ message, playSound: true });
+        if (!isBannerActive) {
+          processNextBanner();
+        }
+      } else {
+        // Immediate feedback banner if no queued replacement/conversion banner is currently active
+        if (isBannerActive) {
+          bannerQueue.push({ message, playSound: false });
+        } else {
+          bannerQueue.push({ message, playSound: false });
+          processNextBanner();
+        }
+      }
+    }
+
+    function triggerSquash(el) {
+      if (!el) return;
+      el.classList.remove('squash');
+      void el.offsetWidth;
+      el.classList.add('squash');
+    }
+
+    // Build the 12 slot DOM elements once and update them cleanly
+    const slotDomNodes = [];
+    function initSlotsGrid() {
+      slotsGridEl.innerHTML = '';
+      slotDomNodes.length = 0;
+
+      for (let i = 0; i < CONFIG.MAX_SLOTS; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'slot-cell';
+        cell.dataset.index = String(i);
+
+        const plate = document.createElement('div');
+        plate.className = 'slot-plate';
+
+        const badge = document.createElement('div');
+        badge.className = 'slot-level-badge';
+        badge.style.display = 'none';
+
+        const content = document.createElement('div');
+        content.style.display = 'flex';
+        content.style.flexDirection = 'column';
+        content.style.alignItems = 'center';
+        content.style.justifyContent = 'center';
+
+        const caption = document.createElement('div');
+        caption.className = 'slot-caption';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'slot-name';
+
+        const incomeEl = document.createElement('div');
+        incomeEl.className = 'slot-income';
+
+        caption.appendChild(nameEl);
+        caption.appendChild(incomeEl);
+
+        plate.appendChild(badge);
+        plate.appendChild(content);
+        cell.appendChild(plate);
+        cell.appendChild(caption);
+
+        cell.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          handleSlotTap(i, cell);
+        });
+
+        slotsGridEl.appendChild(cell);
+        slotDomNodes.push({ cell, plate, badge, content, nameEl, incomeEl, lastSig: '' });
+      }
+    }
+
+    function renderSlotsGrid() {
+      for (let i = 0; i < CONFIG.MAX_SLOTS; i++) {
+        const node = slotDomNodes[i];
+        const owned = i < state.ownedCreatures.length ? state.ownedCreatures[i] : null;
+        const isUnlocked = i < state.slotsUnlocked;
+        const isNextBuySlot = i === state.slotsUnlocked && state.slotsUnlocked < CONFIG.MAX_SLOTS;
+        const nextSlotCost = isNextBuySlot ? getNextSlotCost(state.slotsUnlocked) : 0;
+        const canAffordSlot = isNextBuySlot && state.coins >= nextSlotCost;
+
+        const sig = owned
+          ? `owned:${owned.id}:${owned.level}`
+          : isUnlocked
+          ? 'empty'
+          : isNextBuySlot
+          ? `buy:${nextSlotCost}:${canAffordSlot}`
+          : 'locked';
+
+        if (node.lastSig === sig) continue;
+        node.lastSig = sig;
+
+        node.plate.className = 'slot-plate';
+        node.plate.style.removeProperty('--ring-color');
+        node.plate.style.removeProperty('--ring-glow');
+        node.plate.style.removeProperty('box-shadow');
+        node.badge.style.display = 'none';
+
+        if (owned) {
+          const def = CREATURE_MAP[owned.id];
+          const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
+          node.plate.style.setProperty('--ring-color', rarity.color);
+          node.plate.style.setProperty('--ring-glow', rarity.glow);
+          if (rarity.rainbow) {
+            node.plate.classList.add('mythic-ring');
+          }
+
+          node.badge.style.display = 'block';
+          node.badge.textContent = owned.level >= CONFIG.MAX_CREATURE_LEVEL ? 'MAX' : `Lv.${owned.level}`;
+
+          node.content.innerHTML = `<span class="creature-emoji" style="--bob-delay: ${((i * 0.23) % 1.8).toFixed(2)}s">${def.emoji}</span>`;
+          const inc = getCreatureIncome(owned.id, owned.level);
+          node.nameEl.textContent = def.name;
+          node.nameEl.style.color = '#FFFFFF';
+          node.incomeEl.textContent = `+${formatNumber(inc)}/sec`;
+          node.incomeEl.style.color = '#FFD34D';
+        } else if (isUnlocked) {
+          node.plate.classList.add('empty-plate');
+          node.content.innerHTML = `<span class="empty-plus">🥚</span>`;
+          node.nameEl.textContent = `Slot ${i + 1}`;
+          node.nameEl.style.color = '#C4B5FD';
+          node.incomeEl.textContent = 'Open';
+          node.incomeEl.style.color = '#35E0FF';
+        } else if (isNextBuySlot) {
+          node.plate.classList.add('buy-plate');
+          if (canAffordSlot) {
+            node.plate.style.boxShadow = '0 0 18px rgba(53, 224, 255, 0.9)';
+          }
+          node.content.innerHTML = `
+            <span class="buy-plate-icon">➕</span>
+            <span class="buy-plate-cost">🪙 ${formatNumber(nextSlotCost)}</span>
+          `;
+          node.nameEl.textContent = `Buy Slot ${i + 1}`;
+          node.nameEl.style.color = canAffordSlot ? '#35E0FF' : '#D8CEFF';
+          node.incomeEl.textContent = `${formatNumber(nextSlotCost)} coins`;
+          node.incomeEl.style.color = '#FFD34D';
+        } else {
+          node.plate.classList.add('locked-plate');
+          node.content.innerHTML = `<span class="locked-icon">🔒</span>`;
+          node.nameEl.textContent = `Slot ${i + 1}`;
+          node.nameEl.style.color = '#9CA3AF';
+          node.incomeEl.textContent = 'Locked';
+          node.incomeEl.style.color = '#7C749B';
+        }
+      }
+    }
+
+    function findCheapestUpgrade() {
+      let bestIndex = -1;
+      let bestCost = Infinity;
+      for (let i = 0; i < state.ownedCreatures.length; i++) {
+        const c = state.ownedCreatures[i];
+        if (c.level < CONFIG.MAX_CREATURE_LEVEL) {
+          const cost = getCreatureUpgradeCost(c.id, c.level);
+          if (cost < bestCost) {
+            bestCost = cost;
+            bestIndex = i;
+          }
+        }
+      }
+      if (bestIndex === -1) return null;
+      return {
+        slotIndex: bestIndex,
+        creature: state.ownedCreatures[bestIndex],
+        def: CREATURE_MAP[state.ownedCreatures[bestIndex].id],
+        cost: bestCost
+      };
+    }
+
+    function updateHUD() {
+      // Top Bar
+      coinDisplayEl.textContent = formatNumber(state.displayedCoins);
+      const incomePerSec = getTotalIncomePerSecond();
+      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec`;
+      discoveredCountEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
+      totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
+      muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
+
+      // Vault Deck
+      tapPowerDisplayEl.textContent = `+${formatNumber(getVaultTapReward(), true)}`;
+      slotsCountDisplayEl.textContent = `${state.ownedCreatures.length}/${state.slotsUnlocked}`;
+
+      if (state.slotsUnlocked >= CONFIG.MAX_SLOTS) {
+        buySlotBtnEl.textContent = 'Max 12 Slots';
+        buySlotBtnEl.classList.remove('affordable');
+        buySlotBtnEl.classList.add('disabled');
+      } else {
+        const slotCost = getNextSlotCost(state.slotsUnlocked);
+        buySlotBtnEl.textContent = `+ Slot ${state.slotsUnlocked + 1} · 🪙 ${formatNumber(slotCost)}`;
+        if (state.coins >= slotCost) {
+          buySlotBtnEl.classList.remove('disabled');
+          buySlotBtnEl.classList.add('affordable');
+        } else {
+          buySlotBtnEl.classList.remove('affordable');
+          buySlotBtnEl.classList.add('disabled');
+        }
+      }
+
+      // Bottom Hatch Button
+      const eggCost = getEggCost(state.hatchCount);
+      hatchCostLabelEl.textContent = `🪙 ${formatNumber(eggCost)}`;
+      if (state.coins >= eggCost && !isHatching) {
+        hatchBtnEl.classList.remove('disabled');
+        hatchBtnEl.classList.add('affordable');
+      } else {
+        hatchBtnEl.classList.remove('affordable');
+        hatchBtnEl.classList.add('disabled');
+      }
+
+      // Bottom Quick Upgrade Button
+      // Rule: When nothing is affordable or every creature is Level 10, show it greyed out with "Nothing to upgrade".
+      // Otherwise show the creature emoji and the cost.
+      const cheapest = findCheapestUpgrade();
+      if (cheapest && state.coins >= cheapest.cost) {
+        quickUpgradeBtnEl.classList.remove('disabled');
+        quickUpgradeBtnEl.classList.add('affordable');
+        quickUpgradeMainEl.textContent = `${cheapest.def.emoji} Upgrade`;
+        quickUpgradeSubEl.textContent = `🪙 ${formatNumber(cheapest.cost)}`;
+      } else {
+        quickUpgradeBtnEl.classList.remove('affordable');
+        quickUpgradeBtnEl.classList.add('disabled');
+        quickUpgradeMainEl.textContent = 'Nothing to upgrade';
+        quickUpgradeSubEl.textContent = '';
+      }
+
+      // Book count label
+      bookSubLabelEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
+
+      // Update open Creature Upgrade Modal if visible
+      if (selectedSlotIndex >= 0 && upgradeModalEl.classList.contains('active')) {
+        renderUpgradeModalContent(selectedSlotIndex);
+      }
+
+      renderSlotsGrid();
+    }
+
+    /* ==========================================================================
+       7. GAMEPLAY ACTIONS: VAULT TAP, BUY SLOT, HATCH EGG, UPGRADE CREATURE
+       ========================================================================== */
+    function handleVaultTap(clientX, clientY) {
+      const reward = getVaultTapReward();
+      addCoins(reward);
+      sfxPop();
+      sfxCoin();
+      triggerSquash(vaultBtnEl);
+
+      const rect = vaultBtnEl.getBoundingClientRect();
+      const x = clientX || (rect.left + rect.width / 2);
+      const y = clientY || (rect.top + rect.height / 2);
+
+      spawnFloatingText(x, y - 14, `+${formatNumber(reward, true)}`, '#35E0FF');
+      spawnFlyingCoin(x, y, 2);
+      updateHUD();
+    }
+
+    function handleBuySlot(originEl) {
+      if (state.slotsUnlocked >= CONFIG.MAX_SLOTS) return;
+      const cost = getNextSlotCost(state.slotsUnlocked);
+      if (state.coins < cost) {
+        sfxPop();
+        showBanner(`Need ${formatNumber(cost)} coins for Slot ${state.slotsUnlocked + 1}!`, false);
+        return;
+      }
+      state.coins = safeNumber(state.coins - cost, 0);
+      state.slotsUnlocked += 1;
+      sfxUpgrade();
+
+      const rect = (originEl || buySlotBtnEl).getBoundingClientRect();
+      spawnBurstSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, '#35E0FF', 10);
+      spawnFloatingText(rect.left + rect.width / 2, rect.top, `Slot ${state.slotsUnlocked} Unlocked!`, '#35E0FF');
+      showBanner(`Unlocked Vault Slot ${state.slotsUnlocked}!`, false);
+      saveGame();
+      updateHUD();
+    }
+
+    function handleSlotTap(slotIndex, cellEl) {
+      if (slotIndex < state.ownedCreatures.length) {
+        const node = slotDomNodes[slotIndex];
+        triggerSquash(node.plate);
+        sfxPop();
+        openUpgradeModal(slotIndex);
+      } else if (slotIndex === state.slotsUnlocked && state.slotsUnlocked < CONFIG.MAX_SLOTS) {
+        handleBuySlot(cellEl);
+      } else if (slotIndex < state.slotsUnlocked) {
+        sfxPop();
+        showBanner('Hatch an egg to fill this open slot!', false);
+      } else {
+        sfxPop();
+        showBanner(`Unlock Slot ${state.slotsUnlocked + 1} first!`, false);
+      }
+    }
+
+    function openUpgradeModal(slotIndex) {
+      if (slotIndex < 0 || slotIndex >= state.ownedCreatures.length) return;
+      selectedSlotIndex = slotIndex;
+      renderUpgradeModalContent(slotIndex);
+      upgradeModalEl.classList.add('active');
+    }
+
+    function renderUpgradeModalContent(slotIndex) {
+      const entry = state.ownedCreatures[slotIndex];
+      if (!entry) return;
+      const def = CREATURE_MAP[entry.id];
+      const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
+
+      upgradeModalEmojiEl.textContent = def.emoji;
+      upgradeModalTitleEl.textContent = def.name;
+      upgradeModalRarityEl.textContent = `${rarity.name} Creature`;
+      upgradeModalRarityEl.style.color = rarity.color;
+
+      upgradeModalPlateEl.className = 'slot-plate modal-plate';
+      upgradeModalPlateEl.style.setProperty('--ring-color', rarity.color);
+      upgradeModalPlateEl.style.setProperty('--ring-glow', rarity.glow);
+      if (rarity.rainbow) {
+        upgradeModalPlateEl.classList.add('mythic-ring');
+      }
+
+      const curIncome = getCreatureIncome(entry.id, entry.level);
+      upgradeModalLevelEl.textContent = `Lv. ${entry.level} / ${CONFIG.MAX_CREATURE_LEVEL}`;
+      upgradeModalIncomeEl.textContent = `+${formatNumber(curIncome)}/sec`;
+
+      if (entry.level >= CONFIG.MAX_CREATURE_LEVEL) {
+        upgradeModalNextEl.textContent = 'MAXED!';
+        modalUpgradeBtnEl.textContent = 'MAX LEVEL (10)';
+        modalUpgradeBtnEl.classList.remove('affordable');
+        modalUpgradeBtnEl.classList.add('disabled');
+      } else {
+        const nextIncome = getCreatureIncome(entry.id, entry.level + 1);
+        const cost = getCreatureUpgradeCost(entry.id, entry.level);
+        upgradeModalNextEl.textContent = `+${formatNumber(nextIncome)}/sec`;
+        modalUpgradeBtnEl.textContent = `⬆️ Upgrade · 🪙 ${formatNumber(cost)}`;
+        if (state.coins >= cost) {
+          modalUpgradeBtnEl.classList.remove('disabled');
+          modalUpgradeBtnEl.classList.add('affordable');
+        } else {
+          modalUpgradeBtnEl.classList.remove('affordable');
+          modalUpgradeBtnEl.classList.add('disabled');
+        }
+      }
+    }
+
+    function upgradeCreatureAtSlot(slotIndex) {
+      if (slotIndex < 0 || slotIndex >= state.ownedCreatures.length) return false;
+      const entry = state.ownedCreatures[slotIndex];
+      if (!entry || entry.level >= CONFIG.MAX_CREATURE_LEVEL) return false;
+
+      const cost = getCreatureUpgradeCost(entry.id, entry.level);
+      if (state.coins < cost) {
+        sfxPop();
+        return false;
+      }
+
+      state.coins = safeNumber(state.coins - cost, 0);
+      entry.level += 1;
+      sfxUpgrade();
+
+      const def = CREATURE_MAP[entry.id];
+      const node = slotDomNodes[slotIndex];
+      if (node) {
+        triggerSquash(node.plate);
+        const rect = node.plate.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        spawnBurstSparkles(cx, cy, '#FFD34D', 10);
+        spawnFloatingText(cx, cy - 16, `${def.emoji} Lv.${entry.level}!`, '#5CFF9D');
+      }
+
+      saveGame();
+      updateHUD();
+      return true;
+    }
+
+    /* ==========================================================================
+       8. EGG HATCH ODDS & FULL-VAULT HATCH RESOLUTION RULE
+       Order of checks:
+       a) Already owned -> level up by 1 (if Lv 10, convert to coins instead)
+       b) Open slot exists -> place in next open slot
+       c) Vault full -> compare new Lv.1 income against lowest current income/sec
+          owned creature. If strictly higher, replace and convert old creature;
+          otherwise convert new creature.
+       Converted coins = 60 x base income x creature's level.
+       ========================================================================== */
+    function rollCreatureFromEgg() {
+      const roll = Math.random();
+      let cumulative = 0;
+      let chosenRarity = 'Common';
+      const rarityKeys = Object.keys(CONFIG.RARITIES);
+
+      for (let i = 0; i < rarityKeys.length; i++) {
+        const key = rarityKeys[i];
+        cumulative += CONFIG.RARITIES[key].chance;
+        if (roll <= cumulative) {
+          chosenRarity = key;
+          break;
+        }
+      }
+
+      const pool = CONFIG.CREATURES.filter((c) => c.rarity === chosenRarity);
+      const chosen = pool[Math.floor(Math.random() * pool.length)] || CONFIG.CREATURES[0];
+      return chosen;
+    }
+
+    function resolveHatchedCreature(creatureDef) {
+      // Every hatched creature is added to discoveredCreatures, even if converted
+      recordDiscovery(creatureDef.id);
+
+      // a) Check if player already owns this creature
+      const existingIndex = state.ownedCreatures.findIndex((c) => c.id === creatureDef.id);
+      if (existingIndex !== -1) {
+        const existing = state.ownedCreatures[existingIndex];
+        if (existing.level < CONFIG.MAX_CREATURE_LEVEL) {
+          existing.level += 1;
+          const msg = `Duplicate! ${creatureDef.name} leveled up to Lv.${existing.level}!`;
+          return { type: 'levelup', slotIndex: existingIndex, message: msg };
+        } else {
+          // Already Level 10: convert the newly hatched creature to coins
+          const convertedCoins = getConversionCoins(creatureDef.id, 1);
+          addCoins(convertedCoins);
+          const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
+          showBanner(msg, true);
+          return { type: 'converted', coins: convertedCoins, message: msg };
+        }
+      }
+
+      // b) Else if an open slot exists: place it in the next open slot
+      if (state.ownedCreatures.length < state.slotsUnlocked) {
+        state.ownedCreatures.push({ id: creatureDef.id, level: 1 });
+        const newSlotIndex = state.ownedCreatures.length - 1;
+        const msg = `New ${creatureDef.name} joined Slot ${newSlotIndex + 1}!`;
+        return { type: 'placed', slotIndex: newSlotIndex, message: msg };
+      }
+
+      // c) Else (vault full): find the owned creature with the lowest current income/sec
+      let lowestIndex = 0;
+      let lowestIncome = Infinity;
+      for (let i = 0; i < state.ownedCreatures.length; i++) {
+        const c = state.ownedCreatures[i];
+        const inc = getCreatureIncome(c.id, c.level);
+        if (inc < lowestIncome) {
+          lowestIncome = inc;
+          lowestIndex = i;
+        }
+      }
+
+      const newLv1Income = getCreatureIncome(creatureDef.id, 1);
+      if (newLv1Income > lowestIncome && state.ownedCreatures[lowestIndex]) {
+        const replaced = state.ownedCreatures[lowestIndex];
+        const replacedDef = CREATURE_MAP[replaced.id];
+        const convertedCoins = getConversionCoins(replaced.id, replaced.level);
+
+        state.ownedCreatures[lowestIndex] = { id: creatureDef.id, level: 1 };
+        addCoins(convertedCoins);
+
+        const msg = `${creatureDef.name} replaced ${replacedDef.name} (+${formatNumber(convertedCoins)} coins)`;
+        showBanner(msg, true);
+        return { type: 'replaced', slotIndex: lowestIndex, coins: convertedCoins, message: msg };
+      } else {
+        const convertedCoins = getConversionCoins(creatureDef.id, 1);
+        addCoins(convertedCoins);
+        const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
+        showBanner(msg, true);
+        return { type: 'converted', coins: convertedCoins, message: msg };
+      }
+    }
+
+    function startHatchSequence() {
+      if (isHatching) return;
+      const cost = getEggCost(state.hatchCount);
+      if (state.coins < cost) {
+        sfxPop();
+        showBanner(`Need ${formatNumber(cost)} coins to hatch!`, false);
+        return;
+      }
+
+      isHatching = true;
+      state.coins = safeNumber(state.coins - cost, 0);
+      state.hatchCount += 1;
+      updateHUD();
+
+      // Prepare modal for shaking egg
+      hatchModalTitleEl.textContent = 'Hatching Basic Egg...';
+      hatchModalRarityEl.textContent = '';
+      hatchOutcomeBoxEl.style.display = 'none';
+      hatchContinueBtnEl.style.display = 'none';
+      hatchStageEl.innerHTML = `<div class="egg-emoji shaking">🥚</div>`;
+      hatchModalEl.classList.add('active');
+
+      sfxEggShake();
+      const shakeTimer = setInterval(sfxEggShake, 180);
+
+      // Step 1: Crack after shake
+      setTimeout(() => {
+        clearInterval(shakeTimer);
+        hatchModalTitleEl.textContent = 'Cracking Open...';
+        hatchStageEl.innerHTML = `<div class="egg-emoji shaking" style="filter: drop-shadow(0 0 28px #35E0FF);">🐣</div>`;
+        sfxPop();
+      }, CONFIG.HATCH_SHAKE_MS);
+
+      // Step 2: White Flash + Creature Reveal
+      setTimeout(() => {
+        const hatched = rollCreatureFromEgg();
+        const rarity = CONFIG.RARITIES[hatched.rarity] || CONFIG.RARITIES.Common;
+        const outcome = resolveHatchedCreature(hatched);
+
+        // White flash
+        hatchFlashEl.classList.add('flash');
+        setTimeout(() => hatchFlashEl.classList.remove('flash'), 60);
+
+        sfxHatchFanfare(hatched.rarity);
+
+        hatchModalTitleEl.textContent = `${hatched.name}!`;
+        hatchModalRarityEl.textContent = `${rarity.name} · +${formatNumber(hatched.baseIncome)}/sec`;
+        hatchModalRarityEl.style.color = rarity.color;
+
+        const ringClass = rarity.rainbow ? 'slot-plate modal-plate mythic-ring hatched-pop' : 'slot-plate modal-plate hatched-pop';
+        hatchStageEl.innerHTML = `
+          <div class="${ringClass}" style="--ring-color: ${rarity.color}; --ring-glow: ${rarity.glow}; margin: 0;">
+            <span class="creature-emoji">${hatched.emoji}</span>
+          </div>
+        `;
+
+        hatchOutcomeBoxEl.textContent = outcome.message;
+        hatchOutcomeBoxEl.style.display = 'block';
+        hatchContinueBtnEl.style.display = 'inline-flex';
+
+        const stageRect = hatchStageEl.getBoundingClientRect();
+        const cx = stageRect.left + stageRect.width / 2;
+        const cy = stageRect.top + stageRect.height / 2;
+        spawnBurstSparkles(cx, cy, rarity.color, 12);
+        if (outcome.coins && outcome.coins > 0) {
+          spawnFlyingCoin(cx, cy, 5);
+        }
+
+        if (typeof outcome.slotIndex === 'number' && slotDomNodes[outcome.slotIndex]) {
+          triggerSquash(slotDomNodes[outcome.slotIndex].plate);
+        }
+
+        isHatching = false;
+        saveGame();
+        updateHUD();
+      }, CONFIG.HATCH_SHAKE_MS + CONFIG.HATCH_CRACK_MS);
+    }
+
+    /* ==========================================================================
+       9. POINTER EVENT LISTENERS (No keyboard required, touch/mouse only)
+       ========================================================================== */
+    function setupEvents() {
+      // Prevent context menu and double-tap zoom
+      window.addEventListener('contextmenu', (e) => e.preventDefault());
+      window.addEventListener('resize', () => {
+        updateCanvasSizes();
+      });
+
+      // Vault Tap
+      vaultBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        handleVaultTap(e.clientX, e.clientY);
+      });
+
+      // Buy Slot Button
+      buySlotBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        handleBuySlot(buySlotBtnEl);
+      });
+
+      // Mute Toggle
+      muteBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        state.muted = !state.muted;
+        if (!state.muted) sfxPop();
+        saveGame();
+        updateHUD();
+      });
+
+      // Hatch Egg Button
+      hatchBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        startHatchSequence();
+      });
+
+      // Quick Upgrade Button (Bottom bar)
+      quickUpgradeBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        const cheapest = findCheapestUpgrade();
+        if (!cheapest || state.coins < cheapest.cost) {
+          sfxPop();
+          return;
+        }
+        upgradeCreatureAtSlot(cheapest.slotIndex);
+      });
+
+      // Locked Defense & Book Buttons
+      defenseBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        triggerSquash(defenseBtnEl);
+        showBanner('Defense Raids unlock in a future step!', false);
+      });
+
+      bookBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        triggerSquash(bookBtnEl);
+        showBanner(`Creature Book locked · Discovered ${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`, false);
+      });
+
+      // Creature Upgrade Modal Controls
+      upgradeModalCloseEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        upgradeModalEl.classList.remove('active');
+        selectedSlotIndex = -1;
+      });
+
+      upgradeModalEl.addEventListener('pointerdown', (e) => {
+        if (e.target === upgradeModalEl) {
+          unlockAudio();
+          sfxPop();
+          upgradeModalEl.classList.remove('active');
+          selectedSlotIndex = -1;
+        }
+      });
+
+      modalUpgradeBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        if (selectedSlotIndex >= 0) {
+          const ok = upgradeCreatureAtSlot(selectedSlotIndex);
+          if (ok) {
+            triggerSquash(upgradeModalPlateEl);
+            renderUpgradeModalContent(selectedSlotIndex);
+          }
+        }
+      });
+
+      // Hatch Modal Dismiss
+      hatchContinueBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        hatchModalEl.classList.remove('active');
+      });
+
+      hatchModalEl.addEventListener('pointerdown', (e) => {
+        if (!isHatching && e.target === hatchModalEl) {
+          unlockAudio();
+          sfxPop();
+          hatchModalEl.classList.remove('active');
+        }
+      });
+
+      // Offline Earnings Collect
+      offlineCollectBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        if (pendingOfflineCoins > 0) {
+          const reward = pendingOfflineCoins;
+          pendingOfflineCoins = 0;
+          addCoins(reward);
+          sfxHatchFanfare('Epic');
+          const rect = offlineCollectBtnEl.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          spawnFlyingCoin(cx, cy, 8);
+          spawnFloatingText(cx, cy - 20, `+${formatNumber(reward)}`, '#FFD34D');
+        }
+        offlineModalEl.classList.remove('active');
+        saveGame();
+        updateHUD();
+      });
+
+      // Autosave when tab is hidden
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          saveGame();
+        } else {
+          lastFrameTime = performance.now();
+        }
+      });
+
+      window.addEventListener('pagehide', saveGame);
+    }
+
+    /* ==========================================================================
+       10. MAIN GAME LOOP (requestAnimationFrame with dt capped at 100ms)
+       Pauses logic when tab is hidden. Smoothly rolls displayed coin counter.
+       ========================================================================== */
+    let lastFrameTime = performance.now();
+    let hudRefreshAccumulator = 0;
+
+    function gameLoop(now) {
+      requestAnimationFrame(gameLoop);
+
+      if (document.hidden) {
+        lastFrameTime = now;
+        return;
+      }
+
+      const rawDeltaMs = Math.max(0, now - lastFrameTime);
+      lastFrameTime = now;
+      const clampedDeltaMs = Math.min(rawDeltaMs, CONFIG.MAX_DELTA_MS);
+      const dtSec = clampedDeltaMs / 1000;
+
+      // 1. Add passive income per second
+      const incomePerSec = getTotalIncomePerSecond();
+      if (incomePerSec > 0 && dtSec > 0) {
+        addCoins(incomePerSec * dtSec);
+      }
+
+      // 2. Smoothly roll displayedCoins toward actual state.coins
+      const diff = state.coins - state.displayedCoins;
+      if (Math.abs(diff) < 0.05) {
+        state.displayedCoins = state.coins;
+      } else {
+        state.displayedCoins += diff * Math.min(1, dtSec * CONFIG.COIN_ROLL_SPEED);
+      }
+      coinDisplayEl.textContent = formatNumber(state.displayedCoins);
+
+      // 3. Refresh button affordability states periodically (10x/sec)
+      hudRefreshAccumulator += dtSec;
+      if (hudRefreshAccumulator >= 0.1) {
+        hudRefreshAccumulator = 0;
+        updateHUD();
+      }
+
+      // 4. Update & draw stars and particles
+      updateAndDrawParticles(dtSec);
+    }
+
+    /* ==========================================================================
+       11. INITIALIZATION
+       ========================================================================== */
+    function init() {
+      updateCanvasSizes();
+      initStars();
+      initSlotsGrid();
+      loadGame();
+      setupEvents();
+      updateHUD();
+
+      // Show offline earnings popup if player earned coins while away
+      if (pendingOfflineCoins > 0) {
+        offlineModalTextEl.innerHTML = `Welcome back! You earned <strong style="color: #FFD34D;">${formatNumber(pendingOfflineCoins)}</strong>`;
+        offlineModalEl.classList.add('active');
+      }
+
+      // Autosave every 10 seconds
+      setInterval(() => {
+        if (!document.hidden) {
+          saveGame();
+        }
+      }, CONFIG.AUTOSAVE_INTERVAL_MS);
+
+      lastFrameTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    }
+
+    init();
+  </script>
+</body>
+</html>
