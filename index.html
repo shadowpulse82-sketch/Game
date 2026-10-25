@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Meme Vault Defense</title>
-  <meta name="description" content="A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and earn massive passive coins." />
+  <meta name="description" content="A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and defend against sneaky raiders." />
   <meta property="og:title" content="Meme Vault Defense" />
-  <meta property="og:description" content="A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and earn massive passive coins." />
+  <meta property="og:description" content="A neon-candy cartoon idle game where you hatch quirky meme creatures, level up your vault squad, and defend against sneaky raiders." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <style>
@@ -53,7 +53,41 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 25;
+      z-index: 45;
+    }
+
+    /* Red Vignette Overlay for Raid Warning & Active Raid */
+    @keyframes vignettePulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.9; }
+    }
+
+    #raid-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 35;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 0, 55, 0) 52%, rgba(255, 20, 70, 0.55) 100%);
+      box-shadow: inset 0 0 65px rgba(255, 25, 75, 0.75);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    #raid-vignette.active {
+      animation: vignettePulse 0.9s infinite ease-in-out;
+    }
+
+    /* Screen Shake Animation */
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-5px, 3px); }
+      40% { transform: translate(5px, -4px); }
+      60% { transform: translate(-4px, -2px); }
+      80% { transform: translate(4px, 3px); }
+    }
+
+    #app.shake {
+      animation: screenShake 0.24s ease-in-out;
     }
 
     /* ==========================================================================
@@ -69,8 +103,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 6px 8px;
-      gap: 6px;
+      padding: 5px 8px;
+      gap: 4px;
       overflow: hidden;
     }
 
@@ -79,6 +113,7 @@
        ========================================================================== */
     .top-bar {
       position: relative;
+      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -86,8 +121,8 @@
       background: linear-gradient(180deg, rgba(42, 24, 92, 0.94) 0%, rgba(24, 13, 56, 0.96) 100%);
       border: 2px solid rgba(53, 224, 255, 0.38);
       border-radius: 18px;
-      padding: 5px 12px;
-      min-height: 54px;
+      padding: 4px 12px;
+      min-height: 52px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 2px 1px rgba(255, 255, 255, 0.18);
       flex-shrink: 0;
     }
@@ -100,8 +135,8 @@
     }
 
     .coin-badge {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: radial-gradient(circle at 32% 30%, #FFF5B8 0%, #FFD34D 45%, #E08B00 90%);
       border: 2px solid #FFF2A6;
@@ -109,7 +144,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 21px;
+      font-size: 20px;
       flex-shrink: 0;
       transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -125,7 +160,7 @@
     }
 
     .coin-amount {
-      font-size: clamp(23px, 4.5vw, 32px);
+      font-size: clamp(22px, 4.4vw, 31px);
       font-weight: 900;
       color: #FFD34D;
       text-shadow: 0 2px 0 #703800, 0 0 14px rgba(255, 211, 77, 0.55);
@@ -134,7 +169,7 @@
     }
 
     .income-rate {
-      font-size: clamp(12px, 2.2vw, 15px);
+      font-size: clamp(11px, 2.2vw, 14px);
       color: #5CFF9D;
       text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 8px rgba(92, 255, 157, 0.45);
       white-space: nowrap;
@@ -225,6 +260,13 @@
       box-shadow: 0 5px 0 #00668A, 0 8px 16px rgba(53, 224, 255, 0.35);
     }
 
+    /* Purple/Indigo Candy Button (Defense) */
+    .btn-purple {
+      background: linear-gradient(180deg, #C078FF 0%, #9B4DFF 55%, #6E22CC 100%);
+      color: #FFFFFF;
+      box-shadow: 0 5px 0 #430F85, 0 8px 16px rgba(155, 77, 255, 0.35);
+    }
+
     /* Mute Button */
     .btn-mute {
       min-width: 48px;
@@ -263,6 +305,15 @@
       }
     }
 
+    @keyframes affordablePulsePurple {
+      0%, 100% {
+        box-shadow: 0 5px 0 #430F85, 0 0 12px rgba(192, 120, 255, 0.55), 0 0 24px rgba(155, 77, 255, 0.35);
+      }
+      50% {
+        box-shadow: 0 5px 0 #430F85, 0 0 22px rgba(192, 120, 255, 0.95), 0 0 36px rgba(53, 224, 255, 0.55);
+      }
+    }
+
     .btn-pink.affordable {
       animation: affordablePulsePink 1.6s infinite ease-in-out;
     }
@@ -273,6 +324,10 @@
 
     .btn-cyan.affordable {
       animation: affordablePulseCyan 1.6s infinite ease-in-out;
+    }
+
+    .btn-purple.affordable {
+      animation: affordablePulsePurple 1.6s infinite ease-in-out;
     }
 
     /* Greyed out state when unaffordable or locked (high-legibility text!) */
@@ -287,7 +342,7 @@
     }
 
     /* ==========================================================================
-       5. NOTIFICATION BANNER (Large centered dark rounded pill with gold border)
+       5. NOTIFICATION BANNER (Large centered dark rounded pill with gold/red border)
        Just below the top bar, pop-in animation, stays visible for 3 seconds.
        ========================================================================== */
     @keyframes bannerPopIn {
@@ -310,14 +365,14 @@
 
     #status-banner {
       position: fixed;
-      top: 64px;
+      top: 60px;
       left: 50%;
       transform: translateX(-50%) translateY(-12px) scale(0.85);
       z-index: 80;
       background: linear-gradient(180deg, rgba(24, 13, 56, 0.98) 0%, rgba(14, 7, 36, 0.98) 100%);
       border: 3px solid #FFD34D;
       border-radius: 999px;
-      padding: 9px 20px;
+      padding: 8px 20px;
       color: #FFFFFF;
       font-size: clamp(13px, 3.2vw, 17px);
       font-weight: 900;
@@ -335,13 +390,20 @@
       transition: opacity 0.16s ease, transform 0.16s ease;
     }
 
+    #status-banner.danger-banner {
+      background: linear-gradient(180deg, #6E0825 0%, #3D0314 100%);
+      border-color: #FF3B6B;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8), 0 0 28px rgba(255, 45, 95, 0.85);
+      color: #FFE4EC;
+    }
+
     #status-banner.show {
       opacity: 1;
       animation: bannerPopIn 0.34s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     /* ==========================================================================
-       6. MIDDLE ARENA: BIG CENTRAL HERO VAULT + COMPACT 4x3 CREATURE BLOCK
+       6. MIDDLE ARENA: RAID AREA (3 LANES) + HERO VAULT + COMPACT 4x3 GRID
        ========================================================================== */
     .arena {
       flex: 1;
@@ -349,24 +411,229 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    /* RAID AREA: Empty space between the top bar and the vault!
+       Raiders enter from the top on 3 straight paths toward the vault. */
+    #raid-area {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      height: 66px;
+      background: linear-gradient(180deg, rgba(18, 9, 44, 0.65) 0%, rgba(32, 16, 72, 0.35) 100%);
+      border: 1.5px solid rgba(53, 224, 255, 0.22);
+      border-radius: 16px;
+      overflow: visible;
+      flex-shrink: 0;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      z-index: 30;
+    }
+
+    #raid-area.raid-danger {
+      border-color: rgba(255, 59, 107, 0.75);
+      background: linear-gradient(180deg, rgba(88, 10, 36, 0.65) 0%, rgba(44, 8, 32, 0.45) 100%);
+      box-shadow: 0 0 18px rgba(255, 45, 95, 0.4), inset 0 0 16px rgba(255, 45, 95, 0.25);
+    }
+
+    /* Laser Fence Visual Overlay across the 3 lanes */
+    .laser-beam {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 52%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #35E0FF 15%, #FF4FA3 50%, #35E0FF 85%, transparent 100%);
+      box-shadow: 0 0 10px #35E0FF;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .laser-beam.active {
+      opacity: 0.75;
+    }
+
+    /* 3 Straight Lane Paths toward the Vault */
+    .raid-lane {
+      position: relative;
+      flex: 1;
+      display: flex;
       justify-content: center;
-      gap: 6px;
+      pointer-events: none;
+    }
+
+    .raid-lane::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      bottom: -10px;
+      width: 3px;
+      border-radius: 3px;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(53, 224, 255, 0.26) 0px,
+        rgba(53, 224, 255, 0.26) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+
+    #raid-area.raid-danger .raid-lane::before {
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(255, 75, 115, 0.65) 0px,
+        rgba(255, 75, 115, 0.65) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+
+    /* Status strip inside Raid Area */
+    #raid-hud-pill {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 8, 38, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 11px;
+      color: #C4B5FD;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    #raid-area.raid-danger #raid-hud-pill {
+      background: rgba(110, 8, 38, 0.92);
+      border-color: #FF4D6D;
+      color: #FFD34D;
+    }
+
+    /* Guard Dog Indicator in Raid Area */
+    #guard-dog-badge {
+      position: absolute;
+      bottom: 3px;
+      left: 8px;
+      font-size: 12px;
+      background: rgba(20, 10, 48, 0.85);
+      border: 1.5px solid #5CFF9D;
+      border-radius: 10px;
+      padding: 1px 7px;
+      color: #5CFF9D;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Raider Entity Running Down Lane */
+    @keyframes raiderBounce {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      50% { transform: translateY(-5px) scale(1.06, 0.94); }
+    }
+
+    .raider-node {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 54px;
+      height: 54px;
+      margin-left: -27px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 15;
+      touch-action: manipulation;
+    }
+
+    .raider-node.boss-raider {
+      width: 64px;
+      height: 64px;
+      margin-left: -32px;
+    }
+
+    .raider-sprite {
+      font-size: 34px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.75));
+      animation: raiderBounce 0.32s infinite ease-in-out;
+      transition: filter 0.08s ease, transform 0.08s ease;
+    }
+
+    .raider-node.boss-raider .raider-sprite {
+      font-size: 42px;
+    }
+
+    .raider-node.hit-flash .raider-sprite {
+      filter: brightness(3) drop-shadow(0 0 12px #FFFFFF);
+      transform: scale(1.22);
+    }
+
+    .raider-hp-bar {
+      width: 38px;
+      height: 6px;
+      background: rgba(12, 6, 28, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 2px;
+    }
+
+    .raider-hp-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #FF3B6B 0%, #FFD34D 100%);
+      transition: width 0.1s ease;
     }
 
     /* Hero Vault Section: Vault is the glowing central hero of the screen */
     .vault-deck {
+      position: relative;
+      z-index: 20;
       width: 100%;
       max-width: 680px;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(180deg, rgba(35, 20, 79, 0.82) 0%, rgba(22, 12, 52, 0.9) 100%);
+      background: linear-gradient(180deg, rgba(35, 20, 79, 0.85) 0%, rgba(22, 12, 52, 0.92) 100%);
       border: 2px solid rgba(53, 224, 255, 0.38);
       border-radius: 22px;
-      padding: 6px 10px;
+      padding: 5px 10px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 28px rgba(53, 224, 255, 0.15);
       flex-shrink: 0;
+    }
+
+    @keyframes vaultRedAlert {
+      0%, 100% {
+        border-color: #FF2A55;
+        box-shadow: 0 0 24px rgba(255, 42, 85, 0.9), 0 0 48px rgba(255, 42, 85, 0.55), 0 5px 0 #6B001B, inset 0 4px 10px rgba(255, 255, 255, 0.8);
+        background: radial-gradient(circle at 35% 28%, #FFD6E0 0%, #FF3B6B 45%, #B80033 85%, #4A0014 100%);
+      }
+      50% {
+        border-color: #FFD34D;
+        box-shadow: 0 0 36px rgba(255, 42, 85, 1), 0 0 68px rgba(255, 42, 85, 0.85), 0 5px 0 #6B001B, inset 0 4px 12px rgba(255, 255, 255, 0.95);
+        background: radial-gradient(circle at 35% 28%, #FFF0F3 0%, #FF1F5A 45%, #990029 85%, #38000F 100%);
+      }
+    }
+
+    .vault-deck.vault-danger {
+      border-color: rgba(255, 59, 107, 0.85);
+      box-shadow: 0 6px 22px rgba(255, 30, 80, 0.45), inset 0 0 28px rgba(255, 45, 95, 0.28);
+    }
+
+    #vault-btn.vault-danger {
+      animation: vaultRedAlert 0.55s infinite ease-in-out;
     }
 
     .vault-stats-side {
@@ -425,8 +692,8 @@
 
     #vault-btn {
       position: relative;
-      width: 84px;
-      height: 84px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
       border: 3.5px solid #C4FAFF;
       background: radial-gradient(circle at 35% 28%, #DDFDFF 0%, #35E0FF 42%, #0088CC 82%, #003865 100%);
@@ -443,7 +710,7 @@
     #vault-btn::after {
       content: '';
       position: absolute;
-      inset: -7px;
+      inset: -6px;
       border-radius: 50%;
       border: 2.5px dashed rgba(53, 224, 255, 0.65);
       animation: spinSlow 14s linear infinite;
@@ -456,7 +723,7 @@
     }
 
     .vault-icon {
-      font-size: 36px;
+      font-size: 32px;
       line-height: 1;
       filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
     }
@@ -481,10 +748,10 @@
 
     #buy-slot-btn {
       font-size: clamp(11px, 2.4vw, 14px);
-      padding: 8px 10px;
+      padding: 6px 10px;
       min-height: 48px;
       width: 100%;
-      max-width: 150px;
+      max-width: 148px;
       white-space: normal;
       text-align: center;
       line-height: 1.15;
@@ -509,16 +776,18 @@
        easy-to-read creature name and income text underneath each plate.
        ========================================================================== */
     .slots-grid {
+      position: relative;
+      z-index: 15;
       width: 100%;
       max-width: 680px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(3, auto);
-      gap: 6px 6px;
+      gap: 4px 6px;
       align-items: start;
       justify-items: center;
       align-content: center;
-      padding: 4px 2px;
+      padding: 2px;
       flex-shrink: 0;
     }
 
@@ -534,11 +803,11 @@
       transition: transform 0.12s ease;
     }
 
-    /* Glossy Circular Plate - Larger to use available column width */
+    /* Glossy Circular Plate - Uses available column width while fitting 360x640 */
     .slot-plate {
       position: relative;
-      width: clamp(76px, 20.5vw, 94px);
-      height: clamp(76px, 20.5vw, 94px);
+      width: clamp(72px, 19.5vw, 90px);
+      height: clamp(72px, 19.5vw, 90px);
       border-radius: 50%;
       background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.38) 0%, rgba(56, 33, 114, 0.94) 48%, rgba(20, 10, 48, 0.98) 100%);
       border: 3.5px solid var(--ring-color, rgba(176, 184, 197, 0.4));
@@ -551,6 +820,14 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+    }
+
+    /* Kidnapped Creature Slot State */
+    .slot-plate.kidnapped-plate {
+      filter: grayscale(0.92) brightness(0.75);
+      border-color: #FF3B6B !important;
+      box-shadow: 0 0 12px rgba(255, 59, 107, 0.55) !important;
+      animation: none !important;
     }
 
     /* Glossy top arc reflection on plate */
@@ -628,12 +905,12 @@
 
     /* Larger, easy-to-read creature name and income text under each plate */
     .slot-caption {
-      margin-top: 3px;
+      margin-top: 2px;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.12;
+      line-height: 1.1;
       text-align: center;
     }
 
@@ -703,19 +980,21 @@
     }
 
     /* ==========================================================================
-       8. BOTTOM BAR: HATCH, UPGRADE, DEFENSE (LOCKED), BOOK (LOCKED)
-       High-contrast, easy-to-read labels across all 4 buttons
+       8. BOTTOM BAR: HATCH, UPGRADE, DEFENSE, BOOK (LOCKED)
+       Never covered by raiders (z-index: 30).
        ========================================================================== */
     .bottom-bar {
+      position: relative;
+      z-index: 30;
       display: grid;
-      grid-template-columns: 1.15fr 1.25fr 0.95fr 0.95fr;
+      grid-template-columns: 1.15fr 1.25fr 1.05fr 0.85fr;
       gap: 6px;
       flex-shrink: 0;
     }
 
     .bottom-bar .btn-3d {
       width: 100%;
-      min-height: 52px;
+      min-height: 50px;
       padding: 4px 6px;
       display: flex;
       flex-direction: column;
@@ -748,34 +1027,34 @@
 
     /* ==========================================================================
        9. DESKTOP LANDSCAPE ADAPTATION (e.g. 1280x720)
-       Vault remains the central glowing hero above the compact 4x3 grid block!
        ========================================================================== */
     @media (min-width: 760px) and (min-height: 540px) {
       #app {
-        padding: 10px 20px;
-        gap: 8px;
+        padding: 8px 20px;
+        gap: 6px;
       }
 
       .stat-chip {
         display: flex;
       }
 
-      .arena {
-        gap: 10px;
+      #raid-area {
+        max-width: 760px;
+        height: 76px;
       }
 
       .vault-deck {
         max-width: 760px;
-        padding: 8px 20px;
+        padding: 6px 20px;
       }
 
       #vault-btn {
-        width: 102px;
-        height: 102px;
+        width: 92px;
+        height: 92px;
       }
 
       .vault-icon {
-        font-size: 44px;
+        font-size: 40px;
       }
 
       .vault-tap-tag {
@@ -790,20 +1069,20 @@
 
       .slots-grid {
         max-width: 760px;
-        gap: 8px 16px;
+        gap: 6px 16px;
         background: rgba(20, 11, 48, 0.42);
         border: 2px solid rgba(255, 255, 255, 0.12);
         border-radius: 22px;
-        padding: 8px 18px;
+        padding: 6px 18px;
       }
 
       .slot-plate {
-        width: 88px;
-        height: 88px;
+        width: 82px;
+        height: 82px;
       }
 
       .creature-emoji {
-        font-size: 58px;
+        font-size: 56px;
       }
 
       .slot-name {
@@ -815,12 +1094,12 @@
       }
 
       .bottom-bar {
-        grid-template-columns: 1.2fr 1.2fr 1fr 1fr;
+        grid-template-columns: 1.2fr 1.2fr 1.1fr 0.9fr;
         gap: 12px;
       }
 
       .bottom-bar .btn-3d {
-        min-height: 54px;
+        min-height: 52px;
         flex-direction: row;
         gap: 8px;
       }
@@ -835,18 +1114,18 @@
     }
 
     /* ==========================================================================
-       10. POPUP MODALS (Creature Upgrade, Egg Hatch Reveal, Offline Welcome)
+       10. POPUP MODALS (Creature Upgrade/Rescue, Defense Panel, Egg Hatch, Offline)
        ========================================================================== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 50;
+      z-index: 65;
       background: rgba(12, 6, 30, 0.78);
       backdrop-filter: blur(5px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 14px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.18s ease;
@@ -860,11 +1139,11 @@
     .modal-card {
       position: relative;
       width: 100%;
-      max-width: 340px;
+      max-width: 360px;
       background: linear-gradient(180deg, #2D1863 0%, #1B1040 100%);
       border: 3px solid #35E0FF;
       border-radius: 24px;
-      padding: 20px 18px;
+      padding: 18px 16px;
       text-align: center;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 28px rgba(53, 224, 255, 0.35);
       transform: scale(0.85);
@@ -895,12 +1174,12 @@
 
     .modal-plate {
       margin: 4px auto 12px;
-      width: 104px;
-      height: 104px;
+      width: 100px;
+      height: 100px;
     }
 
     .modal-title {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
       color: #FFFFFF;
       margin-bottom: 4px;
@@ -918,7 +1197,7 @@
       border: 1.5px solid rgba(255, 255, 255, 0.14);
       border-radius: 16px;
       padding: 10px 14px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -939,12 +1218,80 @@
       color: #FFD34D;
     }
 
+    /* Defense Upgrades List Inside Defense Modal */
+    .defense-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .defense-row {
+      background: rgba(15, 8, 38, 0.72);
+      border: 1.5px solid rgba(192, 120, 255, 0.35);
+      border-radius: 16px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .defense-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .defense-emoji {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .defense-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .defense-name {
+      font-size: 14px;
+      font-weight: 900;
+      color: #FFFFFF;
+    }
+
+    .defense-desc {
+      font-size: 11px;
+      color: #D8CEFF;
+      line-height: 1.2;
+    }
+
+    .defense-stat {
+      font-size: 11px;
+      color: #5CFF9D;
+    }
+
+    .defense-buy-btn {
+      min-width: 102px;
+      min-height: 48px;
+      padding: 6px 10px;
+      font-size: 12px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
     /* Egg Hatch Animation Styles */
     #hatch-flash {
       position: fixed;
       inset: 0;
       background: #FFFFFF;
-      z-index: 60;
+      z-index: 70;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.28s ease-out;
@@ -1008,8 +1355,11 @@
   <!-- Drifting Background Stars Canvas -->
   <canvas id="star-canvas"></canvas>
 
-  <!-- Foreground Flying Coins & Floating Numbers Canvas -->
+  <!-- Foreground Flying Coins, Star Bursts & Floating Numbers Canvas -->
   <canvas id="fx-canvas"></canvas>
+
+  <!-- Red Vignette for Raid Warning & Active Raids -->
+  <div id="raid-vignette"></div>
 
   <!-- White Flash Overlay for Egg Hatch -->
   <div id="hatch-flash"></div>
@@ -1040,9 +1390,20 @@
       </div>
     </header>
 
-    <!-- 2. MIDDLE ARENA: HERO CYAN VAULT + COMPACT 4x3 CREATURE BLOCK -->
+    <!-- 2. MIDDLE ARENA: RAID AREA (3 LANES) + HERO VAULT + COMPACT 4x3 CREATURE BLOCK -->
     <section class="arena" aria-label="Meme Vault">
-      <div class="vault-deck">
+      <!-- Raid Area between Top Bar and Vault -->
+      <div id="raid-area" aria-label="Raid Approach Lanes">
+        <div id="raid-hud-pill">🛡️ Hatch an egg to start raids</div>
+        <div id="laser-beam" class="laser-beam"></div>
+        <div id="guard-dog-badge">🐕 <span id="guard-dog-timer">Ready</span></div>
+        <div class="raid-lane" data-lane="0"></div>
+        <div class="raid-lane" data-lane="1"></div>
+        <div class="raid-lane" data-lane="2"></div>
+      </div>
+
+      <!-- Central Hero Vault Deck -->
+      <div id="vault-deck" class="vault-deck">
         <div class="vault-stats-side">
           <div class="vault-title">MEME VAULT</div>
           <div class="vault-sub">Tap: <strong id="tap-power-display">+1</strong></div>
@@ -1079,9 +1440,9 @@
         <span id="quick-upgrade-sub" class="btn-sub-label"></span>
       </button>
 
-      <button id="defense-btn" class="btn-3d disabled" type="button">
-        <span class="btn-main-label">🔒 Defense</span>
-        <span class="btn-sub-label">Locked</span>
+      <button id="defense-btn" class="btn-3d btn-purple" type="button">
+        <span class="btn-main-label">🛡️ Defense</span>
+        <span id="defense-sub-label" class="btn-sub-label">Upgrades</span>
       </button>
 
       <button id="book-btn" class="btn-3d disabled" type="button">
@@ -1091,7 +1452,7 @@
     </nav>
   </main>
 
-  <!-- CREATURE UPGRADE POPUP -->
+  <!-- CREATURE UPGRADE & INSTANT RESCUE POPUP -->
   <div id="upgrade-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="upgrade-modal-title">
     <div class="modal-card">
       <button id="upgrade-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
@@ -1101,6 +1462,10 @@
       <div id="upgrade-modal-title" class="modal-title">Noodle Cat</div>
       <div id="upgrade-modal-rarity" class="modal-rarity">Common</div>
       <div class="modal-stats-box">
+        <div class="modal-stat-row">
+          <span>Status</span>
+          <strong id="upgrade-modal-status">Active</strong>
+        </div>
         <div class="modal-stat-row">
           <span>Current Level</span>
           <strong id="upgrade-modal-level">Lv. 1 / 10</strong>
@@ -1114,9 +1479,22 @@
           <strong id="upgrade-modal-next">+2/sec</strong>
         </div>
       </div>
+      <button id="modal-rescue-btn" class="btn-3d btn-pink" style="width: 100%; margin-bottom: 8px; display: none;" type="button">
+        🔓 Rescue Now · 🪙 120
+      </button>
       <button id="modal-upgrade-btn" class="btn-3d btn-gold" style="width: 100%;" type="button">
         ⬆️ Upgrade · 🪙 32
       </button>
+    </div>
+  </div>
+
+  <!-- DEFENSE UPGRADES PANEL POPUP -->
+  <div id="defense-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="defense-modal-title">
+    <div class="modal-card">
+      <button id="defense-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
+      <div id="defense-modal-title" class="modal-title">🛡️ Vault Defense</div>
+      <div class="modal-rarity" style="color: #35E0FF; margin-bottom: 6px;">Protect your creatures from raiders!</div>
+      <div id="defense-list" class="defense-list"></div>
     </div>
   </div>
 
@@ -1154,7 +1532,8 @@
   <script>
     /* ==========================================================================
        1. CONFIG OBJECT
-       Every balance number, rarity odd, creature definition, and limit lives here.
+       Every balance number, rarity odd, creature definition, defense upgrade,
+       and raid parameter lives here.
        ========================================================================== */
     const CONFIG = {
       STORAGE_KEY: 'meme_vault_defense_save_v1',
@@ -1182,7 +1561,61 @@
       HATCH_SHAKE_MS: 650,
       HATCH_CRACK_MS: 380,
       BANNER_DURATION_MS: 3000, // 3 seconds visible per banner
-      BANNER_GAP_MS: 140, // Brief pause before next queued banner pops in
+      BANNER_GAP_MS: 140,
+
+      // Raid & Defense Balance Numbers
+      FIRST_RAID_DELAY_SEC: 90, // First raid comes 90s after first hatch
+      NEXT_RAID_MIN_SEC: 100, // Later raids every 100 to 140s
+      NEXT_RAID_MAX_SEC: 140,
+      RAID_WARNING_SEC: 10, // 10s before raid: red banner, siren, flashing red vault
+      RAID_DURATION_SEC: 15, // Raid lasts about 15 seconds
+      RAID_MIN_RAIDERS: 3,
+      RAID_MAX_RAIDERS: 6,
+      BOSS_EVERY_N_RAIDS: 5, // Big Bandit boss on every 5th raid
+      RAIDER_BASE_CROSS_SEC: 7.2, // Base seconds for a normal raider to run down the lane
+      RAIDER_HIT_COIN_RATIO: 0.25, // Coins dropped per hit on a raider (min 1)
+      RAID_WIN_INCOME_SECONDS: 60, // Win bonus = 60 seconds of income
+      KIDNAP_DURATION_SEC: 90, // Kidnapped for 90 seconds
+      RESCUE_INCOME_SECONDS: 120, // Instant rescue cost = 120 seconds of total income
+
+      // Defense Upgrades (Levels 1 to 5, price rises x1.8 per level)
+      DEFENSE_MAX_LEVEL: 5,
+      DEFENSE_COST_MULTIPLIER: 1.8,
+      DEFENSE_UPGRADES: {
+        guardDog: {
+          id: 'guardDog',
+          name: 'Guard Dog',
+          emoji: '🐕',
+          baseCost: 120,
+          baseIntervalSec: 4.0,
+          fasterPerLevelSec: 0.6, // Lv1: 4.0s, Lv2: 3.4s, Lv3: 2.8s, Lv4: 2.2s, Lv5: 1.6s
+          desc: 'Hits the nearest raider automatically'
+        },
+        laserFence: {
+          id: 'laserFence',
+          name: 'Laser Fence',
+          emoji: '⚡',
+          baseCost: 150,
+          slowPerLevel: 0.10, // Slows raiders 10% per level (10%..50%)
+          desc: 'Slows all raiders by 10% per level'
+        },
+        vaultDoor: {
+          id: 'vaultDoor',
+          name: 'Vault Door',
+          emoji: '🚪',
+          baseCost: 180,
+          extraSecPerLevel: 1.0, // +1 second per level before a raider can steal
+          desc: '+1s per level before a raider can steal'
+        }
+      },
+
+      // Raider Types
+      RAIDERS: {
+        raccoon: { type: 'raccoon', name: 'Sneaky Raccoon', emoji: '🦝', baseHp: 2, speedMult: 1.0, isBoss: false },
+        fox:     { type: 'fox',     name: 'Speedy Fox',     emoji: '🦊', baseHp: 1, speedMult: 1.45, isBoss: false },
+        bear:    { type: 'bear',    name: 'Big Bandit',     emoji: '🐻', baseHp: 8, speedMult: 0.62, isBoss: true }
+      },
+
       RARITIES: {
         Common:    { name: 'Common',    chance: 0.60,  color: '#B0B8C5', glow: 'rgba(176, 184, 197, 0.55)', pitch: 380 },
         Uncommon:  { name: 'Uncommon',  chance: 0.25,  color: '#5CFF9D', glow: 'rgba(92, 255, 157, 0.60)',  pitch: 460 },
@@ -1276,10 +1709,38 @@
       return Math.round(CONFIG.CONVERSION_MULTIPLIER * def.baseIncome * lvl);
     }
 
+    function getDefenseUpgradeCost(key, currentLevel) {
+      const def = CONFIG.DEFENSE_UPGRADES[key];
+      if (!def) return Infinity;
+      const lvl = Math.max(0, Math.floor(safeNumber(currentLevel, 0)));
+      if (lvl >= CONFIG.DEFENSE_MAX_LEVEL) return Infinity;
+      return Math.round(def.baseCost * Math.pow(CONFIG.DEFENSE_COST_MULTIPLIER, lvl));
+    }
+
+    function getGuardDogIntervalSec(level) {
+      const lvl = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(level, 0))));
+      if (lvl <= 0) return Infinity;
+      const cfg = CONFIG.DEFENSE_UPGRADES.guardDog;
+      return Math.max(1.0, cfg.baseIntervalSec - (lvl - 1) * cfg.fasterPerLevelSec);
+    }
+
+    function getLaserSlowMultiplier(level) {
+      const lvl = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(level, 0))));
+      const slow = lvl * CONFIG.DEFENSE_UPGRADES.laserFence.slowPerLevel;
+      return Math.max(0.35, 1 - slow);
+    }
+
+    function getVaultDoorExtraSec(level) {
+      const lvl = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(level, 0))));
+      return lvl * CONFIG.DEFENSE_UPGRADES.vaultDoor.extraSecPerLevel;
+    }
+
+    function randomRaidIntervalSec() {
+      return CONFIG.NEXT_RAID_MIN_SEC + Math.random() * (CONFIG.NEXT_RAID_MAX_SEC - CONFIG.NEXT_RAID_MIN_SEC);
+    }
+
     /* ==========================================================================
        3. GAME STATE & SAFE LOCALSTORAGE PERSISTENCE
-       Includes coins, totalCoinsEarned, hatchCount, slotsUnlocked, ownedCreatures,
-       discoveredCreatures, muted, and lastSavedAt.
        ========================================================================== */
     const state = {
       coins: CONFIG.STARTING_COINS,
@@ -1287,8 +1748,15 @@
       totalCoinsEarned: CONFIG.STARTING_COINS,
       hatchCount: 0,
       slotsUnlocked: CONFIG.INITIAL_SLOTS,
-      ownedCreatures: [], // Array of { id, level }
+      ownedCreatures: [], // Array of { id, level, kidnappedRemainingSec }
       discoveredCreatures: [], // Array of creature id strings
+      defenseUpgrades: {
+        guardDog: 0,
+        laserFence: 0,
+        vaultDoor: 0
+      },
+      raidNumber: 0,
+      raidTimerSec: CONFIG.FIRST_RAID_DELAY_SEC,
       muted: false,
       lastSavedAt: Date.now()
     };
@@ -1297,6 +1765,18 @@
     let selectedSlotIndex = -1;
     let isHatching = false;
 
+    // Active Raid Runtime State
+    const raidRuntime = {
+      phase: 'idle', // 'idle' | 'warning' | 'active'
+      warningPlayed: false,
+      raidNumber: 0,
+      elapsedSec: 0,
+      spawnSchedule: [], // Array of { timeSec, type, lane, maxHp }
+      activeRaiders: [], // Array of live raider objects + DOM elements
+      guardDogCooldownSec: 0,
+      nextId: 1
+    };
+
     function addCoins(amount) {
       const gain = safeNumber(amount, 0);
       if (gain <= 0) return;
@@ -1304,13 +1784,29 @@
       state.totalCoinsEarned = safeNumber(state.totalCoinsEarned + gain, state.coins);
     }
 
+    // Active income per second (excludes currently kidnapped creatures)
     function getTotalIncomePerSecond() {
+      let sum = 0;
+      for (let i = 0; i < state.ownedCreatures.length; i++) {
+        const entry = state.ownedCreatures[i];
+        if (safeNumber(entry.kidnappedRemainingSec, 0) > 0) continue;
+        sum += getCreatureIncome(entry.id, entry.level);
+      }
+      return safeNumber(sum, 0);
+    }
+
+    // Full squad potential income per second (including kidnapped creatures, for rescue pricing)
+    function getFullPotentialIncomePerSecond() {
       let sum = 0;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
         const entry = state.ownedCreatures[i];
         sum += getCreatureIncome(entry.id, entry.level);
       }
-      return safeNumber(sum, 0);
+      return Math.max(1, safeNumber(sum, 1));
+    }
+
+    function getInstantRescueCost() {
+      return Math.max(20, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RESCUE_INCOME_SECONDS));
     }
 
     function getVaultTapReward() {
@@ -1331,8 +1827,19 @@
           totalCoinsEarned: Math.max(safeNumber(state.totalCoinsEarned, 0), safeNumber(state.coins, 0)),
           hatchCount: Math.max(0, Math.floor(safeNumber(state.hatchCount, 0))),
           slotsUnlocked: Math.max(CONFIG.INITIAL_SLOTS, Math.min(CONFIG.MAX_SLOTS, Math.floor(safeNumber(state.slotsUnlocked, CONFIG.INITIAL_SLOTS)))),
-          ownedCreatures: state.ownedCreatures,
+          ownedCreatures: state.ownedCreatures.map((c) => ({
+            id: c.id,
+            level: c.level,
+            kidnappedRemainingSec: safeNumber(c.kidnappedRemainingSec, 0)
+          })),
           discoveredCreatures: state.discoveredCreatures,
+          defenseUpgrades: {
+            guardDog: Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(state.defenseUpgrades.guardDog, 0)))),
+            laserFence: Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(state.defenseUpgrades.laserFence, 0)))),
+            vaultDoor: Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(state.defenseUpgrades.vaultDoor, 0))))
+          },
+          raidNumber: Math.max(0, Math.floor(safeNumber(state.raidNumber, 0))),
+          raidTimerSec: Math.max(12, safeNumber(state.raidTimerSec, CONFIG.FIRST_RAID_DELAY_SEC)),
           muted: Boolean(state.muted),
           lastSavedAt: state.lastSavedAt
         };
@@ -1359,7 +1866,22 @@
         );
         state.muted = Boolean(parsed.muted);
 
-        // Validate ownedCreatures (no duplicates, valid IDs, clamped levels, max slotsUnlocked)
+        if (parsed.defenseUpgrades && typeof parsed.defenseUpgrades === 'object') {
+          state.defenseUpgrades.guardDog = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(parsed.defenseUpgrades.guardDog, 0))));
+          state.defenseUpgrades.laserFence = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(parsed.defenseUpgrades.laserFence, 0))));
+          state.defenseUpgrades.vaultDoor = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(parsed.defenseUpgrades.vaultDoor, 0))));
+        }
+
+        state.raidNumber = Math.max(0, Math.floor(safeNumber(parsed.raidNumber, 0)));
+        state.raidTimerSec = Math.max(15, Math.min(CONFIG.NEXT_RAID_MAX_SEC, safeNumber(parsed.raidTimerSec, CONFIG.FIRST_RAID_DELAY_SEC)));
+
+        // Calculate offline elapsed time clamped to [0, MAX_OFFLINE_SECONDS]
+        const now = Date.now();
+        const savedTime = safeNumber(parsed.lastSavedAt, now);
+        const rawElapsedSec = (now - savedTime) / 1000;
+        const clampedElapsedSec = Math.max(0, Math.min(rawElapsedSec, CONFIG.MAX_OFFLINE_SECONDS));
+
+        // Validate ownedCreatures
         const validOwned = [];
         const seenIds = new Set();
         if (Array.isArray(parsed.ownedCreatures)) {
@@ -1367,7 +1889,8 @@
             const item = parsed.ownedCreatures[i];
             if (item && typeof item.id === 'string' && CREATURE_MAP[item.id] && !seenIds.has(item.id)) {
               const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(item.level, 1))));
-              validOwned.push({ id: item.id, level: lvl });
+              const kidnapRem = Math.max(0, Math.min(CONFIG.KIDNAP_DURATION_SEC, safeNumber(item.kidnappedRemainingSec, 0) - clampedElapsedSec));
+              validOwned.push({ id: item.id, level: lvl, kidnappedRemainingSec: kidnapRem });
               seenIds.add(item.id);
               if (validOwned.length >= state.slotsUnlocked) break;
             }
@@ -1396,13 +1919,7 @@
         }
         state.discoveredCreatures = validDiscovered;
 
-        // Calculate offline earnings with elapsed time clamped to [0, MAX_OFFLINE_SECONDS]
-        const now = Date.now();
-        const savedTime = safeNumber(parsed.lastSavedAt, now);
-        const rawElapsedSec = (now - savedTime) / 1000;
-        const clampedElapsedSec = Math.max(0, Math.min(rawElapsedSec, CONFIG.MAX_OFFLINE_SECONDS));
         const incomePerSec = getTotalIncomePerSecond();
-
         if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
           const earned = Math.floor(incomePerSec * clampedElapsedSec);
           if (earned >= 1) {
@@ -1469,9 +1986,26 @@
     }
 
     function sfxBanner() {
-      // Short distinct coin-chime pop for conversion/replacement banner
       playTone(587.33, 880, 0.09, 'triangle', 0.15, 0);
       playTone(1174.66, 1174.66, 0.14, 'sine', 0.15, 0.065);
+    }
+
+    function sfxSiren() {
+      // Two-cycle warning siren sound 10s before raid
+      playTone(420, 780, 0.26, 'sawtooth', 0.13, 0);
+      playTone(780, 420, 0.26, 'sawtooth', 0.13, 0.26);
+      playTone(420, 820, 0.28, 'sawtooth', 0.14, 0.54);
+      playTone(820, 420, 0.28, 'sawtooth', 0.14, 0.82);
+    }
+
+    function sfxHitRaider() {
+      playTone(260, 520, 0.07, 'square', 0.13, 0);
+      playTone(1046.5, 1318.5, 0.08, 'triangle', 0.11, 0.03);
+    }
+
+    function sfxKidnap() {
+      playTone(440, 180, 0.32, 'sawtooth', 0.15, 0);
+      playTone(310, 130, 0.35, 'sawtooth', 0.15, 0.18);
     }
 
     function sfxEggShake() {
@@ -1495,13 +2029,14 @@
 
     /* ==========================================================================
        5. PARTICLE & STARFIELD ENGINE (Capped strictly at 150 total particles)
-       Handles drifting stars, flying coins to counter, and floating +N numbers.
+       Handles drifting stars, flying coins, star particles on hit, and +N text.
        ========================================================================== */
     const starCanvas = document.getElementById('star-canvas');
     const starCtx = starCanvas.getContext('2d');
     const fxCanvas = document.getElementById('fx-canvas');
     const fxCtx = fxCanvas.getContext('2d');
     const coinTargetEl = document.getElementById('coin-target');
+    const appEl = document.getElementById('app');
 
     let viewportW = window.innerWidth;
     let viewportH = window.innerHeight;
@@ -1509,6 +2044,12 @@
 
     const stars = [];
     const particles = []; // Foreground particles: max (CONFIG.MAX_PARTICLES - stars.length)
+
+    function triggerScreenShake() {
+      appEl.classList.remove('shake');
+      void appEl.offsetWidth;
+      appEl.classList.add('shake');
+    }
 
     function updateCanvasSizes() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1602,6 +2143,42 @@
       }
     }
 
+    // 5-pointed star particles when a raider is hit
+    function spawnHitStars(x, y, count = 7) {
+      const colors = ['#FFD34D', '#35E0FF', '#FF4FA3', '#5CFF9D'];
+      for (let i = 0; i < count; i++) {
+        if (!canSpawnParticle()) particles.shift();
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+        const speed = 55 + Math.random() * 90;
+        particles.push({
+          type: 'star',
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 20,
+          color: colors[i % colors.length],
+          r: 6 + Math.random() * 4,
+          rot: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 8,
+          age: 0,
+          life: 0.52 + Math.random() * 0.18
+        });
+      }
+    }
+
+    function drawFivePointStar(ctx, cx, cy, outerR, innerR, rot) {
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const a = rot + (i * Math.PI) / 5;
+        const px = cx + Math.cos(a) * r;
+        const py = cy + Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+    }
+
     function updateAndDrawParticles(dtSec) {
       // 1. Update & Draw Drifting Stars
       starCtx.clearRect(0, 0, viewportW, viewportH);
@@ -1677,18 +2254,37 @@
           fxCtx.restore();
 
           if (t >= 1) particles.splice(i, 1);
+        } else if (p.type === 'star') {
+          p.x += p.vx * dtSec;
+          p.y += p.vy * dtSec;
+          p.vy += 120 * dtSec;
+          p.rot += p.vRot * dtSec;
+          const alpha = 1 - t;
+          const scale = 1 - 0.35 * t;
+          fxCtx.save();
+          fxCtx.globalAlpha = Math.max(0, alpha);
+          fxCtx.fillStyle = p.color;
+          fxCtx.strokeStyle = '#FFFFFF';
+          fxCtx.lineWidth = 1.2;
+          drawFivePointStar(fxCtx, p.x, p.y, p.r * scale, p.r * 0.45 * scale, p.rot);
+          fxCtx.fill();
+          fxCtx.stroke();
+          fxCtx.restore();
+
+          if (t >= 1) particles.splice(i, 1);
         }
       }
     }
 
     /* ==========================================================================
-       6. UI RENDERING, SEQUENTIAL BANNER QUEUE & DOM UPDATES
+       6. UI ELEMENTS & SEQUENTIAL BANNER QUEUE
        ========================================================================== */
     const coinDisplayEl = document.getElementById('coin-display');
     const incomeDisplayEl = document.getElementById('income-display');
     const discoveredCountEl = document.getElementById('discovered-count');
     const totalEarnedDisplayEl = document.getElementById('total-earned-display');
     const muteBtnEl = document.getElementById('mute-btn');
+    const vaultDeckEl = document.getElementById('vault-deck');
     const vaultBtnEl = document.getElementById('vault-btn');
     const tapPowerDisplayEl = document.getElementById('tap-power-display');
     const slotsCountDisplayEl = document.getElementById('slots-count-display');
@@ -1700,9 +2296,19 @@
     const quickUpgradeMainEl = document.getElementById('quick-upgrade-main');
     const quickUpgradeSubEl = document.getElementById('quick-upgrade-sub');
     const defenseBtnEl = document.getElementById('defense-btn');
+    const defenseSubLabelEl = document.getElementById('defense-sub-label');
     const bookBtnEl = document.getElementById('book-btn');
     const bookSubLabelEl = document.getElementById('book-sub-label');
     const statusBannerEl = document.getElementById('status-banner');
+
+    // Raid DOM elements
+    const raidAreaEl = document.getElementById('raid-area');
+    const raidHudPillEl = document.getElementById('raid-hud-pill');
+    const laserBeamEl = document.getElementById('laser-beam');
+    const guardDogBadgeEl = document.getElementById('guard-dog-badge');
+    const guardDogTimerEl = document.getElementById('guard-dog-timer');
+    const raidVignetteEl = document.getElementById('raid-vignette');
+    const laneEls = Array.from(document.querySelectorAll('.raid-lane'));
 
     // Modals
     const upgradeModalEl = document.getElementById('upgrade-modal');
@@ -1711,10 +2317,16 @@
     const upgradeModalEmojiEl = document.getElementById('upgrade-modal-emoji');
     const upgradeModalTitleEl = document.getElementById('upgrade-modal-title');
     const upgradeModalRarityEl = document.getElementById('upgrade-modal-rarity');
+    const upgradeModalStatusEl = document.getElementById('upgrade-modal-status');
     const upgradeModalLevelEl = document.getElementById('upgrade-modal-level');
     const upgradeModalIncomeEl = document.getElementById('upgrade-modal-income');
     const upgradeModalNextEl = document.getElementById('upgrade-modal-next');
+    const modalRescueBtnEl = document.getElementById('modal-rescue-btn');
     const modalUpgradeBtnEl = document.getElementById('modal-upgrade-btn');
+
+    const defenseModalEl = document.getElementById('defense-modal');
+    const defenseModalCloseEl = document.getElementById('defense-modal-close');
+    const defenseListEl = document.getElementById('defense-list');
 
     const hatchModalEl = document.getElementById('hatch-modal');
     const hatchModalTitleEl = document.getElementById('hatch-modal-title');
@@ -1728,7 +2340,7 @@
     const offlineModalTextEl = document.getElementById('offline-modal-text');
     const offlineCollectBtnEl = document.getElementById('offline-collect-btn');
 
-    // Sequential 3-second Banner Queue (shows multiple replace/convert banners one after another)
+    // Sequential 3-second Banner Queue
     const bannerQueue = [];
     let isBannerActive = false;
     let bannerTimer = null;
@@ -1736,14 +2348,17 @@
     function processNextBanner() {
       if (bannerQueue.length === 0) {
         isBannerActive = false;
-        statusBannerEl.classList.remove('show');
+        statusBannerEl.classList.remove('show', 'danger-banner');
         return;
       }
 
       isBannerActive = true;
       const item = bannerQueue.shift();
 
-      statusBannerEl.classList.remove('show');
+      statusBannerEl.classList.remove('show', 'danger-banner');
+      if (item.isDanger) {
+        statusBannerEl.classList.add('danger-banner');
+      }
       void statusBannerEl.offsetWidth; // Force reflow so pop-in animation replays cleanly
       statusBannerEl.textContent = item.message;
       statusBannerEl.classList.add('show');
@@ -1754,25 +2369,15 @@
 
       if (bannerTimer) clearTimeout(bannerTimer);
       bannerTimer = setTimeout(() => {
-        statusBannerEl.classList.remove('show');
+        statusBannerEl.classList.remove('show', 'danger-banner');
         setTimeout(processNextBanner, CONFIG.BANNER_GAP_MS);
       }, CONFIG.BANNER_DURATION_MS);
     }
 
-    function showBanner(message, isQueuedEvent = false) {
-      if (isQueuedEvent) {
-        bannerQueue.push({ message, playSound: true });
-        if (!isBannerActive) {
-          processNextBanner();
-        }
-      } else {
-        // Immediate feedback banner if no queued replacement/conversion banner is currently active
-        if (isBannerActive) {
-          bannerQueue.push({ message, playSound: false });
-        } else {
-          bannerQueue.push({ message, playSound: false });
-          processNextBanner();
-        }
+    function showBanner(message, isQueuedEvent = false, isDanger = false) {
+      bannerQueue.push({ message, playSound: Boolean(isQueuedEvent), isDanger: Boolean(isDanger) });
+      if (!isBannerActive) {
+        processNextBanner();
       }
     }
 
@@ -1783,7 +2388,9 @@
       el.classList.add('squash');
     }
 
-    // Build the 12 slot DOM elements once and update them cleanly
+    /* ==========================================================================
+       7. SLOTS GRID & DEFENSE PANEL RENDERING
+       ========================================================================== */
     const slotDomNodes = [];
     function initSlotsGrid() {
       slotsGridEl.innerHTML = '';
@@ -1843,9 +2450,10 @@
         const isNextBuySlot = i === state.slotsUnlocked && state.slotsUnlocked < CONFIG.MAX_SLOTS;
         const nextSlotCost = isNextBuySlot ? getNextSlotCost(state.slotsUnlocked) : 0;
         const canAffordSlot = isNextBuySlot && state.coins >= nextSlotCost;
+        const kidnapSec = owned ? Math.ceil(safeNumber(owned.kidnappedRemainingSec, 0)) : 0;
 
         const sig = owned
-          ? `owned:${owned.id}:${owned.level}`
+          ? `owned:${owned.id}:${owned.level}:k${kidnapSec}`
           : isUnlocked
           ? 'empty'
           : isNextBuySlot
@@ -1866,19 +2474,29 @@
           const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
           node.plate.style.setProperty('--ring-color', rarity.color);
           node.plate.style.setProperty('--ring-glow', rarity.glow);
-          if (rarity.rainbow) {
+          if (rarity.rainbow && kidnapSec <= 0) {
             node.plate.classList.add('mythic-ring');
           }
 
           node.badge.style.display = 'block';
-          node.badge.textContent = owned.level >= CONFIG.MAX_CREATURE_LEVEL ? 'MAX' : `Lv.${owned.level}`;
 
-          node.content.innerHTML = `<span class="creature-emoji" style="--bob-delay: ${((i * 0.23) % 1.8).toFixed(2)}s">${def.emoji}</span>`;
-          const inc = getCreatureIncome(owned.id, owned.level);
-          node.nameEl.textContent = def.name;
-          node.nameEl.style.color = '#FFFFFF';
-          node.incomeEl.textContent = `+${formatNumber(inc)}/sec`;
-          node.incomeEl.style.color = '#FFD34D';
+          if (kidnapSec > 0) {
+            node.plate.classList.add('kidnapped-plate');
+            node.badge.textContent = `⛓️ ${kidnapSec}s`;
+            node.content.innerHTML = `<span class="creature-emoji" style="animation: none;">${def.emoji}</span>`;
+            node.nameEl.textContent = def.name;
+            node.nameEl.style.color = '#FF8FA8';
+            node.incomeEl.textContent = `Kidnapped (${kidnapSec}s)`;
+            node.incomeEl.style.color = '#FF4D6D';
+          } else {
+            node.badge.textContent = owned.level >= CONFIG.MAX_CREATURE_LEVEL ? 'MAX' : `Lv.${owned.level}`;
+            node.content.innerHTML = `<span class="creature-emoji" style="--bob-delay: ${((i * 0.23) % 1.8).toFixed(2)}s">${def.emoji}</span>`;
+            const inc = getCreatureIncome(owned.id, owned.level);
+            node.nameEl.textContent = def.name;
+            node.nameEl.style.color = '#FFFFFF';
+            node.incomeEl.textContent = `+${formatNumber(inc)}/sec`;
+            node.incomeEl.style.color = '#FFD34D';
+          }
         } else if (isUnlocked) {
           node.plate.classList.add('empty-plate');
           node.content.innerHTML = `<span class="empty-plus">🥚</span>`;
@@ -1932,6 +2550,98 @@
       };
     }
 
+    function findCheapestDefenseUpgradeCost() {
+      let minCost = Infinity;
+      const keys = Object.keys(CONFIG.DEFENSE_UPGRADES);
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
+        const lvl = state.defenseUpgrades[k] || 0;
+        if (lvl < CONFIG.DEFENSE_MAX_LEVEL) {
+          const cost = getDefenseUpgradeCost(k, lvl);
+          if (cost < minCost) minCost = cost;
+        }
+      }
+      return minCost;
+    }
+
+    function renderDefenseModalContent() {
+      const keys = ['guardDog', 'laserFence', 'vaultDoor'];
+      defenseListEl.innerHTML = '';
+
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const cfg = CONFIG.DEFENSE_UPGRADES[key];
+        const lvl = state.defenseUpgrades[key] || 0;
+        const isMax = lvl >= CONFIG.DEFENSE_MAX_LEVEL;
+        const cost = getDefenseUpgradeCost(key, lvl);
+        const canAfford = !isMax && state.coins >= cost;
+
+        let effectText = '';
+        if (key === 'guardDog') {
+          effectText = lvl === 0
+            ? 'Next: Hits every 4.0s'
+            : `Active: Hits every ${getGuardDogIntervalSec(lvl).toFixed(1)}s`;
+        } else if (key === 'laserFence') {
+          effectText = lvl === 0
+            ? 'Next: Slows raiders 10%'
+            : `Active: Slows raiders ${Math.round(lvl * 10)}%`;
+        } else if (key === 'vaultDoor') {
+          effectText = lvl === 0
+            ? 'Next: +1s steal delay'
+            : `Active: +${getVaultDoorExtraSec(lvl)}s steal delay`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'defense-row';
+        row.innerHTML = `
+          <div class="defense-info">
+            <span class="defense-emoji">${cfg.emoji}</span>
+            <div class="defense-text">
+              <div class="defense-name">${cfg.name} · Lv.${lvl}/${CONFIG.DEFENSE_MAX_LEVEL}</div>
+              <div class="defense-desc">${cfg.desc}</div>
+              <div class="defense-stat">${effectText}</div>
+            </div>
+          </div>
+          <button type="button" class="btn-3d btn-purple defense-buy-btn ${canAfford ? 'affordable' : 'disabled'}" data-def-key="${key}">
+            <span>${isMax ? 'MAXED' : lvl === 0 ? 'Unlock' : 'Upgrade'}</span>
+            <span>${isMax ? 'Lv.5' : '🪙 ' + formatNumber(cost)}</span>
+          </button>
+        `;
+
+        const btn = row.querySelector('button');
+        btn.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          buyDefenseUpgrade(key);
+        });
+
+        defenseListEl.appendChild(row);
+      }
+    }
+
+    function buyDefenseUpgrade(key) {
+      const cfg = CONFIG.DEFENSE_UPGRADES[key];
+      if (!cfg) return;
+      const lvl = state.defenseUpgrades[key] || 0;
+      if (lvl >= CONFIG.DEFENSE_MAX_LEVEL) {
+        sfxPop();
+        return;
+      }
+      const cost = getDefenseUpgradeCost(key, lvl);
+      if (state.coins < cost) {
+        sfxPop();
+        return;
+      }
+
+      state.coins = safeNumber(state.coins - cost, 0);
+      state.defenseUpgrades[key] = lvl + 1;
+      sfxUpgrade();
+      showBanner(`${cfg.emoji} ${cfg.name} upgraded to Lv.${state.defenseUpgrades[key]}!`, false);
+      saveGame();
+      renderDefenseModalContent();
+      updateHUD();
+    }
+
     function updateHUD() {
       // Top Bar
       coinDisplayEl.textContent = formatNumber(state.displayedCoins);
@@ -1940,6 +2650,20 @@
       discoveredCountEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
       totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
       muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
+
+      // Laser Beam & Guard Dog indicators in Raid Area
+      if (state.defenseUpgrades.laserFence > 0) {
+        laserBeamEl.classList.add('active');
+      } else {
+        laserBeamEl.classList.remove('active');
+      }
+
+      if (state.defenseUpgrades.guardDog > 0) {
+        guardDogBadgeEl.style.display = 'inline-flex';
+        guardDogTimerEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
+      } else {
+        guardDogBadgeEl.style.display = 'none';
+      }
 
       // Vault Deck
       tapPowerDisplayEl.textContent = `+${formatNumber(getVaultTapReward(), true)}`;
@@ -1973,8 +2697,6 @@
       }
 
       // Bottom Quick Upgrade Button
-      // Rule: When nothing is affordable or every creature is Level 10, show it greyed out with "Nothing to upgrade".
-      // Otherwise show the creature emoji and the cost.
       const cheapest = findCheapestUpgrade();
       if (cheapest && state.coins >= cheapest.cost) {
         quickUpgradeBtnEl.classList.remove('disabled');
@@ -1988,6 +2710,17 @@
         quickUpgradeSubEl.textContent = '';
       }
 
+      // Bottom Defense Button
+      const minDefCost = findCheapestDefenseUpgradeCost();
+      const totalDefLvls = state.defenseUpgrades.guardDog + state.defenseUpgrades.laserFence + state.defenseUpgrades.vaultDoor;
+      if (minDefCost < Infinity && state.coins >= minDefCost) {
+        defenseBtnEl.classList.add('affordable');
+        defenseSubLabelEl.textContent = `🪙 ${formatNumber(minDefCost)}`;
+      } else {
+        defenseBtnEl.classList.remove('affordable');
+        defenseSubLabelEl.textContent = totalDefLvls > 0 ? `Lv.${totalDefLvls}/15` : 'Upgrades';
+      }
+
       // Book count label
       bookSubLabelEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
 
@@ -1996,11 +2729,368 @@
         renderUpgradeModalContent(selectedSlotIndex);
       }
 
+      // Update open Defense Modal if visible
+      if (defenseModalEl.classList.contains('active')) {
+        renderDefenseModalContent();
+      }
+
       renderSlotsGrid();
     }
 
     /* ==========================================================================
-       7. GAMEPLAY ACTIONS: VAULT TAP, BUY SLOT, HATCH EGG, UPGRADE CREATURE
+       8. RAID SYSTEM: WARNING, SPAWNING, 3 LANES, GUARD DOG, WIN/LOSE & KIDNAP
+       ========================================================================== */
+    function buildRaidSchedule(raidNum) {
+      const isFirstRaid = raidNum === 1;
+      const isBossRaid = !isFirstRaid && (raidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+      const income = getFullPotentialIncomePerSecond();
+
+      // Number of raiders (3 to 6) grows slowly with player's income & raid count
+      const incomeTier = Math.floor(Math.log10(Math.max(1, income)));
+      const count = isFirstRaid
+        ? CONFIG.RAID_MIN_RAIDERS
+        : Math.min(CONFIG.RAID_MAX_RAIDERS, CONFIG.RAID_MIN_RAIDERS + Math.floor((raidNum - 1) / 3) + Math.floor(incomeTier / 2));
+
+      // Hits grow slowly with player's income
+      const bonusHp = isFirstRaid ? 0 : Math.max(0, Math.floor(Math.log10(Math.max(1, income)) * 0.65));
+
+      const schedule = [];
+      for (let i = 0; i < count; i++) {
+        const timeSec = i * (6.2 / Math.max(1, count));
+        const lane = i % 3;
+        let typeKey = Math.random() < 0.45 ? 'fox' : 'raccoon';
+        if (isFirstRaid) {
+          typeKey = 'fox'; // 1 hit on first raid so it's easy
+        } else if (isBossRaid && i === count - 1) {
+          typeKey = 'bear'; // Big Bandit boss on every 5th raid
+        }
+
+        const baseCfg = CONFIG.RAIDERS[typeKey];
+        const maxHp = isFirstRaid ? 1 : baseCfg.baseHp + (baseCfg.isBoss ? bonusHp * 2 : bonusHp);
+        schedule.push({
+          timeSec,
+          typeKey,
+          lane,
+          maxHp
+        });
+      }
+      return schedule;
+    }
+
+    function setRaidDangerVisuals(active) {
+      if (active) {
+        raidVignetteEl.classList.add('active');
+        raidAreaEl.classList.add('raid-danger');
+        vaultDeckEl.classList.add('vault-danger');
+        vaultBtnEl.classList.add('vault-danger');
+      } else {
+        raidVignetteEl.classList.remove('active');
+        raidAreaEl.classList.remove('raid-danger');
+        vaultDeckEl.classList.remove('vault-danger');
+        vaultBtnEl.classList.remove('vault-danger');
+      }
+    }
+
+    function startRaidWarning() {
+      raidRuntime.phase = 'warning';
+      raidRuntime.warningPlayed = true;
+      setRaidDangerVisuals(true);
+      sfxSiren();
+      triggerScreenShake();
+      showBanner('🚨 RAID INCOMING!', false, true);
+    }
+
+    function startActiveRaid() {
+      state.raidNumber += 1;
+      raidRuntime.phase = 'active';
+      raidRuntime.raidNumber = state.raidNumber;
+      raidRuntime.elapsedSec = 0;
+      raidRuntime.spawnSchedule = buildRaidSchedule(state.raidNumber);
+      raidRuntime.activeRaiders = [];
+      raidRuntime.guardDogCooldownSec = 0.8;
+      setRaidDangerVisuals(true);
+      triggerScreenShake();
+      sfxSiren();
+    }
+
+    function clearActiveRaiderNodes() {
+      for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
+        const r = raidRuntime.activeRaiders[i];
+        if (r.el && r.el.parentNode) {
+          r.el.parentNode.removeChild(r.el);
+        }
+      }
+      raidRuntime.activeRaiders = [];
+    }
+
+    function spawnRaiderEntity(spec) {
+      const cfg = CONFIG.RAIDERS[spec.typeKey] || CONFIG.RAIDERS.raccoon;
+      const laneEl = laneEls[spec.lane] || laneEls[1];
+
+      const el = document.createElement('div');
+      el.className = cfg.isBoss ? 'raider-node boss-raider' : 'raider-node';
+      el.innerHTML = `
+        <div class="raider-hp-bar"><div class="raider-hp-fill" style="width: 100%;"></div></div>
+        <div class="raider-sprite">${cfg.emoji}</div>
+      `;
+
+      const hpFillEl = el.querySelector('.raider-hp-fill');
+      const raiderObj = {
+        id: raidRuntime.nextId++,
+        typeKey: spec.typeKey,
+        cfg,
+        lane: spec.lane,
+        hp: spec.maxHp,
+        maxHp: spec.maxHp,
+        progress: 0, // 0 = top of raid area, 1 = touching vault door
+        doorPrySec: 0, // Time spent bashing Vault Door after reaching progress 1
+        el,
+        hpFillEl
+      };
+
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        unlockAudio();
+        damageRaider(raiderObj, e.clientX, e.clientY);
+      });
+
+      laneEl.appendChild(el);
+      raidRuntime.activeRaiders.push(raiderObj);
+    }
+
+    function damageRaider(raider, clientX, clientY) {
+      if (!raider || raider.hp <= 0 || raidRuntime.phase !== 'active') return;
+
+      raider.hp = Math.max(0, raider.hp - 1);
+      const pct = Math.max(0, Math.min(100, (raider.hp / raider.maxHp) * 100));
+      raider.hpFillEl.style.width = `${pct}%`;
+
+      // Flash raider, show health bar, shake screen, play sound, burst star particles & drop coins
+      raider.el.classList.add('was-hit');
+      raider.el.classList.remove('hit-flash');
+      void raider.el.offsetWidth;
+      raider.el.classList.add('hit-flash');
+
+      sfxHitRaider();
+      triggerScreenShake();
+
+      const rect = raider.el.getBoundingClientRect();
+      const cx = clientX || (rect.left + rect.width / 2);
+      const cy = clientY || (rect.top + rect.height / 2);
+
+      // Drop a few coins on every hit
+      const dropCoins = Math.max(1, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAIDER_HIT_COIN_RATIO));
+      addCoins(dropCoins);
+      spawnHitStars(cx, cy, 8);
+      spawnFlyingCoin(cx, cy, 2);
+      spawnFloatingText(cx, cy - 10, `+${formatNumber(dropCoins)}`, '#FFD34D');
+
+      if (raider.hp <= 0) {
+        // Remove defeated raider
+        if (raider.el && raider.el.parentNode) {
+          raider.el.parentNode.removeChild(raider.el);
+        }
+        const idx = raidRuntime.activeRaiders.indexOf(raider);
+        if (idx !== -1) raidRuntime.activeRaiders.splice(idx, 1);
+
+        // Check if all scheduled and active raiders are stopped -> WIN!
+        if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
+          finishRaidWin();
+        }
+      }
+      updateHUD();
+    }
+
+    function finishRaidWin() {
+      clearActiveRaiderNodes();
+      raidRuntime.phase = 'idle';
+      raidRuntime.warningPlayed = false;
+      state.raidTimerSec = randomRaidIntervalSec();
+      setRaidDangerVisuals(false);
+
+      // Bonus coins equal to 60 seconds of income
+      const winBonus = Math.max(30, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAID_WIN_INCOME_SECONDS));
+      addCoins(winBonus);
+      sfxHatchFanfare('Legendary');
+
+      const vRect = vaultBtnEl.getBoundingClientRect();
+      const vx = vRect.left + vRect.width / 2;
+      const vy = vRect.top + vRect.height / 2;
+      spawnHitStars(vx, vy, 12);
+      spawnFlyingCoin(vx, vy, 7);
+      spawnFloatingText(vx, vy - 20, `+${formatNumber(winBonus)}`, '#5CFF9D');
+
+      showBanner(`🛡️ VAULT SAFE! (+${formatNumber(winBonus)} coins)`, true, false);
+      saveGame();
+      updateHUD();
+    }
+
+    function finishRaidLose(raiderCfg) {
+      // First raid is easy and CANNOT be lost!
+      if (raidRuntime.raidNumber <= 1) {
+        finishRaidWin();
+        return;
+      }
+
+      clearActiveRaiderNodes();
+      raidRuntime.phase = 'idle';
+      raidRuntime.warningPlayed = false;
+      state.raidTimerSec = randomRaidIntervalSec();
+      setRaidDangerVisuals(false);
+      triggerScreenShake();
+      sfxKidnap();
+
+      // Pick one random non-kidnapped owned creature to kidnap for 90 seconds
+      const availableIndices = [];
+      for (let i = 0; i < state.ownedCreatures.length; i++) {
+        if (safeNumber(state.ownedCreatures[i].kidnappedRemainingSec, 0) <= 0) {
+          availableIndices.push(i);
+        }
+      }
+
+      if (availableIndices.length > 0) {
+        const chosenIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+        const victim = state.ownedCreatures[chosenIdx];
+        victim.kidnappedRemainingSec = CONFIG.KIDNAP_DURATION_SEC;
+        const victimDef = CREATURE_MAP[victim.id];
+        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} kidnapped ${victimDef.name} for 90s!`, true, true);
+      } else {
+        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} breached the Vault!`, true, true);
+      }
+
+      saveGame();
+      updateHUD();
+    }
+
+    function updateRaidSystem(dtSec) {
+      // 1. Update Kidnapped Creature Countdowns (returns by itself after 90s)
+      let kidnapChanged = false;
+      for (let i = 0; i < state.ownedCreatures.length; i++) {
+        const c = state.ownedCreatures[i];
+        if (c.kidnappedRemainingSec && c.kidnappedRemainingSec > 0) {
+          const prevCeil = Math.ceil(c.kidnappedRemainingSec);
+          c.kidnappedRemainingSec = Math.max(0, c.kidnappedRemainingSec - dtSec);
+          const nextCeil = Math.ceil(c.kidnappedRemainingSec);
+          if (prevCeil !== nextCeil) kidnapChanged = true;
+
+          if (c.kidnappedRemainingSec <= 0) {
+            c.kidnappedRemainingSec = 0;
+            const def = CREATURE_MAP[c.id];
+            sfxUpgrade();
+            showBanner(`🎉 ${def.name} returned to the Vault!`, false, false);
+            kidnapChanged = true;
+          }
+        }
+      }
+      if (kidnapChanged) {
+        renderSlotsGrid();
+      }
+
+      // 2. Raids only start counting after the player's first hatch
+      if (state.hatchCount < 1) {
+        raidHudPillEl.textContent = '🛡️ Hatch your first egg to start raids';
+        return;
+      }
+
+      // 3. Countdown to next raid
+      if (raidRuntime.phase === 'idle' || raidRuntime.phase === 'warning') {
+        state.raidTimerSec = Math.max(0, state.raidTimerSec - dtSec);
+        const remCeil = Math.ceil(state.raidTimerSec);
+
+        if (state.raidTimerSec <= CONFIG.RAID_WARNING_SEC && !raidRuntime.warningPlayed) {
+          startRaidWarning();
+        }
+
+        if (raidRuntime.phase === 'warning') {
+          raidHudPillEl.textContent = `🚨 RAID INCOMING IN ${remCeil}s! TAP RAIDERS!`;
+        } else {
+          raidHudPillEl.textContent = `🛡️ Next Raid in ${remCeil}s`;
+        }
+
+        if (state.raidTimerSec <= 0) {
+          startActiveRaid();
+        }
+        return;
+      }
+
+      // 4. Active Raid Loop
+      if (raidRuntime.phase === 'active') {
+        raidRuntime.elapsedSec += dtSec;
+
+        // Spawn scheduled raiders
+        while (
+          raidRuntime.spawnSchedule.length > 0 &&
+          raidRuntime.elapsedSec >= raidRuntime.spawnSchedule[0].timeSec
+        ) {
+          const spec = raidRuntime.spawnSchedule.shift();
+          spawnRaiderEntity(spec);
+        }
+
+        const remainingRaiders = raidRuntime.spawnSchedule.length + raidRuntime.activeRaiders.length;
+        raidHudPillEl.textContent = `⚔️ RAID #${raidRuntime.raidNumber} · Tap Raiders! (${remainingRaiders} left)`;
+
+        // Guard Dog auto-attack on the nearest raider (highest progress)
+        const dogLvl = state.defenseUpgrades.guardDog || 0;
+        if (dogLvl > 0 && raidRuntime.activeRaiders.length > 0) {
+          raidRuntime.guardDogCooldownSec -= dtSec;
+          if (raidRuntime.guardDogCooldownSec <= 0) {
+            raidRuntime.guardDogCooldownSec = getGuardDogIntervalSec(dogLvl);
+            let nearest = raidRuntime.activeRaiders[0];
+            for (let i = 1; i < raidRuntime.activeRaiders.length; i++) {
+              if (raidRuntime.activeRaiders[i].progress > nearest.progress) {
+                nearest = raidRuntime.activeRaiders[i];
+              }
+            }
+            if (nearest) {
+              const rect = nearest.el.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              spawnFloatingText(cx, cy - 22, '🐕 BARK!', '#5CFF9D');
+              damageRaider(nearest, cx, cy);
+              if (raidRuntime.phase !== 'active') return;
+            }
+          }
+        }
+
+        // Move active raiders down their straight lane toward the vault
+        const areaHeight = Math.max(48, raidAreaEl.clientHeight);
+        const runDistancePx = areaHeight - 20; // Runs from top of raid area down to the vault edge
+        const laserSlowMult = getLaserSlowMultiplier(state.defenseUpgrades.laserFence);
+        const doorExtraSec = getVaultDoorExtraSec(state.defenseUpgrades.vaultDoor);
+
+        // First raid is extra gentle
+        const firstRaidSpeedFactor = raidRuntime.raidNumber === 1 ? 0.58 : 1.0;
+
+        for (let i = raidRuntime.activeRaiders.length - 1; i >= 0; i--) {
+          const r = raidRuntime.activeRaiders[i];
+          const baseCrossSec = CONFIG.RAIDER_BASE_CROSS_SEC / (r.cfg.speedMult * laserSlowMult * firstRaidSpeedFactor);
+
+          if (r.progress < 1) {
+            r.progress = Math.min(1, r.progress + dtSec / baseCrossSec);
+          } else {
+            // Raider reached vault door; must wait out Vault Door bonus seconds
+            r.doorPrySec += dtSec;
+            if (r.doorPrySec >= doorExtraSec) {
+              finishRaidLose(r.cfg);
+              return;
+            }
+          }
+
+          // Position raider smoothly along the straight lane
+          const yPx = Math.round(r.progress * runDistancePx);
+          r.el.style.top = `${yPx}px`;
+        }
+
+        // Safety check: if all raiders are gone or 15s + door time elapsed on Raid 1
+        if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
+          finishRaidWin();
+        }
+      }
+    }
+
+    /* ==========================================================================
+       9. GAMEPLAY ACTIONS: VAULT TAP, BUY SLOT, HATCH EGG, UPGRADE & RESCUE
        ========================================================================== */
     function handleVaultTap(clientX, clientY) {
       const reward = getVaultTapReward();
@@ -2067,6 +3157,7 @@
       if (!entry) return;
       const def = CREATURE_MAP[entry.id];
       const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
+      const kidnapSec = Math.ceil(safeNumber(entry.kidnappedRemainingSec, 0));
 
       upgradeModalEmojiEl.textContent = def.emoji;
       upgradeModalTitleEl.textContent = def.name;
@@ -2076,13 +3167,36 @@
       upgradeModalPlateEl.className = 'slot-plate modal-plate';
       upgradeModalPlateEl.style.setProperty('--ring-color', rarity.color);
       upgradeModalPlateEl.style.setProperty('--ring-glow', rarity.glow);
-      if (rarity.rainbow) {
+      if (rarity.rainbow && kidnapSec <= 0) {
         upgradeModalPlateEl.classList.add('mythic-ring');
+      }
+      if (kidnapSec > 0) {
+        upgradeModalPlateEl.classList.add('kidnapped-plate');
       }
 
       const curIncome = getCreatureIncome(entry.id, entry.level);
       upgradeModalLevelEl.textContent = `Lv. ${entry.level} / ${CONFIG.MAX_CREATURE_LEVEL}`;
-      upgradeModalIncomeEl.textContent = `+${formatNumber(curIncome)}/sec`;
+
+      if (kidnapSec > 0) {
+        upgradeModalStatusEl.textContent = `⛓️ Kidnapped (${kidnapSec}s left)`;
+        upgradeModalStatusEl.style.color = '#FF4D6D';
+        upgradeModalIncomeEl.textContent = `0/sec (Normally +${formatNumber(curIncome)}/s)`;
+        const rescueCost = getInstantRescueCost();
+        modalRescueBtnEl.style.display = 'inline-flex';
+        modalRescueBtnEl.textContent = `🔓 Rescue Now · 🪙 ${formatNumber(rescueCost)}`;
+        if (state.coins >= rescueCost) {
+          modalRescueBtnEl.classList.remove('disabled');
+          modalRescueBtnEl.classList.add('affordable');
+        } else {
+          modalRescueBtnEl.classList.remove('affordable');
+          modalRescueBtnEl.classList.add('disabled');
+        }
+      } else {
+        upgradeModalStatusEl.textContent = '✅ Safe in Vault';
+        upgradeModalStatusEl.style.color = '#5CFF9D';
+        upgradeModalIncomeEl.textContent = `+${formatNumber(curIncome)}/sec`;
+        modalRescueBtnEl.style.display = 'none';
+      }
 
       if (entry.level >= CONFIG.MAX_CREATURE_LEVEL) {
         upgradeModalNextEl.textContent = 'MAXED!';
@@ -2102,6 +3216,28 @@
           modalUpgradeBtnEl.classList.add('disabled');
         }
       }
+    }
+
+    function rescueCreatureAtSlot(slotIndex) {
+      if (slotIndex < 0 || slotIndex >= state.ownedCreatures.length) return;
+      const entry = state.ownedCreatures[slotIndex];
+      if (!entry || safeNumber(entry.kidnappedRemainingSec, 0) <= 0) return;
+
+      const cost = getInstantRescueCost();
+      if (state.coins < cost) {
+        sfxPop();
+        return;
+      }
+
+      state.coins = safeNumber(state.coins - cost, 0);
+      entry.kidnappedRemainingSec = 0;
+      sfxHatchFanfare('Rare');
+
+      const def = CREATURE_MAP[entry.id];
+      showBanner(`🔓 Rescued ${def.name} instantly!`, false);
+      saveGame();
+      renderUpgradeModalContent(slotIndex);
+      updateHUD();
     }
 
     function upgradeCreatureAtSlot(slotIndex) {
@@ -2136,14 +3272,7 @@
     }
 
     /* ==========================================================================
-       8. EGG HATCH ODDS & FULL-VAULT HATCH RESOLUTION RULE
-       Order of checks:
-       a) Already owned -> level up by 1 (if Lv 10, convert to coins instead)
-       b) Open slot exists -> place in next open slot
-       c) Vault full -> compare new Lv.1 income against lowest current income/sec
-          owned creature. If strictly higher, replace and convert old creature;
-          otherwise convert new creature.
-       Converted coins = 60 x base income x creature's level.
+       10. EGG HATCH ODDS & FULL-VAULT HATCH RESOLUTION RULE
        ========================================================================== */
     function rollCreatureFromEgg() {
       const roll = Math.random();
@@ -2178,7 +3307,6 @@
           const msg = `Duplicate! ${creatureDef.name} leveled up to Lv.${existing.level}!`;
           return { type: 'levelup', slotIndex: existingIndex, message: msg };
         } else {
-          // Already Level 10: convert the newly hatched creature to coins
           const convertedCoins = getConversionCoins(creatureDef.id, 1);
           addCoins(convertedCoins);
           const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
@@ -2189,13 +3317,13 @@
 
       // b) Else if an open slot exists: place it in the next open slot
       if (state.ownedCreatures.length < state.slotsUnlocked) {
-        state.ownedCreatures.push({ id: creatureDef.id, level: 1 });
+        state.ownedCreatures.push({ id: creatureDef.id, level: 1, kidnappedRemainingSec: 0 });
         const newSlotIndex = state.ownedCreatures.length - 1;
         const msg = `New ${creatureDef.name} joined Slot ${newSlotIndex + 1}!`;
         return { type: 'placed', slotIndex: newSlotIndex, message: msg };
       }
 
-      // c) Else (vault full): find the owned creature with the lowest current income/sec
+      // c) Else (vault full): find the owned creature with the lowest current income/sec (base x level)
       let lowestIndex = 0;
       let lowestIncome = Infinity;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
@@ -2213,7 +3341,7 @@
         const replacedDef = CREATURE_MAP[replaced.id];
         const convertedCoins = getConversionCoins(replaced.id, replaced.level);
 
-        state.ownedCreatures[lowestIndex] = { id: creatureDef.id, level: 1 };
+        state.ownedCreatures[lowestIndex] = { id: creatureDef.id, level: 1, kidnappedRemainingSec: 0 };
         addCoins(convertedCoins);
 
         const msg = `${creatureDef.name} replaced ${replacedDef.name} (+${formatNumber(convertedCoins)} coins)`;
@@ -2237,9 +3365,16 @@
         return;
       }
 
+      const wasFirstHatch = state.hatchCount === 0;
       isHatching = true;
       state.coins = safeNumber(state.coins - cost, 0);
       state.hatchCount += 1;
+
+      if (wasFirstHatch) {
+        // Schedule the first raid exactly 90 seconds after the player's first hatch
+        state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
+      }
+
       updateHUD();
 
       // Prepare modal for shaking egg
@@ -2307,10 +3442,9 @@
     }
 
     /* ==========================================================================
-       9. POINTER EVENT LISTENERS (No keyboard required, touch/mouse only)
+       11. POINTER EVENT LISTENERS (No keyboard required, touch/mouse only)
        ========================================================================== */
     function setupEvents() {
-      // Prevent context menu and double-tap zoom
       window.addEventListener('contextmenu', (e) => e.preventDefault());
       window.addEventListener('resize', () => {
         updateCanvasSizes();
@@ -2359,15 +3493,32 @@
         upgradeCreatureAtSlot(cheapest.slotIndex);
       });
 
-      // Locked Defense & Book Buttons
+      // Defense Button (Opens Defense Upgrades Panel)
       defenseBtnEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
         sfxPop();
         triggerSquash(defenseBtnEl);
-        showBanner('Defense Raids unlock in a future step!', false);
+        renderDefenseModalContent();
+        defenseModalEl.classList.add('active');
       });
 
+      defenseModalCloseEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        defenseModalEl.classList.remove('active');
+      });
+
+      defenseModalEl.addEventListener('pointerdown', (e) => {
+        if (e.target === defenseModalEl) {
+          unlockAudio();
+          sfxPop();
+          defenseModalEl.classList.remove('active');
+        }
+      });
+
+      // Locked Book Button
       bookBtnEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
@@ -2376,7 +3527,7 @@
         showBanner(`Creature Book locked · Discovered ${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`, false);
       });
 
-      // Creature Upgrade Modal Controls
+      // Creature Upgrade & Rescue Modal Controls
       upgradeModalCloseEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
@@ -2391,6 +3542,14 @@
           sfxPop();
           upgradeModalEl.classList.remove('active');
           selectedSlotIndex = -1;
+        }
+      });
+
+      modalRescueBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        if (selectedSlotIndex >= 0) {
+          rescueCreatureAtSlot(selectedSlotIndex);
         }
       });
 
@@ -2455,8 +3614,8 @@
     }
 
     /* ==========================================================================
-       10. MAIN GAME LOOP (requestAnimationFrame with dt capped at 100ms)
-       Pauses logic when tab is hidden. Smoothly rolls displayed coin counter.
+       12. MAIN GAME LOOP (requestAnimationFrame with dt capped at 100ms)
+       Pauses all game and raid timers when tab is hidden.
        ========================================================================== */
     let lastFrameTime = performance.now();
     let hudRefreshAccumulator = 0;
@@ -2474,13 +3633,16 @@
       const clampedDeltaMs = Math.min(rawDeltaMs, CONFIG.MAX_DELTA_MS);
       const dtSec = clampedDeltaMs / 1000;
 
-      // 1. Add passive income per second
+      // 1. Add passive income per second (from non-kidnapped creatures)
       const incomePerSec = getTotalIncomePerSecond();
       if (incomePerSec > 0 && dtSec > 0) {
         addCoins(incomePerSec * dtSec);
       }
 
-      // 2. Smoothly roll displayedCoins toward actual state.coins
+      // 2. Update Raid timers, active raiders, Guard Dog, and kidnap timers
+      updateRaidSystem(dtSec);
+
+      // 3. Smoothly roll displayedCoins toward actual state.coins
       const diff = state.coins - state.displayedCoins;
       if (Math.abs(diff) < 0.05) {
         state.displayedCoins = state.coins;
@@ -2489,19 +3651,19 @@
       }
       coinDisplayEl.textContent = formatNumber(state.displayedCoins);
 
-      // 3. Refresh button affordability states periodically (10x/sec)
+      // 4. Refresh button affordability states periodically (10x/sec)
       hudRefreshAccumulator += dtSec;
       if (hudRefreshAccumulator >= 0.1) {
         hudRefreshAccumulator = 0;
         updateHUD();
       }
 
-      // 4. Update & draw stars and particles
+      // 5. Update & draw stars and particles
       updateAndDrawParticles(dtSec);
     }
 
     /* ==========================================================================
-       11. INITIALIZATION
+       13. INITIALIZATION
        ========================================================================== */
     function init() {
       updateCanvasSizes();
