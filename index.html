@@ -103,13 +103,13 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 5px 8px;
-      gap: 4px;
+      padding: 4px 8px;
+      gap: 3px;
       overflow: hidden;
     }
 
     /* ==========================================================================
-       3. TOP BAR: BIG COINS, INCOME PER SECOND & MUTE BUTTON
+       3. TOP BAR: BIG COINS, INCOME PER SECOND, MUTE & SETTINGS GEAR
        ========================================================================== */
     .top-bar {
       position: relative;
@@ -121,8 +121,8 @@
       background: linear-gradient(180deg, rgba(42, 24, 92, 0.94) 0%, rgba(24, 13, 56, 0.96) 100%);
       border: 2px solid rgba(53, 224, 255, 0.38);
       border-radius: 18px;
-      padding: 4px 12px;
-      min-height: 52px;
+      padding: 4px 10px;
+      min-height: 50px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 2px 1px rgba(255, 255, 255, 0.18);
       flex-shrink: 0;
     }
@@ -130,13 +130,14 @@
     .coin-cluster {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       min-width: 0;
+      cursor: pointer;
     }
 
     .coin-badge {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: radial-gradient(circle at 32% 30%, #FFF5B8 0%, #FFD34D 45%, #E08B00 90%);
       border: 2px solid #FFF2A6;
@@ -144,7 +145,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 19px;
       flex-shrink: 0;
       transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -160,7 +161,7 @@
     }
 
     .coin-amount {
-      font-size: clamp(22px, 4.4vw, 31px);
+      font-size: clamp(21px, 4.3vw, 30px);
       font-weight: 900;
       color: #FFD34D;
       text-shadow: 0 2px 0 #703800, 0 0 14px rgba(255, 211, 77, 0.55);
@@ -179,7 +180,7 @@
     .top-right-controls {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-shrink: 0;
     }
 
@@ -267,14 +268,21 @@
       box-shadow: 0 5px 0 #430F85, 0 8px 16px rgba(155, 77, 255, 0.35);
     }
 
-    /* Mute Button */
-    .btn-mute {
+    /* Red Danger Button (Reset confirmation) */
+    .btn-danger {
+      background: linear-gradient(180deg, #FF6B8B 0%, #FF2A55 55%, #B80028 100%);
+      color: #FFFFFF;
+      box-shadow: 0 5px 0 #6B0018, 0 8px 16px rgba(255, 42, 85, 0.4);
+    }
+
+    /* Mute & Gear Buttons */
+    .btn-icon-top {
       min-width: 48px;
       min-height: 48px;
-      padding: 0 12px;
+      padding: 0 10px;
       background: linear-gradient(180deg, #4E328C 0%, #351E69 100%);
       box-shadow: 0 4px 0 #1B0D3D, 0 6px 12px rgba(0, 0, 0, 0.35);
-      font-size: 20px;
+      font-size: 19px;
     }
 
     /* Affordable pulse glow */
@@ -365,7 +373,7 @@
 
     #status-banner {
       position: fixed;
-      top: 60px;
+      top: 58px;
       left: 50%;
       transform: translateX(-50%) translateY(-12px) scale(0.85);
       z-index: 80;
@@ -412,16 +420,15 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 3px;
     }
 
-    /* RAID AREA: Empty space between the top bar and the vault!
-       Raiders enter from the top on 3 straight paths toward the vault. */
+    /* RAID AREA: Empty space between the top bar and the vault! */
     #raid-area {
       position: relative;
       width: 100%;
       max-width: 680px;
-      height: 66px;
+      height: 58px;
       background: linear-gradient(180deg, rgba(18, 9, 44, 0.65) 0%, rgba(32, 16, 72, 0.35) 100%);
       border: 1.5px solid rgba(53, 224, 255, 0.22);
       border-radius: 16px;
@@ -470,7 +477,7 @@
       content: '';
       position: absolute;
       top: 4px;
-      bottom: -10px;
+      bottom: -8px;
       width: 3px;
       border-radius: 3px;
       background: repeating-linear-gradient(
@@ -495,7 +502,7 @@
     /* Status strip inside Raid Area */
     #raid-hud-pill {
       position: absolute;
-      top: 4px;
+      top: 3px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(15, 8, 38, 0.82);
@@ -520,7 +527,7 @@
       position: absolute;
       bottom: 3px;
       left: 8px;
-      font-size: 12px;
+      font-size: 11px;
       background: rgba(20, 10, 48, 0.85);
       border: 1.5px solid #5CFF9D;
       border-radius: 10px;
@@ -587,6 +594,12 @@
       border-radius: 4px;
       overflow: hidden;
       margin-bottom: 2px;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+
+    .raider-node.was-hit .raider-hp-bar {
+      opacity: 1;
     }
 
     .raider-hp-fill {
@@ -609,7 +622,7 @@
       background: linear-gradient(180deg, rgba(35, 20, 79, 0.85) 0%, rgba(22, 12, 52, 0.92) 100%);
       border: 2px solid rgba(53, 224, 255, 0.38);
       border-radius: 22px;
-      padding: 5px 10px;
+      padding: 4px 10px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 28px rgba(53, 224, 255, 0.15);
       flex-shrink: 0;
     }
@@ -692,8 +705,8 @@
 
     #vault-btn {
       position: relative;
-      width: 78px;
-      height: 78px;
+      width: 74px;
+      height: 74px;
       border-radius: 50%;
       border: 3.5px solid #C4FAFF;
       background: radial-gradient(circle at 35% 28%, #DDFDFF 0%, #35E0FF 42%, #0088CC 82%, #003865 100%);
@@ -723,13 +736,13 @@
     }
 
     .vault-icon {
-      font-size: 32px;
+      font-size: 30px;
       line-height: 1;
       filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
     }
 
     .vault-tap-tag {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 900;
       color: #062338;
       background: #FFD34D;
@@ -772,8 +785,6 @@
 
     /* ==========================================================================
        7. COMPACT 4x3 CREATURE GRID CENTERED UNDER THE VAULT
-       3 rows placed close together as one compact block; large glossy plates;
-       easy-to-read creature name and income text underneath each plate.
        ========================================================================== */
     .slots-grid {
       position: relative;
@@ -783,11 +794,11 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(3, auto);
-      gap: 4px 6px;
+      gap: 3px 6px;
       align-items: start;
       justify-items: center;
       align-content: center;
-      padding: 2px;
+      padding: 1px;
       flex-shrink: 0;
     }
 
@@ -803,11 +814,11 @@
       transition: transform 0.12s ease;
     }
 
-    /* Glossy Circular Plate - Uses available column width while fitting 360x640 */
+    /* Glossy Circular Plate */
     .slot-plate {
       position: relative;
-      width: clamp(72px, 19.5vw, 90px);
-      height: clamp(72px, 19.5vw, 90px);
+      width: clamp(68px, 18.8vw, 88px);
+      height: clamp(68px, 18.8vw, 88px);
       border-radius: 50%;
       background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.38) 0%, rgba(56, 33, 114, 0.94) 48%, rgba(20, 10, 48, 0.98) 100%);
       border: 3.5px solid var(--ring-color, rgba(176, 184, 197, 0.4));
@@ -887,7 +898,7 @@
       will-change: transform;
     }
 
-    /* Level tag on slot */
+    /* Level tag on slot (top-right) */
     .slot-level-badge {
       position: absolute;
       top: -3px;
@@ -895,12 +906,29 @@
       background: linear-gradient(180deg, #3A1C71 0%, #160B36 100%);
       border: 1.5px solid var(--ring-color, #B0B8C5);
       color: #FFFFFF;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
       z-index: 2;
+    }
+
+    /* Gold Star Milestone Badge on slot (top-left, e.g. ★3 for every multiple of 10) */
+    .slot-star-badge {
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      background: linear-gradient(180deg, #FFF099 0%, #FFD34D 55%, #D98200 100%);
+      border: 1.5px solid #FFFFFF;
+      color: #2A1205;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 8px rgba(255, 211, 77, 0.7);
+      z-index: 2;
+      display: none;
     }
 
     /* Larger, easy-to-read creature name and income text under each plate */
@@ -910,12 +938,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.1;
+      line-height: 1.08;
       text-align: center;
     }
 
     .slot-name {
-      font-size: clamp(12px, 2.8vw, 14px);
+      font-size: clamp(11px, 2.7vw, 14px);
       font-weight: 900;
       color: #FFFFFF;
       text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.95);
@@ -926,7 +954,7 @@
     }
 
     .slot-income {
-      font-size: clamp(11px, 2.6vw, 13px);
+      font-size: clamp(11px, 2.5vw, 13px);
       font-weight: 900;
       color: #FFD34D;
       text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.95);
@@ -980,21 +1008,67 @@
     }
 
     /* ==========================================================================
-       8. BOTTOM BAR: HATCH, UPGRADE, DEFENSE, BOOK (LOCKED)
-       Never covered by raiders (z-index: 30).
+       8. EGG SELECTOR STRIP & BOTTOM BAR
+       Small egg selector (Basic / Golden / Cosmic) above the Hatch button.
        ========================================================================== */
-    .bottom-bar {
+    .bottom-dock {
       position: relative;
       z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .egg-selector-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .egg-tab-btn {
+      min-height: 28px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      background: rgba(26, 14, 58, 0.82);
+      color: #D8CEFF;
+      font-family: inherit;
+      font-size: clamp(10px, 2.2vw, 12px);
+      font-weight: 900;
+      padding: 2px 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .egg-tab-btn.active {
+      background: linear-gradient(180deg, rgba(255, 79, 163, 0.38) 0%, rgba(88, 28, 135, 0.92) 100%);
+      border-color: #FFD34D;
+      color: #FFFFFF;
+      box-shadow: 0 0 10px rgba(255, 211, 77, 0.45);
+    }
+
+    .egg-tab-btn.locked {
+      background: rgba(28, 22, 48, 0.75);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #9CA3AF;
+    }
+
+    .bottom-bar {
       display: grid;
       grid-template-columns: 1.15fr 1.25fr 1.05fr 0.85fr;
       gap: 6px;
-      flex-shrink: 0;
     }
 
     .bottom-bar .btn-3d {
       width: 100%;
-      min-height: 50px;
+      min-height: 48px;
       padding: 4px 6px;
       display: flex;
       flex-direction: column;
@@ -1031,7 +1105,7 @@
     @media (min-width: 760px) and (min-height: 540px) {
       #app {
         padding: 8px 20px;
-        gap: 6px;
+        gap: 5px;
       }
 
       .stat-chip {
@@ -1040,21 +1114,21 @@
 
       #raid-area {
         max-width: 760px;
-        height: 76px;
+        height: 68px;
       }
 
       .vault-deck {
         max-width: 760px;
-        padding: 6px 20px;
+        padding: 5px 20px;
       }
 
       #vault-btn {
-        width: 92px;
-        height: 92px;
+        width: 86px;
+        height: 86px;
       }
 
       .vault-icon {
-        font-size: 40px;
+        font-size: 36px;
       }
 
       .vault-tap-tag {
@@ -1069,7 +1143,7 @@
 
       .slots-grid {
         max-width: 760px;
-        gap: 6px 16px;
+        gap: 5px 16px;
         background: rgba(20, 11, 48, 0.42);
         border: 2px solid rgba(255, 255, 255, 0.12);
         border-radius: 22px;
@@ -1077,8 +1151,8 @@
       }
 
       .slot-plate {
-        width: 82px;
-        height: 82px;
+        width: 78px;
+        height: 78px;
       }
 
       .creature-emoji {
@@ -1093,13 +1167,22 @@
         font-size: 13px;
       }
 
+      .egg-selector-bar {
+        max-width: 520px;
+      }
+
+      .egg-tab-btn {
+        min-height: 30px;
+        font-size: 12px;
+      }
+
       .bottom-bar {
         grid-template-columns: 1.2fr 1.2fr 1.1fr 0.9fr;
         gap: 12px;
       }
 
       .bottom-bar .btn-3d {
-        min-height: 52px;
+        min-height: 50px;
         flex-direction: row;
         gap: 8px;
       }
@@ -1114,7 +1197,7 @@
     }
 
     /* ==========================================================================
-       10. POPUP MODALS (Creature Upgrade/Rescue, Defense Panel, Egg Hatch, Offline)
+       10. POPUP MODALS (Creature Upgrade/Rescue, Defense, Hatch, Settings, Debug)
        ========================================================================== */
     .modal-backdrop {
       position: fixed;
@@ -1276,7 +1359,7 @@
     }
 
     .defense-buy-btn {
-      min-width: 102px;
+      min-width: 106px;
       min-height: 48px;
       padding: 6px 10px;
       font-size: 12px;
@@ -1371,7 +1454,7 @@
   <main id="app">
     <!-- 1. TOP BAR -->
     <header class="top-bar">
-      <div class="coin-cluster">
+      <div id="coin-cluster" class="coin-cluster" title="Coins">
         <div id="coin-target" class="coin-badge" aria-hidden="true">🪙</div>
         <div class="coin-stats">
           <div id="coin-display" class="coin-amount">120</div>
@@ -1384,8 +1467,11 @@
           <div>Discovered: <span id="discovered-count">0/12</span></div>
           <div>Total Earned: <span id="total-earned-display">120</span></div>
         </div>
-        <button id="mute-btn" class="btn-3d btn-mute" type="button" aria-label="Toggle Sound">
+        <button id="mute-btn" class="btn-3d btn-icon-top" type="button" aria-label="Toggle Sound">
           🔊
+        </button>
+        <button id="settings-btn" class="btn-3d btn-icon-top" type="button" aria-label="Settings">
+          ⚙️
         </button>
       </div>
     </header>
@@ -1428,28 +1514,43 @@
       <div id="slots-grid" class="slots-grid"></div>
     </section>
 
-    <!-- 3. BOTTOM BAR -->
-    <nav class="bottom-bar" aria-label="Game Actions">
-      <button id="hatch-btn" class="btn-3d btn-pink" type="button">
-        <span class="btn-main-label">🥚 Hatch</span>
-        <span id="hatch-cost-label" class="btn-sub-label">🪙 50</span>
-      </button>
+    <!-- 3. BOTTOM DOCK: EGG SELECTOR + ACTION BAR -->
+    <div class="bottom-dock">
+      <!-- Small Egg Selector (Basic / Golden / Cosmic) above the Hatch button -->
+      <div class="egg-selector-bar" role="group" aria-label="Select Egg Type">
+        <button id="egg-tab-basic" class="egg-tab-btn active" type="button">
+          🥚 Basic
+        </button>
+        <button id="egg-tab-golden" class="egg-tab-btn locked" type="button">
+          🔒 Golden (2K)
+        </button>
+        <button id="egg-tab-cosmic" class="egg-tab-btn locked" type="button">
+          🔒 Cosmic (200K)
+        </button>
+      </div>
 
-      <button id="quick-upgrade-btn" class="btn-3d btn-gold disabled" type="button">
-        <span id="quick-upgrade-main" class="btn-main-label">Nothing to upgrade</span>
-        <span id="quick-upgrade-sub" class="btn-sub-label"></span>
-      </button>
+      <nav class="bottom-bar" aria-label="Game Actions">
+        <button id="hatch-btn" class="btn-3d btn-pink" type="button">
+          <span id="hatch-main-label" class="btn-main-label">🥚 Hatch Basic</span>
+          <span id="hatch-cost-label" class="btn-sub-label">🪙 50</span>
+        </button>
 
-      <button id="defense-btn" class="btn-3d btn-purple" type="button">
-        <span class="btn-main-label">🛡️ Defense</span>
-        <span id="defense-sub-label" class="btn-sub-label">Upgrades</span>
-      </button>
+        <button id="quick-upgrade-btn" class="btn-3d btn-gold disabled" type="button">
+          <span id="quick-upgrade-main" class="btn-main-label">Nothing to upgrade</span>
+          <span id="quick-upgrade-sub" class="btn-sub-label"></span>
+        </button>
 
-      <button id="book-btn" class="btn-3d disabled" type="button">
-        <span class="btn-main-label">🔒 Book</span>
-        <span id="book-sub-label" class="btn-sub-label">0/12</span>
-      </button>
-    </nav>
+        <button id="defense-btn" class="btn-3d btn-purple" type="button">
+          <span class="btn-main-label">🛡️ Defense</span>
+          <span id="defense-sub-label" class="btn-sub-label">Upgrades</span>
+        </button>
+
+        <button id="book-btn" class="btn-3d disabled" type="button">
+          <span class="btn-main-label">🔒 Book</span>
+          <span id="book-sub-label" class="btn-sub-label">0/12</span>
+        </button>
+      </nav>
+    </div>
   </main>
 
   <!-- CREATURE UPGRADE & INSTANT RESCUE POPUP -->
@@ -1457,6 +1558,7 @@
     <div class="modal-card">
       <button id="upgrade-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
       <div id="upgrade-modal-plate" class="slot-plate modal-plate">
+        <span id="upgrade-modal-star" class="slot-star-badge">★1</span>
         <span id="upgrade-modal-emoji" class="creature-emoji">🐱</span>
       </div>
       <div id="upgrade-modal-title" class="modal-title">Noodle Cat</div>
@@ -1468,7 +1570,11 @@
         </div>
         <div class="modal-stat-row">
           <span>Current Level</span>
-          <strong id="upgrade-modal-level">Lv. 1 / 10</strong>
+          <strong id="upgrade-modal-level">Lv. 1 / 100</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Milestone Stars</span>
+          <strong id="upgrade-modal-stars-row">0 ★ (×1 income)</strong>
         </div>
         <div class="modal-stat-row">
           <span>Current Income</span>
@@ -1483,7 +1589,7 @@
         🔓 Rescue Now · 🪙 120
       </button>
       <button id="modal-upgrade-btn" class="btn-3d btn-gold" style="width: 100%;" type="button">
-        ⬆️ Upgrade · 🪙 32
+        ⬆️ Upgrade · 🪙 23
       </button>
     </div>
   </div>
@@ -1493,15 +1599,80 @@
     <div class="modal-card">
       <button id="defense-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
       <div id="defense-modal-title" class="modal-title">🛡️ Vault Defense</div>
-      <div class="modal-rarity" style="color: #35E0FF; margin-bottom: 6px;">Protect your creatures from raiders!</div>
+      <div class="modal-rarity" style="color: #35E0FF; margin-bottom: 6px;">Levels 1 to 10 · Protect your creatures!</div>
       <div id="defense-list" class="defense-list"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS & RESET PROGRESS POPUP -->
+  <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal-card">
+      <button id="settings-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
+      <div id="settings-modal-title" class="modal-title">⚙️ Settings</div>
+      <div class="modal-rarity" style="color: #C4B5FD;">Save Version 2 · Autosave Active</div>
+      <div class="modal-stats-box">
+        <div class="modal-stat-row">
+          <span>Total Coins Earned</span>
+          <strong id="settings-total-earned">120</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Eggs Hatched</span>
+          <strong id="settings-hatches">0</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Creatures Discovered</span>
+          <strong id="settings-discovered">0 / 12</strong>
+        </div>
+      </div>
+
+      <!-- Default Reset Trigger -->
+      <div id="reset-initial-box">
+        <button id="reset-progress-btn" class="btn-3d btn-danger" style="width: 100%;" type="button">
+          🗑️ Reset Progress
+        </button>
+      </div>
+
+      <!-- Confirmation Step -->
+      <div id="reset-confirm-box" style="display: none; flex-direction: column; gap: 8px;">
+        <div style="font-size: 13px; color: #FFB3C6; margin-bottom: 4px;">
+          Are you sure? This will wipe your vault and start fresh with 120 coins!
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="reset-confirm-yes" class="btn-3d btn-danger" style="flex: 1;" type="button">
+            Yes, Reset
+          </button>
+          <button id="reset-confirm-cancel" class="btn-3d btn-cyan" style="flex: 1;" type="button">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEBUG TOOLS POPUP (Opened by tapping coin counter 5x quickly when DEBUG_TOOLS = true) -->
+  <div id="debug-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="debug-modal-title">
+    <div class="modal-card">
+      <button id="debug-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
+      <div id="debug-modal-title" class="modal-title">🛠️ Debug Tools</div>
+      <div class="modal-rarity" style="color: #5CFF9D;">Developer Testing Panel</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+        <button id="debug-add-1m-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
+          🪙 +1M Coins
+        </button>
+        <button id="debug-skip-1h-btn" class="btn-3d btn-cyan affordable" style="width: 100%;" type="button">
+          ⏩ Skip 1 Hour of Income
+        </button>
+        <button id="debug-speed-btn" class="btn-3d btn-purple" style="width: 100%;" type="button">
+          ⚡ Speed ×10: OFF
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- EGG HATCH POPUP -->
   <div id="hatch-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="hatch-modal-title">
     <div class="modal-card">
-      <div id="hatch-modal-title" class="modal-title">Hatching Basic Egg...</div>
+      <div id="hatch-modal-title" class="modal-title">Hatching Egg...</div>
       <div id="hatch-modal-rarity" class="modal-rarity" style="min-height: 18px;"></div>
       <div id="hatch-stage" class="egg-stage">
         <div id="hatch-egg-visual" class="egg-emoji shaking">🥚</div>
@@ -1531,81 +1702,146 @@
 
   <script>
     /* ==========================================================================
-       1. CONFIG OBJECT
-       Every balance number, rarity odd, creature definition, defense upgrade,
-       and raid parameter lives here.
+       0. DEBUG FLAG & CONFIG OBJECT
+       Every balance number, egg tier, rarity odd, creature definition, defense
+       upgrade, and raid parameter lives in CONFIG.
        ========================================================================== */
+    const DEBUG_TOOLS = true;
+
     const CONFIG = {
       STORAGE_KEY: 'meme_vault_defense_save_v1',
+      SAVE_VERSION: 2, // Older saves without saveVersion === 2 start fresh (120 coins)
       STARTING_COINS: 120,
       INITIAL_SLOTS: 4,
       MAX_SLOTS: 12,
       FIRST_PAID_SLOT: 5,
       BASE_SLOT_COST: 500,
       SLOT_COST_MULTIPLIER: 2.5,
-      BASE_EGG_COST: 50,
-      EGG_COST_MULTIPLIER: 1.12,
-      MAX_CREATURE_LEVEL: 10,
+
+      // Creature Level & Upgrade Economy (Max Level 100)
+      MAX_CREATURE_LEVEL: 100,
+      MILESTONE_INTERVAL: 10,
+      MILESTONE_MULT_BASE: 2, // Income = baseIncome * level * 2^(floor(level / 10))
       UPGRADE_BASE_MULTIPLIER: 20,
-      UPGRADE_EXPONENT: 1.6,
-      CONVERSION_MULTIPLIER: 60,
+      UPGRADE_EXPONENT: 1.15, // Upgrade cost = 20 * baseIncome * 1.15^level
+      CONVERSION_INCOME_SECONDS: 60, // Converted creatures give 60s of their current income
+
+      // Egg Tiers (Each with its own saved hatch counter, cost curve, unlock goal & odds)
+      EGG_TYPES: {
+        basic: {
+          id: 'basic',
+          name: 'Basic Egg',
+          shortName: 'Basic',
+          emoji: '🥚',
+          baseCost: 50,
+          costMult: 1.15,
+          unlockTotalCoins: 0,
+          odds: {
+            Common: 0.60,
+            Uncommon: 0.25,
+            Rare: 0.10,
+            Epic: 0.04,
+            Legendary: 0.009,
+            Mythic: 0.001
+          }
+        },
+        golden: {
+          id: 'golden',
+          name: 'Golden Egg',
+          shortName: 'Golden',
+          emoji: '✨',
+          baseCost: 5000,
+          costMult: 1.12,
+          unlockTotalCoins: 2000,
+          odds: {
+            Rare: 0.60,
+            Epic: 0.30,
+            Legendary: 0.09,
+            Mythic: 0.01
+          }
+        },
+        cosmic: {
+          id: 'cosmic',
+          name: 'Cosmic Egg',
+          shortName: 'Cosmic',
+          emoji: '🌌',
+          baseCost: 500000,
+          costMult: 1.15,
+          unlockTotalCoins: 200000,
+          odds: {
+            Epic: 0.55,
+            Legendary: 0.38,
+            Mythic: 0.07
+          }
+        }
+      },
+
+      // Vault Tap & Offline Earnings
       VAULT_TAP_FLAT: 1,
       VAULT_TAP_INCOME_PERCENT: 0.05,
+      OFFLINE_INCOME_FACTOR: 0.50, // 50% of income x time away
       MAX_OFFLINE_SECONDS: 7200, // Max 2 hours
       MIN_OFFLINE_SECONDS: 3,
+
+      // System & Loop Constants
       AUTOSAVE_INTERVAL_MS: 10000, // Every 10 seconds
       MAX_DELTA_MS: 100, // Cap frame delta at 100 ms
       MAX_PARTICLES: 150, // Total active foreground particles + stars cap
       STAR_COUNT: 42, // Background drifting stars (part of the 150 cap)
-      COIN_ROLL_SPEED: 14, // Smooth counter interpolation speed
+      COIN_ROLL_SPEED: 14,
       HATCH_SHAKE_MS: 650,
       HATCH_CRACK_MS: 380,
       BANNER_DURATION_MS: 3000, // 3 seconds visible per banner
       BANNER_GAP_MS: 140,
 
+      // Debug Tools Constants
+      DEBUG_TAP_COUNT: 5,
+      DEBUG_TAP_WINDOW_MS: 1800,
+      DEBUG_ADD_COINS: 1000000,
+      DEBUG_SKIP_SECONDS: 3600,
+      DEBUG_SPEED_MULT: 10,
+
       // Raid & Defense Balance Numbers
-      FIRST_RAID_DELAY_SEC: 90, // First raid comes 90s after first hatch
-      NEXT_RAID_MIN_SEC: 100, // Later raids every 100 to 140s
+      FIRST_RAID_DELAY_SEC: 90,
+      NEXT_RAID_MIN_SEC: 100,
       NEXT_RAID_MAX_SEC: 140,
-      RAID_WARNING_SEC: 10, // 10s before raid: red banner, siren, flashing red vault
-      RAID_DURATION_SEC: 15, // Raid lasts about 15 seconds
+      RAID_WARNING_SEC: 10,
+      RAID_DURATION_SEC: 15,
       RAID_MIN_RAIDERS: 3,
       RAID_MAX_RAIDERS: 6,
-      BOSS_EVERY_N_RAIDS: 5, // Big Bandit boss on every 5th raid
-      RAIDER_BASE_CROSS_SEC: 7.2, // Base seconds for a normal raider to run down the lane
-      RAIDER_HIT_COIN_RATIO: 0.25, // Coins dropped per hit on a raider (min 1)
-      RAID_WIN_INCOME_SECONDS: 60, // Win bonus = 60 seconds of income
-      KIDNAP_DURATION_SEC: 90, // Kidnapped for 90 seconds
-      RESCUE_INCOME_SECONDS: 120, // Instant rescue cost = 120 seconds of total income
+      BOSS_EVERY_N_RAIDS: 5,
+      RAIDER_BASE_CROSS_SEC: 7.2,
+      RAIDER_HIT_COIN_RATIO: 0.25,
+      RAID_WIN_INCOME_SECONDS: 60,
+      KIDNAP_DURATION_SEC: 90,
+      RESCUE_INCOME_SECONDS: 120,
 
-      // Defense Upgrades (Levels 1 to 5, price rises x1.8 per level)
-      DEFENSE_MAX_LEVEL: 5,
-      DEFENSE_COST_MULTIPLIER: 1.8,
+      // Defense Upgrades: Levels 1 to 10, cost = 600 * 2^(current level)
+      DEFENSE_MAX_LEVEL: 10,
+      DEFENSE_BASE_COST: 600,
+      DEFENSE_COST_MULTIPLIER: 2,
       DEFENSE_UPGRADES: {
         guardDog: {
           id: 'guardDog',
           name: 'Guard Dog',
           emoji: '🐕',
-          baseCost: 120,
-          baseIntervalSec: 4.0,
-          fasterPerLevelSec: 0.6, // Lv1: 4.0s, Lv2: 3.4s, Lv3: 2.8s, Lv4: 2.2s, Lv5: 1.6s
+          lv1IntervalSec: 4.0,
+          lv10IntervalSec: 1.2, // Hits every 4.0s at Lv 1, down to 1.2s at Lv 10
           desc: 'Hits the nearest raider automatically'
         },
         laserFence: {
           id: 'laserFence',
           name: 'Laser Fence',
           emoji: '⚡',
-          baseCost: 150,
-          slowPerLevel: 0.10, // Slows raiders 10% per level (10%..50%)
-          desc: 'Slows all raiders by 10% per level'
+          slowPerLevel: 0.05, // Slows raiders 5% per level (max 50% at Lv 10)
+          desc: 'Slows all raiders by 5% per level'
         },
         vaultDoor: {
           id: 'vaultDoor',
           name: 'Vault Door',
           emoji: '🚪',
-          baseCost: 180,
-          extraSecPerLevel: 1.0, // +1 second per level before a raider can steal
-          desc: '+1s per level before a raider can steal'
+          extraSecPerLevel: 0.5, // Adds 0.5s per level before a raider can steal (max 5s at Lv 10)
+          desc: '+0.5s per level before a raider can steal'
         }
       },
 
@@ -1638,7 +1874,7 @@
         { id: 'galaxy_jelly', name: 'Galaxy Jelly', emoji: '🪼', rarity: 'Mythic',    baseIncome: 2500 },
         { id: 'king_pickle',  name: 'King Pickle',  emoji: '🥒', rarity: 'Mythic',    baseIncome: 5000 }
       ],
-      NUMBER_SUFFIXES: ['', 'K', 'M', 'B', 'T']
+      NUMBER_SUFFIXES: ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc']
     };
 
     // Quick lookup map for creatures by ID
@@ -1649,8 +1885,8 @@
     }
 
     /* ==========================================================================
-       2. NUMBER FORMATTING & MATH HELPERS
-       Guards against NaN, Infinity, or negative numbers.
+       2. NUMBER FORMATTING & REBALANCED ECONOMY HELPERS
+       Supports K, M, B, T, Qa, Qi, Sx, Sp, Oc, No, Dc, then scientific notation.
        ========================================================================== */
     function safeNumber(val, fallback = 0) {
       const num = Number(val);
@@ -1666,22 +1902,33 @@
         }
         return String(Math.floor(val));
       }
-      let tier = 0;
-      let scaled = val;
-      while (scaled >= 1000 && tier < CONFIG.NUMBER_SUFFIXES.length - 1) {
-        scaled /= 1000;
-        tier++;
+      // Scientific notation for numbers beyond Decillion (>= 1e36)
+      if (val >= 1e36) {
+        return val.toExponential(2).replace('+', '');
       }
+      const tier = Math.floor(Math.log10(val) / 3);
+      if (tier >= CONFIG.NUMBER_SUFFIXES.length) {
+        return val.toExponential(2).replace('+', '');
+      }
+      const scaled = val / Math.pow(1000, tier);
       return scaled.toFixed(1).replace(/\.0$/, '') + CONFIG.NUMBER_SUFFIXES[tier];
     }
 
+    function getMilestoneStars(level) {
+      const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
+      return Math.floor(lvl / CONFIG.MILESTONE_INTERVAL);
+    }
+
+    // Creature Income = baseIncome * level * 2^(floor(level / 10))
     function getCreatureIncome(creatureId, level) {
       const def = CREATURE_MAP[creatureId];
       if (!def) return 0;
       const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
-      return def.baseIncome * lvl;
+      const stars = Math.floor(lvl / CONFIG.MILESTONE_INTERVAL);
+      return def.baseIncome * lvl * Math.pow(CONFIG.MILESTONE_MULT_BASE, stars);
     }
 
+    // Upgrade Cost = 20 * baseIncome * 1.15^level
     function getCreatureUpgradeCost(creatureId, currentLevel) {
       const def = CREATURE_MAP[creatureId];
       if (!def) return Infinity;
@@ -1690,9 +1937,16 @@
       return Math.round(CONFIG.UPGRADE_BASE_MULTIPLIER * def.baseIncome * Math.pow(CONFIG.UPGRADE_EXPONENT, lvl));
     }
 
-    function getEggCost(hatchCount) {
-      const count = Math.max(0, Math.floor(safeNumber(hatchCount, 0)));
-      return Math.round(CONFIG.BASE_EGG_COST * Math.pow(CONFIG.EGG_COST_MULTIPLIER, count));
+    function isEggUnlocked(eggTypeKey) {
+      const eggCfg = CONFIG.EGG_TYPES[eggTypeKey];
+      if (!eggCfg) return false;
+      return state.totalCoinsEarned >= eggCfg.unlockTotalCoins;
+    }
+
+    function getEggCost(eggTypeKey) {
+      const eggCfg = CONFIG.EGG_TYPES[eggTypeKey] || CONFIG.EGG_TYPES.basic;
+      const count = Math.max(0, Math.floor(safeNumber(state.eggHatches[eggCfg.id], 0)));
+      return Math.round(eggCfg.baseCost * Math.pow(eggCfg.costMult, count));
     }
 
     function getNextSlotCost(currentSlotsUnlocked) {
@@ -1702,34 +1956,38 @@
       return Math.round(CONFIG.BASE_SLOT_COST * Math.pow(CONFIG.SLOT_COST_MULTIPLIER, step));
     }
 
+    // Converted creatures give coins equal to 60 seconds of that creature's current income
     function getConversionCoins(creatureId, level) {
-      const def = CREATURE_MAP[creatureId];
-      if (!def) return 0;
-      const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
-      return Math.round(CONFIG.CONVERSION_MULTIPLIER * def.baseIncome * lvl);
+      const currentIncome = getCreatureIncome(creatureId, level);
+      return Math.round(CONFIG.CONVERSION_INCOME_SECONDS * currentIncome);
     }
 
+    // Defense Upgrade Cost = 600 * 2^(current level)
     function getDefenseUpgradeCost(key, currentLevel) {
       const def = CONFIG.DEFENSE_UPGRADES[key];
       if (!def) return Infinity;
       const lvl = Math.max(0, Math.floor(safeNumber(currentLevel, 0)));
       if (lvl >= CONFIG.DEFENSE_MAX_LEVEL) return Infinity;
-      return Math.round(def.baseCost * Math.pow(CONFIG.DEFENSE_COST_MULTIPLIER, lvl));
+      return Math.round(CONFIG.DEFENSE_BASE_COST * Math.pow(CONFIG.DEFENSE_COST_MULTIPLIER, lvl));
     }
 
+    // Guard Dog hits every 4.0s at level 1, down to 1.2s at level 10
     function getGuardDogIntervalSec(level) {
       const lvl = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(level, 0))));
       if (lvl <= 0) return Infinity;
       const cfg = CONFIG.DEFENSE_UPGRADES.guardDog;
-      return Math.max(1.0, cfg.baseIntervalSec - (lvl - 1) * cfg.fasterPerLevelSec);
+      const step = (cfg.lv1IntervalSec - cfg.lv10IntervalSec) / (CONFIG.DEFENSE_MAX_LEVEL - 1);
+      return Math.max(cfg.lv10IntervalSec, cfg.lv1IntervalSec - (lvl - 1) * step);
     }
 
+    // Laser Fence slows raiders 5% per level (max 50% at Lv 10)
     function getLaserSlowMultiplier(level) {
       const lvl = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(level, 0))));
       const slow = lvl * CONFIG.DEFENSE_UPGRADES.laserFence.slowPerLevel;
-      return Math.max(0.35, 1 - slow);
+      return Math.max(0.50, 1 - slow);
     }
 
+    // Vault Door adds 0.5s per level before a raider can steal (max 5s at Lv 10)
     function getVaultDoorExtraSec(level) {
       const lvl = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(level, 0))));
       return lvl * CONFIG.DEFENSE_UPGRADES.vaultDoor.extraSecPerLevel;
@@ -1740,13 +1998,20 @@
     }
 
     /* ==========================================================================
-       3. GAME STATE & SAFE LOCALSTORAGE PERSISTENCE
+       3. GAME STATE & SAFE LOCALSTORAGE PERSISTENCE (saveVersion = 2)
        ========================================================================== */
     const state = {
+      saveVersion: CONFIG.SAVE_VERSION,
       coins: CONFIG.STARTING_COINS,
       displayedCoins: CONFIG.STARTING_COINS,
       totalCoinsEarned: CONFIG.STARTING_COINS,
       hatchCount: 0,
+      eggHatches: {
+        basic: 0,
+        golden: 0,
+        cosmic: 0
+      },
+      selectedEgg: 'basic',
       slotsUnlocked: CONFIG.INITIAL_SLOTS,
       ownedCreatures: [], // Array of { id, level, kidnappedRemainingSec }
       discoveredCreatures: [], // Array of creature id strings
@@ -1764,18 +2029,44 @@
     let pendingOfflineCoins = 0;
     let selectedSlotIndex = -1;
     let isHatching = false;
+    let debugSpeed10x = false;
+    const debugTapTimestamps = [];
 
     // Active Raid Runtime State
     const raidRuntime = {
-      phase: 'idle', // 'idle' | 'warning' | 'active'
+      phase: 'idle',
       warningPlayed: false,
       raidNumber: 0,
       elapsedSec: 0,
-      spawnSchedule: [], // Array of { timeSec, type, lane, maxHp }
-      activeRaiders: [], // Array of live raider objects + DOM elements
+      spawnSchedule: [],
+      activeRaiders: [],
       guardDogCooldownSec: 0,
       nextId: 1
     };
+
+    function resetStateToFresh() {
+      clearActiveRaiderNodes();
+      raidRuntime.phase = 'idle';
+      raidRuntime.warningPlayed = false;
+      setRaidDangerVisuals(false);
+
+      state.saveVersion = CONFIG.SAVE_VERSION;
+      state.coins = CONFIG.STARTING_COINS;
+      state.displayedCoins = CONFIG.STARTING_COINS;
+      state.totalCoinsEarned = CONFIG.STARTING_COINS;
+      state.hatchCount = 0;
+      state.eggHatches = { basic: 0, golden: 0, cosmic: 0 };
+      state.selectedEgg = 'basic';
+      state.slotsUnlocked = CONFIG.INITIAL_SLOTS;
+      state.ownedCreatures = [];
+      state.discoveredCreatures = [];
+      state.defenseUpgrades = { guardDog: 0, laserFence: 0, vaultDoor: 0 };
+      state.raidNumber = 0;
+      state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
+      state.lastSavedAt = Date.now();
+      pendingOfflineCoins = 0;
+      selectedSlotIndex = -1;
+    }
 
     function addCoins(amount) {
       const gain = safeNumber(amount, 0);
@@ -1784,7 +2075,6 @@
       state.totalCoinsEarned = safeNumber(state.totalCoinsEarned + gain, state.coins);
     }
 
-    // Active income per second (excludes currently kidnapped creatures)
     function getTotalIncomePerSecond() {
       let sum = 0;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
@@ -1795,7 +2085,6 @@
       return safeNumber(sum, 0);
     }
 
-    // Full squad potential income per second (including kidnapped creatures, for rescue pricing)
     function getFullPotentialIncomePerSecond() {
       let sum = 0;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
@@ -1823,9 +2112,16 @@
       try {
         state.lastSavedAt = Date.now();
         const payload = {
+          saveVersion: CONFIG.SAVE_VERSION,
           coins: safeNumber(state.coins, CONFIG.STARTING_COINS),
           totalCoinsEarned: Math.max(safeNumber(state.totalCoinsEarned, 0), safeNumber(state.coins, 0)),
           hatchCount: Math.max(0, Math.floor(safeNumber(state.hatchCount, 0))),
+          eggHatches: {
+            basic: Math.max(0, Math.floor(safeNumber(state.eggHatches.basic, 0))),
+            golden: Math.max(0, Math.floor(safeNumber(state.eggHatches.golden, 0))),
+            cosmic: Math.max(0, Math.floor(safeNumber(state.eggHatches.cosmic, 0)))
+          },
+          selectedEgg: CONFIG.EGG_TYPES[state.selectedEgg] ? state.selectedEgg : 'basic',
           slotsUnlocked: Math.max(CONFIG.INITIAL_SLOTS, Math.min(CONFIG.MAX_SLOTS, Math.floor(safeNumber(state.slotsUnlocked, CONFIG.INITIAL_SLOTS)))),
           ownedCreatures: state.ownedCreatures.map((c) => ({
             id: c.id,
@@ -1856,10 +2152,31 @@
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return;
 
+        // Rule 8: If an older save is found (saveVersion !== 2), start a fresh game (120 coins)
+        if (parsed.saveVersion !== CONFIG.SAVE_VERSION) {
+          resetStateToFresh();
+          saveGame();
+          return;
+        }
+
         state.coins = safeNumber(parsed.coins, CONFIG.STARTING_COINS);
         state.displayedCoins = state.coins;
         state.totalCoinsEarned = Math.max(state.coins, safeNumber(parsed.totalCoinsEarned, state.coins));
-        state.hatchCount = Math.max(0, Math.floor(safeNumber(parsed.hatchCount, 0)));
+
+        if (parsed.eggHatches && typeof parsed.eggHatches === 'object') {
+          state.eggHatches.basic = Math.max(0, Math.floor(safeNumber(parsed.eggHatches.basic, 0)));
+          state.eggHatches.golden = Math.max(0, Math.floor(safeNumber(parsed.eggHatches.golden, 0)));
+          state.eggHatches.cosmic = Math.max(0, Math.floor(safeNumber(parsed.eggHatches.cosmic, 0)));
+        }
+        const sumHatches = state.eggHatches.basic + state.eggHatches.golden + state.eggHatches.cosmic;
+        state.hatchCount = Math.max(sumHatches, Math.floor(safeNumber(parsed.hatchCount, sumHatches)));
+
+        if (typeof parsed.selectedEgg === 'string' && CONFIG.EGG_TYPES[parsed.selectedEgg] && isEggUnlocked(parsed.selectedEgg)) {
+          state.selectedEgg = parsed.selectedEgg;
+        } else {
+          state.selectedEgg = 'basic';
+        }
+
         state.slotsUnlocked = Math.max(
           CONFIG.INITIAL_SLOTS,
           Math.min(CONFIG.MAX_SLOTS, Math.floor(safeNumber(parsed.slotsUnlocked, CONFIG.INITIAL_SLOTS)))
@@ -1898,7 +2215,7 @@
         }
         state.ownedCreatures = validOwned;
 
-        // Validate discoveredCreatures and ensure all owned creatures are included
+        // Validate discoveredCreatures
         const validDiscovered = [];
         const discSet = new Set();
         if (Array.isArray(parsed.discoveredCreatures)) {
@@ -1919,9 +2236,10 @@
         }
         state.discoveredCreatures = validDiscovered;
 
+        // Rule 4: Offline earnings = 50% of income x time away (max 2 hours)
         const incomePerSec = getTotalIncomePerSecond();
         if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
-          const earned = Math.floor(incomePerSec * clampedElapsedSec);
+          const earned = Math.floor(incomePerSec * clampedElapsedSec * CONFIG.OFFLINE_INCOME_FACTOR);
           if (earned >= 1) {
             pendingOfflineCoins = earned;
           }
@@ -1934,7 +2252,6 @@
 
     /* ==========================================================================
        4. WEBAUDIO SOUND GENERATOR
-       Starts only after the first user tap. Remembers mute state.
        ========================================================================== */
     let audioCtx = null;
 
@@ -1991,7 +2308,6 @@
     }
 
     function sfxSiren() {
-      // Two-cycle warning siren sound 10s before raid
       playTone(420, 780, 0.26, 'sawtooth', 0.13, 0);
       playTone(780, 420, 0.26, 'sawtooth', 0.13, 0.26);
       playTone(420, 820, 0.28, 'sawtooth', 0.14, 0.54);
@@ -2029,7 +2345,6 @@
 
     /* ==========================================================================
        5. PARTICLE & STARFIELD ENGINE (Capped strictly at 150 total particles)
-       Handles drifting stars, flying coins, star particles on hit, and +N text.
        ========================================================================== */
     const starCanvas = document.getElementById('star-canvas');
     const starCtx = starCanvas.getContext('2d');
@@ -2043,7 +2358,7 @@
     let coinTargetPos = { x: 40, y: 34 };
 
     const stars = [];
-    const particles = []; // Foreground particles: max (CONFIG.MAX_PARTICLES - stars.length)
+    const particles = [];
 
     function triggerScreenShake() {
       appEl.classList.remove('shake');
@@ -2143,7 +2458,6 @@
       }
     }
 
-    // 5-pointed star particles when a raider is hit
     function spawnHitStars(x, y, count = 7) {
       const colors = ['#FFD34D', '#35E0FF', '#FF4FA3', '#5CFF9D'];
       for (let i = 0; i < count; i++) {
@@ -2279,18 +2593,26 @@
     /* ==========================================================================
        6. UI ELEMENTS & SEQUENTIAL BANNER QUEUE
        ========================================================================== */
+    const coinClusterEl = document.getElementById('coin-cluster');
     const coinDisplayEl = document.getElementById('coin-display');
     const incomeDisplayEl = document.getElementById('income-display');
     const discoveredCountEl = document.getElementById('discovered-count');
     const totalEarnedDisplayEl = document.getElementById('total-earned-display');
     const muteBtnEl = document.getElementById('mute-btn');
+    const settingsBtnEl = document.getElementById('settings-btn');
     const vaultDeckEl = document.getElementById('vault-deck');
     const vaultBtnEl = document.getElementById('vault-btn');
     const tapPowerDisplayEl = document.getElementById('tap-power-display');
     const slotsCountDisplayEl = document.getElementById('slots-count-display');
     const buySlotBtnEl = document.getElementById('buy-slot-btn');
     const slotsGridEl = document.getElementById('slots-grid');
+
+    // Egg Selector & Bottom Bar
+    const eggTabBasicEl = document.getElementById('egg-tab-basic');
+    const eggTabGoldenEl = document.getElementById('egg-tab-golden');
+    const eggTabCosmicEl = document.getElementById('egg-tab-cosmic');
     const hatchBtnEl = document.getElementById('hatch-btn');
+    const hatchMainLabelEl = document.getElementById('hatch-main-label');
     const hatchCostLabelEl = document.getElementById('hatch-cost-label');
     const quickUpgradeBtnEl = document.getElementById('quick-upgrade-btn');
     const quickUpgradeMainEl = document.getElementById('quick-upgrade-main');
@@ -2314,11 +2636,13 @@
     const upgradeModalEl = document.getElementById('upgrade-modal');
     const upgradeModalCloseEl = document.getElementById('upgrade-modal-close');
     const upgradeModalPlateEl = document.getElementById('upgrade-modal-plate');
+    const upgradeModalStarEl = document.getElementById('upgrade-modal-star');
     const upgradeModalEmojiEl = document.getElementById('upgrade-modal-emoji');
     const upgradeModalTitleEl = document.getElementById('upgrade-modal-title');
     const upgradeModalRarityEl = document.getElementById('upgrade-modal-rarity');
     const upgradeModalStatusEl = document.getElementById('upgrade-modal-status');
     const upgradeModalLevelEl = document.getElementById('upgrade-modal-level');
+    const upgradeModalStarsRowEl = document.getElementById('upgrade-modal-stars-row');
     const upgradeModalIncomeEl = document.getElementById('upgrade-modal-income');
     const upgradeModalNextEl = document.getElementById('upgrade-modal-next');
     const modalRescueBtnEl = document.getElementById('modal-rescue-btn');
@@ -2327,6 +2651,23 @@
     const defenseModalEl = document.getElementById('defense-modal');
     const defenseModalCloseEl = document.getElementById('defense-modal-close');
     const defenseListEl = document.getElementById('defense-list');
+
+    const settingsModalEl = document.getElementById('settings-modal');
+    const settingsModalCloseEl = document.getElementById('settings-modal-close');
+    const settingsTotalEarnedEl = document.getElementById('settings-total-earned');
+    const settingsHatchesEl = document.getElementById('settings-hatches');
+    const settingsDiscoveredEl = document.getElementById('settings-discovered');
+    const resetInitialBoxEl = document.getElementById('reset-initial-box');
+    const resetProgressBtnEl = document.getElementById('reset-progress-btn');
+    const resetConfirmBoxEl = document.getElementById('reset-confirm-box');
+    const resetConfirmYesEl = document.getElementById('reset-confirm-yes');
+    const resetConfirmCancelEl = document.getElementById('reset-confirm-cancel');
+
+    const debugModalEl = document.getElementById('debug-modal');
+    const debugModalCloseEl = document.getElementById('debug-modal-close');
+    const debugAdd1mBtnEl = document.getElementById('debug-add-1m-btn');
+    const debugSkip1hBtnEl = document.getElementById('debug-skip-1h-btn');
+    const debugSpeedBtnEl = document.getElementById('debug-speed-btn');
 
     const hatchModalEl = document.getElementById('hatch-modal');
     const hatchModalTitleEl = document.getElementById('hatch-modal-title');
@@ -2359,7 +2700,7 @@
       if (item.isDanger) {
         statusBannerEl.classList.add('danger-banner');
       }
-      void statusBannerEl.offsetWidth; // Force reflow so pop-in animation replays cleanly
+      void statusBannerEl.offsetWidth;
       statusBannerEl.textContent = item.message;
       statusBannerEl.classList.add('show');
 
@@ -2404,6 +2745,10 @@
         const plate = document.createElement('div');
         plate.className = 'slot-plate';
 
+        const starBadge = document.createElement('div');
+        starBadge.className = 'slot-star-badge';
+        starBadge.style.display = 'none';
+
         const badge = document.createElement('div');
         badge.className = 'slot-level-badge';
         badge.style.display = 'none';
@@ -2426,6 +2771,7 @@
         caption.appendChild(nameEl);
         caption.appendChild(incomeEl);
 
+        plate.appendChild(starBadge);
         plate.appendChild(badge);
         plate.appendChild(content);
         cell.appendChild(plate);
@@ -2438,7 +2784,7 @@
         });
 
         slotsGridEl.appendChild(cell);
-        slotDomNodes.push({ cell, plate, badge, content, nameEl, incomeEl, lastSig: '' });
+        slotDomNodes.push({ cell, plate, starBadge, badge, content, nameEl, incomeEl, lastSig: '' });
       }
     }
 
@@ -2468,6 +2814,7 @@
         node.plate.style.removeProperty('--ring-glow');
         node.plate.style.removeProperty('box-shadow');
         node.badge.style.display = 'none';
+        node.starBadge.style.display = 'none';
 
         if (owned) {
           const def = CREATURE_MAP[owned.id];
@@ -2476,6 +2823,13 @@
           node.plate.style.setProperty('--ring-glow', rarity.glow);
           if (rarity.rainbow && kidnapSec <= 0) {
             node.plate.classList.add('mythic-ring');
+          }
+
+          // Show small gold star badge on plate for each multiple of 10 reached
+          const milestoneStars = getMilestoneStars(owned.level);
+          if (milestoneStars > 0) {
+            node.starBadge.style.display = 'block';
+            node.starBadge.textContent = `★${milestoneStars}`;
           }
 
           node.badge.style.display = 'block';
@@ -2489,6 +2843,7 @@
             node.incomeEl.textContent = `Kidnapped (${kidnapSec}s)`;
             node.incomeEl.style.color = '#FF4D6D';
           } else {
+            // MAX badge only at level 100
             node.badge.textContent = owned.level >= CONFIG.MAX_CREATURE_LEVEL ? 'MAX' : `Lv.${owned.level}`;
             node.content.innerHTML = `<span class="creature-emoji" style="--bob-delay: ${((i * 0.23) % 1.8).toFixed(2)}s">${def.emoji}</span>`;
             const inc = getCreatureIncome(owned.id, owned.level);
@@ -2579,16 +2934,16 @@
         let effectText = '';
         if (key === 'guardDog') {
           effectText = lvl === 0
-            ? 'Next: Hits every 4.0s'
-            : `Active: Hits every ${getGuardDogIntervalSec(lvl).toFixed(1)}s`;
+            ? 'Lv.1: Hits every 4.0s (down to 1.2s at Lv.10)'
+            : `Active: Hits every ${getGuardDogIntervalSec(lvl).toFixed(2)}s`;
         } else if (key === 'laserFence') {
           effectText = lvl === 0
-            ? 'Next: Slows raiders 10%'
-            : `Active: Slows raiders ${Math.round(lvl * 10)}%`;
+            ? 'Lv.1: Slows raiders 5% (max 50%)'
+            : `Active: Slows raiders ${Math.round(lvl * 5)}%`;
         } else if (key === 'vaultDoor') {
           effectText = lvl === 0
-            ? 'Next: +1s steal delay'
-            : `Active: +${getVaultDoorExtraSec(lvl)}s steal delay`;
+            ? 'Lv.1: +0.5s steal delay (max 5s)'
+            : `Active: +${getVaultDoorExtraSec(lvl).toFixed(1)}s steal delay`;
         }
 
         const row = document.createElement('div');
@@ -2604,7 +2959,7 @@
           </div>
           <button type="button" class="btn-3d btn-purple defense-buy-btn ${canAfford ? 'affordable' : 'disabled'}" data-def-key="${key}">
             <span>${isMax ? 'MAXED' : lvl === 0 ? 'Unlock' : 'Upgrade'}</span>
-            <span>${isMax ? 'Lv.5' : '🪙 ' + formatNumber(cost)}</span>
+            <span>${isMax ? 'Lv.10' : '🪙 ' + formatNumber(cost)}</span>
           </button>
         `;
 
@@ -2642,11 +2997,42 @@
       updateHUD();
     }
 
+    function updateEggSelectorUI() {
+      const goldenUnlocked = isEggUnlocked('golden');
+      const cosmicUnlocked = isEggUnlocked('cosmic');
+
+      if (!isEggUnlocked(state.selectedEgg)) {
+        state.selectedEgg = 'basic';
+      }
+
+      // Basic Tab
+      eggTabBasicEl.className = `egg-tab-btn ${state.selectedEgg === 'basic' ? 'active' : ''}`;
+      eggTabBasicEl.textContent = `🥚 Basic (${formatNumber(getEggCost('basic'))})`;
+
+      // Golden Tab
+      if (goldenUnlocked) {
+        eggTabGoldenEl.className = `egg-tab-btn ${state.selectedEgg === 'golden' ? 'active' : ''}`;
+        eggTabGoldenEl.textContent = `✨ Golden (${formatNumber(getEggCost('golden'))})`;
+      } else {
+        eggTabGoldenEl.className = 'egg-tab-btn locked';
+        eggTabGoldenEl.textContent = `🔒 Golden (${formatNumber(CONFIG.EGG_TYPES.golden.unlockTotalCoins)})`;
+      }
+
+      // Cosmic Tab
+      if (cosmicUnlocked) {
+        eggTabCosmicEl.className = `egg-tab-btn ${state.selectedEgg === 'cosmic' ? 'active' : ''}`;
+        eggTabCosmicEl.textContent = `🌌 Cosmic (${formatNumber(getEggCost('cosmic'))})`;
+      } else {
+        eggTabCosmicEl.className = 'egg-tab-btn locked';
+        eggTabCosmicEl.textContent = `🔒 Cosmic (${formatNumber(CONFIG.EGG_TYPES.cosmic.unlockTotalCoins)})`;
+      }
+    }
+
     function updateHUD() {
       // Top Bar
       coinDisplayEl.textContent = formatNumber(state.displayedCoins);
       const incomePerSec = getTotalIncomePerSecond();
-      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec`;
+      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec${debugSpeed10x ? ' (×10)' : ''}`;
       discoveredCountEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
       totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
       muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
@@ -2685,8 +3071,11 @@
         }
       }
 
-      // Bottom Hatch Button
-      const eggCost = getEggCost(state.hatchCount);
+      // Egg Selector & Bottom Hatch Button
+      updateEggSelectorUI();
+      const selEgg = CONFIG.EGG_TYPES[state.selectedEgg] || CONFIG.EGG_TYPES.basic;
+      const eggCost = getEggCost(selEgg.id);
+      hatchMainLabelEl.textContent = `${selEgg.emoji} Hatch ${selEgg.shortName}`;
       hatchCostLabelEl.textContent = `🪙 ${formatNumber(eggCost)}`;
       if (state.coins >= eggCost && !isHatching) {
         hatchBtnEl.classList.remove('disabled');
@@ -2713,12 +3102,13 @@
       // Bottom Defense Button
       const minDefCost = findCheapestDefenseUpgradeCost();
       const totalDefLvls = state.defenseUpgrades.guardDog + state.defenseUpgrades.laserFence + state.defenseUpgrades.vaultDoor;
+      const maxTotalDefLvls = CONFIG.DEFENSE_MAX_LEVEL * 3;
       if (minDefCost < Infinity && state.coins >= minDefCost) {
         defenseBtnEl.classList.add('affordable');
         defenseSubLabelEl.textContent = `🪙 ${formatNumber(minDefCost)}`;
       } else {
         defenseBtnEl.classList.remove('affordable');
-        defenseSubLabelEl.textContent = totalDefLvls > 0 ? `Lv.${totalDefLvls}/15` : 'Upgrades';
+        defenseSubLabelEl.textContent = totalDefLvls > 0 ? `Lv.${totalDefLvls}/${maxTotalDefLvls}` : 'Upgrades';
       }
 
       // Book count label
@@ -2734,6 +3124,13 @@
         renderDefenseModalContent();
       }
 
+      // Update open Settings Modal if visible
+      if (settingsModalEl.classList.contains('active')) {
+        settingsTotalEarnedEl.textContent = formatNumber(state.totalCoinsEarned);
+        settingsHatchesEl.textContent = formatNumber(state.hatchCount);
+        settingsDiscoveredEl.textContent = `${state.discoveredCreatures.length} / ${CONFIG.CREATURES.length}`;
+      }
+
       renderSlotsGrid();
     }
 
@@ -2745,14 +3142,12 @@
       const isBossRaid = !isFirstRaid && (raidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
       const income = getFullPotentialIncomePerSecond();
 
-      // Number of raiders (3 to 6) grows slowly with player's income & raid count
       const incomeTier = Math.floor(Math.log10(Math.max(1, income)));
       const count = isFirstRaid
         ? CONFIG.RAID_MIN_RAIDERS
-        : Math.min(CONFIG.RAID_MAX_RAIDERS, CONFIG.RAID_MIN_RAIDERS + Math.floor((raidNum - 1) / 3) + Math.floor(incomeTier / 2));
+        : Math.min(CONFIG.RAID_MAX_RAIDERS, CONFIG.RAID_MIN_RAIDERS + Math.floor((raidNum - 1) / 3) + Math.floor(incomeTier / 3));
 
-      // Hits grow slowly with player's income
-      const bonusHp = isFirstRaid ? 0 : Math.max(0, Math.floor(Math.log10(Math.max(1, income)) * 0.65));
+      const bonusHp = isFirstRaid ? 0 : Math.max(0, Math.floor(Math.log10(Math.max(1, income)) * 0.55));
 
       const schedule = [];
       for (let i = 0; i < count; i++) {
@@ -2760,9 +3155,9 @@
         const lane = i % 3;
         let typeKey = Math.random() < 0.45 ? 'fox' : 'raccoon';
         if (isFirstRaid) {
-          typeKey = 'fox'; // 1 hit on first raid so it's easy
+          typeKey = 'fox';
         } else if (isBossRaid && i === count - 1) {
-          typeKey = 'bear'; // Big Bandit boss on every 5th raid
+          typeKey = 'bear';
         }
 
         const baseCfg = CONFIG.RAIDERS[typeKey];
@@ -2842,8 +3237,8 @@
         lane: spec.lane,
         hp: spec.maxHp,
         maxHp: spec.maxHp,
-        progress: 0, // 0 = top of raid area, 1 = touching vault door
-        doorPrySec: 0, // Time spent bashing Vault Door after reaching progress 1
+        progress: 0,
+        doorPrySec: 0,
         el,
         hpFillEl
       };
@@ -2866,7 +3261,6 @@
       const pct = Math.max(0, Math.min(100, (raider.hp / raider.maxHp) * 100));
       raider.hpFillEl.style.width = `${pct}%`;
 
-      // Flash raider, show health bar, shake screen, play sound, burst star particles & drop coins
       raider.el.classList.add('was-hit');
       raider.el.classList.remove('hit-flash');
       void raider.el.offsetWidth;
@@ -2879,7 +3273,6 @@
       const cx = clientX || (rect.left + rect.width / 2);
       const cy = clientY || (rect.top + rect.height / 2);
 
-      // Drop a few coins on every hit
       const dropCoins = Math.max(1, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAIDER_HIT_COIN_RATIO));
       addCoins(dropCoins);
       spawnHitStars(cx, cy, 8);
@@ -2887,14 +3280,12 @@
       spawnFloatingText(cx, cy - 10, `+${formatNumber(dropCoins)}`, '#FFD34D');
 
       if (raider.hp <= 0) {
-        // Remove defeated raider
         if (raider.el && raider.el.parentNode) {
           raider.el.parentNode.removeChild(raider.el);
         }
         const idx = raidRuntime.activeRaiders.indexOf(raider);
         if (idx !== -1) raidRuntime.activeRaiders.splice(idx, 1);
 
-        // Check if all scheduled and active raiders are stopped -> WIN!
         if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
           finishRaidWin();
         }
@@ -2909,7 +3300,6 @@
       state.raidTimerSec = randomRaidIntervalSec();
       setRaidDangerVisuals(false);
 
-      // Bonus coins equal to 60 seconds of income
       const winBonus = Math.max(30, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAID_WIN_INCOME_SECONDS));
       addCoins(winBonus);
       sfxHatchFanfare('Legendary');
@@ -2927,7 +3317,6 @@
     }
 
     function finishRaidLose(raiderCfg) {
-      // First raid is easy and CANNOT be lost!
       if (raidRuntime.raidNumber <= 1) {
         finishRaidWin();
         return;
@@ -2941,7 +3330,6 @@
       triggerScreenShake();
       sfxKidnap();
 
-      // Pick one random non-kidnapped owned creature to kidnap for 90 seconds
       const availableIndices = [];
       for (let i = 0; i < state.ownedCreatures.length; i++) {
         if (safeNumber(state.ownedCreatures[i].kidnappedRemainingSec, 0) <= 0) {
@@ -2964,7 +3352,6 @@
     }
 
     function updateRaidSystem(dtSec) {
-      // 1. Update Kidnapped Creature Countdowns (returns by itself after 90s)
       let kidnapChanged = false;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
         const c = state.ownedCreatures[i];
@@ -2987,13 +3374,11 @@
         renderSlotsGrid();
       }
 
-      // 2. Raids only start counting after the player's first hatch
       if (state.hatchCount < 1) {
         raidHudPillEl.textContent = '🛡️ Hatch your first egg to start raids';
         return;
       }
 
-      // 3. Countdown to next raid
       if (raidRuntime.phase === 'idle' || raidRuntime.phase === 'warning') {
         state.raidTimerSec = Math.max(0, state.raidTimerSec - dtSec);
         const remCeil = Math.ceil(state.raidTimerSec);
@@ -3014,11 +3399,9 @@
         return;
       }
 
-      // 4. Active Raid Loop
       if (raidRuntime.phase === 'active') {
         raidRuntime.elapsedSec += dtSec;
 
-        // Spawn scheduled raiders
         while (
           raidRuntime.spawnSchedule.length > 0 &&
           raidRuntime.elapsedSec >= raidRuntime.spawnSchedule[0].timeSec
@@ -3030,7 +3413,6 @@
         const remainingRaiders = raidRuntime.spawnSchedule.length + raidRuntime.activeRaiders.length;
         raidHudPillEl.textContent = `⚔️ RAID #${raidRuntime.raidNumber} · Tap Raiders! (${remainingRaiders} left)`;
 
-        // Guard Dog auto-attack on the nearest raider (highest progress)
         const dogLvl = state.defenseUpgrades.guardDog || 0;
         if (dogLvl > 0 && raidRuntime.activeRaiders.length > 0) {
           raidRuntime.guardDogCooldownSec -= dtSec;
@@ -3053,13 +3435,10 @@
           }
         }
 
-        // Move active raiders down their straight lane toward the vault
-        const areaHeight = Math.max(48, raidAreaEl.clientHeight);
-        const runDistancePx = areaHeight - 20; // Runs from top of raid area down to the vault edge
+        const areaHeight = Math.max(44, raidAreaEl.clientHeight);
+        const runDistancePx = areaHeight - 18;
         const laserSlowMult = getLaserSlowMultiplier(state.defenseUpgrades.laserFence);
         const doorExtraSec = getVaultDoorExtraSec(state.defenseUpgrades.vaultDoor);
-
-        // First raid is extra gentle
         const firstRaidSpeedFactor = raidRuntime.raidNumber === 1 ? 0.58 : 1.0;
 
         for (let i = raidRuntime.activeRaiders.length - 1; i >= 0; i--) {
@@ -3069,7 +3448,6 @@
           if (r.progress < 1) {
             r.progress = Math.min(1, r.progress + dtSec / baseCrossSec);
           } else {
-            // Raider reached vault door; must wait out Vault Door bonus seconds
             r.doorPrySec += dtSec;
             if (r.doorPrySec >= doorExtraSec) {
               finishRaidLose(r.cfg);
@@ -3077,12 +3455,10 @@
             }
           }
 
-          // Position raider smoothly along the straight lane
           const yPx = Math.round(r.progress * runDistancePx);
           r.el.style.top = `${yPx}px`;
         }
 
-        // Safety check: if all raiders are gone or 15s + door time elapsed on Raid 1
         if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
           finishRaidWin();
         }
@@ -3158,11 +3534,20 @@
       const def = CREATURE_MAP[entry.id];
       const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
       const kidnapSec = Math.ceil(safeNumber(entry.kidnappedRemainingSec, 0));
+      const milestoneStars = getMilestoneStars(entry.level);
+      const starMult = Math.pow(CONFIG.MILESTONE_MULT_BASE, milestoneStars);
 
       upgradeModalEmojiEl.textContent = def.emoji;
       upgradeModalTitleEl.textContent = def.name;
       upgradeModalRarityEl.textContent = `${rarity.name} Creature`;
       upgradeModalRarityEl.style.color = rarity.color;
+
+      if (milestoneStars > 0) {
+        upgradeModalStarEl.style.display = 'block';
+        upgradeModalStarEl.textContent = `★${milestoneStars}`;
+      } else {
+        upgradeModalStarEl.style.display = 'none';
+      }
 
       upgradeModalPlateEl.className = 'slot-plate modal-plate';
       upgradeModalPlateEl.style.setProperty('--ring-color', rarity.color);
@@ -3176,6 +3561,7 @@
 
       const curIncome = getCreatureIncome(entry.id, entry.level);
       upgradeModalLevelEl.textContent = `Lv. ${entry.level} / ${CONFIG.MAX_CREATURE_LEVEL}`;
+      upgradeModalStarsRowEl.textContent = `${milestoneStars} ★ (×${formatNumber(starMult)} bonus)`;
 
       if (kidnapSec > 0) {
         upgradeModalStatusEl.textContent = `⛓️ Kidnapped (${kidnapSec}s left)`;
@@ -3200,7 +3586,7 @@
 
       if (entry.level >= CONFIG.MAX_CREATURE_LEVEL) {
         upgradeModalNextEl.textContent = 'MAXED!';
-        modalUpgradeBtnEl.textContent = 'MAX LEVEL (10)';
+        modalUpgradeBtnEl.textContent = 'MAX LEVEL (100)';
         modalUpgradeBtnEl.classList.remove('affordable');
         modalUpgradeBtnEl.classList.add('disabled');
       } else {
@@ -3263,7 +3649,9 @@
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
         spawnBurstSparkles(cx, cy, '#FFD34D', 10);
-        spawnFloatingText(cx, cy - 16, `${def.emoji} Lv.${entry.level}!`, '#5CFF9D');
+        const isMilestone = entry.level % CONFIG.MILESTONE_INTERVAL === 0;
+        const label = isMilestone ? `★ Lv.${entry.level} (×2)!` : `${def.emoji} Lv.${entry.level}!`;
+        spawnFloatingText(cx, cy - 16, label, isMilestone ? '#FFD34D' : '#5CFF9D');
       }
 
       saveGame();
@@ -3272,17 +3660,36 @@
     }
 
     /* ==========================================================================
-       10. EGG HATCH ODDS & FULL-VAULT HATCH RESOLUTION RULE
+       10. MULTI-EGG HATCH ODDS & FULL-VAULT HATCH RESOLUTION RULE
        ========================================================================== */
-    function rollCreatureFromEgg() {
+    function selectEggType(eggTypeKey) {
+      const eggCfg = CONFIG.EGG_TYPES[eggTypeKey];
+      if (!eggCfg) return;
+      if (!isEggUnlocked(eggTypeKey)) {
+        sfxPop();
+        showBanner(
+          `🔒 ${eggCfg.name} unlocks after ${formatNumber(eggCfg.unlockTotalCoins)} total coins earned! (${formatNumber(state.totalCoinsEarned)}/${formatNumber(eggCfg.unlockTotalCoins)})`,
+          false
+        );
+        return;
+      }
+      state.selectedEgg = eggTypeKey;
+      sfxPop();
+      saveGame();
+      updateHUD();
+    }
+
+    function rollCreatureFromEgg(eggTypeKey) {
+      const eggCfg = CONFIG.EGG_TYPES[eggTypeKey] || CONFIG.EGG_TYPES.basic;
+      const oddsMap = eggCfg.odds;
+      const rarityKeys = Object.keys(oddsMap);
       const roll = Math.random();
       let cumulative = 0;
-      let chosenRarity = 'Common';
-      const rarityKeys = Object.keys(CONFIG.RARITIES);
+      let chosenRarity = rarityKeys[rarityKeys.length - 1];
 
       for (let i = 0; i < rarityKeys.length; i++) {
         const key = rarityKeys[i];
-        cumulative += CONFIG.RARITIES[key].chance;
+        cumulative += oddsMap[key];
         if (roll <= cumulative) {
           chosenRarity = key;
           break;
@@ -3298,7 +3705,7 @@
       // Every hatched creature is added to discoveredCreatures, even if converted
       recordDiscovery(creatureDef.id);
 
-      // a) Check if player already owns this creature
+      // a) If the player already owns it: level it up by 1 (if already Level 100, convert to coins instead)
       const existingIndex = state.ownedCreatures.findIndex((c) => c.id === creatureDef.id);
       if (existingIndex !== -1) {
         const existing = state.ownedCreatures[existingIndex];
@@ -3307,7 +3714,8 @@
           const msg = `Duplicate! ${creatureDef.name} leveled up to Lv.${existing.level}!`;
           return { type: 'levelup', slotIndex: existingIndex, message: msg };
         } else {
-          const convertedCoins = getConversionCoins(creatureDef.id, 1);
+          // Duplicate of a Level 100 creature -> 60s of that creature's current income
+          const convertedCoins = getConversionCoins(creatureDef.id, existing.level);
           addCoins(convertedCoins);
           const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
           showBanner(msg, true);
@@ -3323,7 +3731,7 @@
         return { type: 'placed', slotIndex: newSlotIndex, message: msg };
       }
 
-      // c) Else (vault full): find the owned creature with the lowest current income/sec (base x level)
+      // c) Else (vault full): compare new Lv.1 income against lowest current income/sec owned creature
       let lowestIndex = 0;
       let lowestIncome = Infinity;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
@@ -3358,31 +3766,34 @@
 
     function startHatchSequence() {
       if (isHatching) return;
-      const cost = getEggCost(state.hatchCount);
+      if (!isEggUnlocked(state.selectedEgg)) {
+        state.selectedEgg = 'basic';
+      }
+      const eggCfg = CONFIG.EGG_TYPES[state.selectedEgg] || CONFIG.EGG_TYPES.basic;
+      const cost = getEggCost(eggCfg.id);
       if (state.coins < cost) {
         sfxPop();
-        showBanner(`Need ${formatNumber(cost)} coins to hatch!`, false);
+        showBanner(`Need ${formatNumber(cost)} coins to hatch ${eggCfg.name}!`, false);
         return;
       }
 
       const wasFirstHatch = state.hatchCount === 0;
       isHatching = true;
       state.coins = safeNumber(state.coins - cost, 0);
+      state.eggHatches[eggCfg.id] = safeNumber(state.eggHatches[eggCfg.id], 0) + 1;
       state.hatchCount += 1;
 
       if (wasFirstHatch) {
-        // Schedule the first raid exactly 90 seconds after the player's first hatch
         state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
       }
 
       updateHUD();
 
-      // Prepare modal for shaking egg
-      hatchModalTitleEl.textContent = 'Hatching Basic Egg...';
+      hatchModalTitleEl.textContent = `Hatching ${eggCfg.name}...`;
       hatchModalRarityEl.textContent = '';
       hatchOutcomeBoxEl.style.display = 'none';
       hatchContinueBtnEl.style.display = 'none';
-      hatchStageEl.innerHTML = `<div class="egg-emoji shaking">🥚</div>`;
+      hatchStageEl.innerHTML = `<div class="egg-emoji shaking">${eggCfg.emoji}</div>`;
       hatchModalEl.classList.add('active');
 
       sfxEggShake();
@@ -3398,11 +3809,10 @@
 
       // Step 2: White Flash + Creature Reveal
       setTimeout(() => {
-        const hatched = rollCreatureFromEgg();
+        const hatched = rollCreatureFromEgg(eggCfg.id);
         const rarity = CONFIG.RARITIES[hatched.rarity] || CONFIG.RARITIES.Common;
         const outcome = resolveHatchedCreature(hatched);
 
-        // White flash
         hatchFlashEl.classList.add('flash');
         setTimeout(() => hatchFlashEl.classList.remove('flash'), 60);
 
@@ -3442,12 +3852,149 @@
     }
 
     /* ==========================================================================
-       11. POINTER EVENT LISTENERS (No keyboard required, touch/mouse only)
+       11. POINTER EVENT LISTENERS (Including Settings Reset & Debug 5-Tap Panel)
        ========================================================================== */
     function setupEvents() {
       window.addEventListener('contextmenu', (e) => e.preventDefault());
       window.addEventListener('resize', () => {
         updateCanvasSizes();
+      });
+
+      // Debug Tools: Tapping the coin counter 5 times quickly opens the Debug Panel
+      coinClusterEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        if (!DEBUG_TOOLS) return;
+        const now = performance.now();
+        debugTapTimestamps.push(now);
+        while (debugTapTimestamps.length > 0 && now - debugTapTimestamps[0] > CONFIG.DEBUG_TAP_WINDOW_MS) {
+          debugTapTimestamps.shift();
+        }
+        if (debugTapTimestamps.length >= CONFIG.DEBUG_TAP_COUNT) {
+          debugTapTimestamps.length = 0;
+          sfxUpgrade();
+          debugSpeedBtnEl.textContent = `⚡ Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`;
+          debugModalEl.classList.add('active');
+        }
+      });
+
+      // Debug Panel Buttons
+      debugModalCloseEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        debugModalEl.classList.remove('active');
+      });
+
+      debugModalEl.addEventListener('pointerdown', (e) => {
+        if (e.target === debugModalEl) {
+          unlockAudio();
+          sfxPop();
+          debugModalEl.classList.remove('active');
+        }
+      });
+
+      debugAdd1mBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        addCoins(CONFIG.DEBUG_ADD_COINS);
+        sfxCoin();
+        showBanner('🛠️ Debug: Added +1M coins!', false);
+        saveGame();
+        updateHUD();
+      });
+
+      debugSkip1hBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        const oneHourCoins = Math.max(100, Math.round(getTotalIncomePerSecond() * CONFIG.DEBUG_SKIP_SECONDS));
+        addCoins(oneHourCoins);
+        sfxCoin();
+        showBanner(`🛠️ Debug: +${formatNumber(oneHourCoins)} (1h income)!`, false);
+        saveGame();
+        updateHUD();
+      });
+
+      debugSpeedBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        debugSpeed10x = !debugSpeed10x;
+        sfxPop();
+        debugSpeedBtnEl.textContent = `⚡ Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`;
+        showBanner(`🛠️ Debug Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`, false);
+        updateHUD();
+      });
+
+      // Settings Gear & Reset Progress Confirmation
+      settingsBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        resetInitialBoxEl.style.display = 'block';
+        resetConfirmBoxEl.style.display = 'none';
+        updateHUD();
+        settingsModalEl.classList.add('active');
+      });
+
+      settingsModalCloseEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        settingsModalEl.classList.remove('active');
+      });
+
+      settingsModalEl.addEventListener('pointerdown', (e) => {
+        if (e.target === settingsModalEl) {
+          unlockAudio();
+          sfxPop();
+          settingsModalEl.classList.remove('active');
+        }
+      });
+
+      resetProgressBtnEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        resetInitialBoxEl.style.display = 'none';
+        resetConfirmBoxEl.style.display = 'flex';
+      });
+
+      resetConfirmCancelEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxPop();
+        resetInitialBoxEl.style.display = 'block';
+        resetConfirmBoxEl.style.display = 'none';
+      });
+
+      resetConfirmYesEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        sfxKidnap();
+        resetStateToFresh();
+        saveGame();
+        settingsModalEl.classList.remove('active');
+        showBanner('Progress reset! Started fresh with 120 coins.', false);
+        updateHUD();
+      });
+
+      // Egg Selector Tabs
+      eggTabBasicEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        selectEggType('basic');
+      });
+
+      eggTabGoldenEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        selectEggType('golden');
+      });
+
+      eggTabCosmicEl.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        unlockAudio();
+        selectEggType('cosmic');
       });
 
       // Vault Tap
@@ -3615,7 +4162,6 @@
 
     /* ==========================================================================
        12. MAIN GAME LOOP (requestAnimationFrame with dt capped at 100ms)
-       Pauses all game and raid timers when tab is hidden.
        ========================================================================== */
     let lastFrameTime = performance.now();
     let hudRefreshAccumulator = 0;
@@ -3631,35 +4177,36 @@
       const rawDeltaMs = Math.max(0, now - lastFrameTime);
       lastFrameTime = now;
       const clampedDeltaMs = Math.min(rawDeltaMs, CONFIG.MAX_DELTA_MS);
-      const dtSec = clampedDeltaMs / 1000;
+      const baseDtSec = clampedDeltaMs / 1000;
+      const gameDtSec = debugSpeed10x ? baseDtSec * CONFIG.DEBUG_SPEED_MULT : baseDtSec;
 
-      // 1. Add passive income per second (from non-kidnapped creatures)
+      // 1. Add passive income per second
       const incomePerSec = getTotalIncomePerSecond();
-      if (incomePerSec > 0 && dtSec > 0) {
-        addCoins(incomePerSec * dtSec);
+      if (incomePerSec > 0 && gameDtSec > 0) {
+        addCoins(incomePerSec * gameDtSec);
       }
 
       // 2. Update Raid timers, active raiders, Guard Dog, and kidnap timers
-      updateRaidSystem(dtSec);
+      updateRaidSystem(gameDtSec);
 
       // 3. Smoothly roll displayedCoins toward actual state.coins
       const diff = state.coins - state.displayedCoins;
       if (Math.abs(diff) < 0.05) {
         state.displayedCoins = state.coins;
       } else {
-        state.displayedCoins += diff * Math.min(1, dtSec * CONFIG.COIN_ROLL_SPEED);
+        state.displayedCoins += diff * Math.min(1, baseDtSec * CONFIG.COIN_ROLL_SPEED);
       }
       coinDisplayEl.textContent = formatNumber(state.displayedCoins);
 
       // 4. Refresh button affordability states periodically (10x/sec)
-      hudRefreshAccumulator += dtSec;
+      hudRefreshAccumulator += baseDtSec;
       if (hudRefreshAccumulator >= 0.1) {
         hudRefreshAccumulator = 0;
         updateHUD();
       }
 
       // 5. Update & draw stars and particles
-      updateAndDrawParticles(dtSec);
+      updateAndDrawParticles(baseDtSec);
     }
 
     /* ==========================================================================
@@ -3673,13 +4220,11 @@
       setupEvents();
       updateHUD();
 
-      // Show offline earnings popup if player earned coins while away
       if (pendingOfflineCoins > 0) {
         offlineModalTextEl.innerHTML = `Welcome back! You earned <strong style="color: #FFD34D;">${formatNumber(pendingOfflineCoins)}</strong>`;
         offlineModalEl.classList.add('active');
       }
 
-      // Autosave every 10 seconds
       setInterval(() => {
         if (!document.hidden) {
           saveGame();
