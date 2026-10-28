@@ -30,7 +30,7 @@
       overflow: hidden;
       overscroll-behavior: none;
       touch-action: manipulation;
-      background: linear-gradient(180deg, #1B1040 0%, #271558 52%, #3A1C71 100%);
+      background: linear-gradient(180deg, #130930 0%, #1F104F 50%, #2E166B 100%);
       color: #FFFFFF;
       font-family: 'Trebuchet MS', 'Segoe UI', system-ui, -apple-system, sans-serif;
       font-weight: 700;
@@ -53,7 +53,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 45;
+      z-index: 55;
     }
 
     /* Red Vignette Overlay for Raid Warning & Active Raid */
@@ -66,7 +66,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 35;
+      z-index: 40;
       background: radial-gradient(circle at 50% 50%, rgba(255, 0, 55, 0) 52%, rgba(255, 20, 70, 0.55) 100%);
       box-shadow: inset 0 0 65px rgba(255, 25, 75, 0.75);
       opacity: 0;
@@ -91,61 +91,64 @@
     }
 
     /* ==========================================================================
-       2. MAIN APP SHELL (Fits 360x640 portrait & 1280x720 landscape with 0 scroll)
+       2. MAIN APP SHELL
+       Fills screen with no empty gaps and no scrolling at 360x640, 360x800,
+       412x915 and 1280x720.
        ========================================================================== */
     #app {
       position: relative;
       z-index: 10;
       width: 100vw;
+      height: 100vh;
       height: 100dvh;
-      max-width: 980px;
+      max-width: 960px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 4px 8px;
-      gap: 3px;
+      padding: 4px 6px;
+      gap: 4px;
       overflow: hidden;
     }
 
     /* ==========================================================================
-       3. TOP BAR: BIG COINS, INCOME PER SECOND, MUTE & SETTINGS GEAR
+       3. TOP BAR: COINS, INCOME PER SECOND, MUTE & SETTINGS GEAR
        ========================================================================== */
     .top-bar {
       position: relative;
-      z-index: 20;
+      z-index: 30;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: linear-gradient(180deg, rgba(42, 24, 92, 0.94) 0%, rgba(24, 13, 56, 0.96) 100%);
-      border: 2px solid rgba(53, 224, 255, 0.38);
-      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(42, 24, 92, 0.95) 0%, rgba(22, 11, 52, 0.97) 100%);
+      border: 2px solid rgba(53, 224, 255, 0.42);
+      border-radius: 16px;
       padding: 4px 10px;
-      min-height: 50px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 2px 1px rgba(255, 255, 255, 0.18);
+      min-height: 46px;
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       flex-shrink: 0;
     }
 
     .coin-cluster {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
       min-width: 0;
       cursor: pointer;
     }
 
     .coin-badge {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       background: radial-gradient(circle at 32% 30%, #FFF5B8 0%, #FFD34D 45%, #E08B00 90%);
       border: 2px solid #FFF2A6;
-      box-shadow: 0 0 14px rgba(255, 211, 77, 0.75), inset 0 -3px 0 rgba(168, 92, 0, 0.65);
+      box-shadow: 0 0 12px rgba(255, 211, 77, 0.75), inset 0 -3px 0 rgba(168, 92, 0, 0.65);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
+      font-size: 18px;
       flex-shrink: 0;
       transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -157,24 +160,23 @@
     .coin-stats {
       display: flex;
       flex-direction: column;
-      line-height: 1.05;
+      line-height: 1.04;
     }
 
     .coin-amount {
-      font-size: clamp(21px, 4.3vw, 30px);
+      font-size: clamp(20px, 4.2vw, 28px);
       font-weight: 900;
       color: #FFD34D;
-      text-shadow: 0 2px 0 #703800, 0 0 14px rgba(255, 211, 77, 0.55);
+      text-shadow: 0 2px 0 #703800, 0 0 12px rgba(255, 211, 77, 0.5);
       letter-spacing: 0.01em;
       white-space: nowrap;
     }
 
     .income-rate {
-      font-size: clamp(11px, 2.2vw, 14px);
+      font-size: clamp(11px, 2.2vw, 13.5px);
       color: #5CFF9D;
-      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 8px rgba(92, 255, 157, 0.45);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 8px rgba(92, 255, 157, 0.4);
       white-space: nowrap;
-      margin-top: 1px;
     }
 
     .top-right-controls {
@@ -188,25 +190,26 @@
       display: none;
       flex-direction: column;
       align-items: flex-end;
-      font-size: 12px;
+      font-size: 11.5px;
       color: #D8CEFF;
       padding-right: 4px;
+      line-height: 1.15;
     }
 
     .stat-chip span {
       color: #35E0FF;
-      font-size: 13px;
+      font-size: 12.5px;
     }
 
     /* ==========================================================================
-       4. 3D CANDY BUTTON SYSTEM (At least 48px tall, 16px radius, shine + bottom edge)
+       4. 3D CANDY BUTTON SYSTEM
        ========================================================================== */
     .btn-3d {
       position: relative;
-      min-height: 48px;
-      border-radius: 16px;
+      min-height: 46px;
+      border-radius: 15px;
       border: 2px solid rgba(255, 255, 255, 0.38);
-      padding: 6px 12px;
+      padding: 5px 10px;
       color: #FFFFFF;
       font-family: inherit;
       font-weight: 800;
@@ -222,7 +225,6 @@
       white-space: nowrap;
     }
 
-    /* Top glossy shine highlight */
     .btn-3d::before {
       content: '';
       position: absolute;
@@ -239,131 +241,94 @@
       transform: translateY(3px) scale(0.97);
     }
 
-    /* Pink Candy Accent Button (Hatch) */
     .btn-pink {
       background: linear-gradient(180deg, #FF70B8 0%, #FF4FA3 55%, #D9237B 100%);
-      box-shadow: 0 5px 0 #8F0D4C, 0 8px 16px rgba(255, 79, 163, 0.35);
+      box-shadow: 0 4px 0 #8F0D4C, 0 6px 14px rgba(255, 79, 163, 0.35);
     }
 
-    /* Gold/Amber Candy Button (Upgrade) */
     .btn-gold {
       background: linear-gradient(180deg, #FFE066 0%, #FFB020 55%, #E08200 100%);
       color: #2A1205;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-      box-shadow: 0 5px 0 #8A4B00, 0 8px 16px rgba(255, 176, 32, 0.35);
+      box-shadow: 0 4px 0 #8A4B00, 0 6px 14px rgba(255, 176, 32, 0.35);
     }
 
-    /* Cyan Vault Button (Buy Slot / Collect) */
     .btn-cyan {
       background: linear-gradient(180deg, #6FF0FF 0%, #35E0FF 55%, #00A8D6 100%);
       color: #092235;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-      box-shadow: 0 5px 0 #00668A, 0 8px 16px rgba(53, 224, 255, 0.35);
+      box-shadow: 0 4px 0 #00668A, 0 6px 14px rgba(53, 224, 255, 0.35);
     }
 
-    /* Purple/Indigo Candy Button (Defense) */
     .btn-purple {
       background: linear-gradient(180deg, #C078FF 0%, #9B4DFF 55%, #6E22CC 100%);
       color: #FFFFFF;
-      box-shadow: 0 5px 0 #430F85, 0 8px 16px rgba(155, 77, 255, 0.35);
+      box-shadow: 0 4px 0 #430F85, 0 6px 14px rgba(155, 77, 255, 0.35);
     }
 
-    /* Red Danger Button (Reset confirmation) */
     .btn-danger {
       background: linear-gradient(180deg, #FF6B8B 0%, #FF2A55 55%, #B80028 100%);
       color: #FFFFFF;
-      box-shadow: 0 5px 0 #6B0018, 0 8px 16px rgba(255, 42, 85, 0.4);
+      box-shadow: 0 4px 0 #6B0018, 0 6px 14px rgba(255, 42, 85, 0.4);
     }
 
-    /* Mute & Gear Buttons */
     .btn-icon-top {
-      min-width: 48px;
-      min-height: 48px;
-      padding: 0 10px;
+      min-width: 42px;
+      min-height: 40px;
+      height: 40px;
+      padding: 0 8px;
+      border-radius: 12px;
       background: linear-gradient(180deg, #4E328C 0%, #351E69 100%);
-      box-shadow: 0 4px 0 #1B0D3D, 0 6px 12px rgba(0, 0, 0, 0.35);
-      font-size: 19px;
+      box-shadow: 0 3px 0 #1B0D3D, 0 5px 10px rgba(0, 0, 0, 0.35);
+      font-size: 18px;
     }
 
-    /* Affordable pulse glow */
     @keyframes affordablePulsePink {
-      0%, 100% {
-        box-shadow: 0 5px 0 #8F0D4C, 0 0 12px rgba(255, 79, 163, 0.55), 0 0 24px rgba(255, 79, 163, 0.35);
-      }
-      50% {
-        box-shadow: 0 5px 0 #8F0D4C, 0 0 22px rgba(255, 79, 163, 0.95), 0 0 36px rgba(255, 211, 77, 0.55);
-      }
+      0%, 100% { box-shadow: 0 4px 0 #8F0D4C, 0 0 10px rgba(255, 79, 163, 0.55); }
+      50% { box-shadow: 0 4px 0 #8F0D4C, 0 0 20px rgba(255, 79, 163, 0.95), 0 0 30px rgba(255, 211, 77, 0.5); }
     }
 
     @keyframes affordablePulseGold {
-      0%, 100% {
-        box-shadow: 0 5px 0 #8A4B00, 0 0 12px rgba(255, 211, 77, 0.55), 0 0 24px rgba(255, 176, 32, 0.35);
-      }
-      50% {
-        box-shadow: 0 5px 0 #8A4B00, 0 0 22px rgba(255, 211, 77, 0.95), 0 0 36px rgba(255, 211, 77, 0.65);
-      }
+      0%, 100% { box-shadow: 0 4px 0 #8A4B00, 0 0 10px rgba(255, 211, 77, 0.55); }
+      50% { box-shadow: 0 4px 0 #8A4B00, 0 0 20px rgba(255, 211, 77, 0.95), 0 0 30px rgba(255, 211, 77, 0.6); }
     }
 
     @keyframes affordablePulseCyan {
-      0%, 100% {
-        box-shadow: 0 5px 0 #00668A, 0 0 12px rgba(53, 224, 255, 0.55), 0 0 24px rgba(53, 224, 255, 0.35);
-      }
-      50% {
-        box-shadow: 0 5px 0 #00668A, 0 0 22px rgba(53, 224, 255, 0.95), 0 0 36px rgba(53, 224, 255, 0.65);
-      }
+      0%, 100% { box-shadow: 0 3px 0 #00668A, 0 0 10px rgba(53, 224, 255, 0.55); }
+      50% { box-shadow: 0 3px 0 #00668A, 0 0 20px rgba(53, 224, 255, 0.95), 0 0 30px rgba(53, 224, 255, 0.65); }
     }
 
     @keyframes affordablePulsePurple {
-      0%, 100% {
-        box-shadow: 0 5px 0 #430F85, 0 0 12px rgba(192, 120, 255, 0.55), 0 0 24px rgba(155, 77, 255, 0.35);
-      }
-      50% {
-        box-shadow: 0 5px 0 #430F85, 0 0 22px rgba(192, 120, 255, 0.95), 0 0 36px rgba(53, 224, 255, 0.55);
-      }
+      0%, 100% { box-shadow: 0 4px 0 #430F85, 0 0 10px rgba(192, 120, 255, 0.55); }
+      50% { box-shadow: 0 4px 0 #430F85, 0 0 20px rgba(192, 120, 255, 0.95), 0 0 30px rgba(53, 224, 255, 0.5); }
     }
 
-    .btn-pink.affordable {
-      animation: affordablePulsePink 1.6s infinite ease-in-out;
-    }
+    .btn-pink.affordable { animation: affordablePulsePink 1.6s infinite ease-in-out; }
+    .btn-gold.affordable { animation: affordablePulseGold 1.6s infinite ease-in-out; }
+    .btn-cyan.affordable { animation: affordablePulseCyan 1.6s infinite ease-in-out; }
+    .btn-purple.affordable { animation: affordablePulsePurple 1.6s infinite ease-in-out; }
 
-    .btn-gold.affordable {
-      animation: affordablePulseGold 1.6s infinite ease-in-out;
-    }
-
-    .btn-cyan.affordable {
-      animation: affordablePulseCyan 1.6s infinite ease-in-out;
-    }
-
-    .btn-purple.affordable {
-      animation: affordablePulsePurple 1.6s infinite ease-in-out;
-    }
-
-    /* Greyed out state when unaffordable or locked (high-legibility text!) */
     .btn-3d.disabled {
       background: linear-gradient(180deg, #554D74 0%, #3E3759 60%, #2D2742 100%) !important;
       color: #E2DDF5 !important;
       border-color: rgba(255, 255, 255, 0.25) !important;
-      box-shadow: 0 4px 0 #1B172B !important;
+      box-shadow: 0 3px 0 #1B172B !important;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85) !important;
       animation: none !important;
       cursor: default;
     }
 
     /* ==========================================================================
-       5. NOTIFICATION BANNER (Large centered dark rounded pill with gold/red border)
-       Just below the top bar, pop-in animation, stays visible for 3 seconds.
+       5. NOTIFICATION BANNER (Centered just below top bar, never cut off)
        ========================================================================== */
     @keyframes bannerPopIn {
       0% {
         opacity: 0;
-        transform: translateX(-50%) translateY(-14px) scale(0.68);
+        transform: translateX(-50%) translateY(-14px) scale(0.72);
       }
       65% {
         opacity: 1;
-        transform: translateX(-50%) translateY(2px) scale(1.06);
-      }
-      85% {
-        transform: translateX(-50%) translateY(-1px) scale(0.98);
+        transform: translateX(-50%) translateY(2px) scale(1.04);
       }
       100% {
         opacity: 1;
@@ -373,27 +338,26 @@
 
     #status-banner {
       position: fixed;
-      top: 58px;
+      top: 54px;
       left: 50%;
       transform: translateX(-50%) translateY(-12px) scale(0.85);
-      z-index: 80;
+      z-index: 90;
       background: linear-gradient(180deg, rgba(24, 13, 56, 0.98) 0%, rgba(14, 7, 36, 0.98) 100%);
-      border: 3px solid #FFD34D;
+      border: 2.5px solid #FFD34D;
       border-radius: 999px;
-      padding: 8px 20px;
+      padding: 7px 18px;
       color: #FFFFFF;
-      font-size: clamp(13px, 3.2vw, 17px);
+      font-size: clamp(12.5px, 3vw, 16px);
       font-weight: 900;
       text-align: center;
       text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
-      box-shadow:
-        0 10px 28px rgba(0, 0, 0, 0.75),
-        0 0 22px rgba(255, 211, 77, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.78), 0 0 20px rgba(255, 211, 77, 0.55);
       pointer-events: none;
       opacity: 0;
       width: max-content;
-      max-width: 94vw;
+      max-width: calc(100vw - 16px);
+      white-space: normal;
+      overflow-wrap: break-word;
       line-height: 1.2;
       transition: opacity 0.16s ease, transform 0.16s ease;
     }
@@ -407,140 +371,256 @@
 
     #status-banner.show {
       opacity: 1;
-      animation: bannerPopIn 0.34s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation: bannerPopIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     /* ==========================================================================
-       6. MIDDLE ARENA: RAID AREA (3 LANES) + HERO VAULT + COMPACT 4x3 GRID
+       6. RAID ARENA & CONVERGING PERSPECTIVE LANES + VAULT CORE CRYSTAL
+       Raid Arena fills ALL space between top bar and vault, stretching with height.
        ========================================================================== */
     .arena {
-      flex: 1;
+      flex: 1 1 auto;
       min-height: 0;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      gap: 3px;
+      gap: 4px;
     }
 
-    /* RAID AREA: Empty space between the top bar and the vault! */
-    #raid-area {
+    /* Upper wrapper holding Raid Arena + Vault Core crystal at convergence point */
+    .raid-vault-stage {
       position: relative;
+      flex: 1 1 auto;
+      min-height: 92px;
       width: 100%;
-      max-width: 680px;
-      height: 58px;
-      background: linear-gradient(180deg, rgba(18, 9, 44, 0.65) 0%, rgba(32, 16, 72, 0.35) 100%);
-      border: 1.5px solid rgba(53, 224, 255, 0.22);
-      border-radius: 16px;
-      overflow: visible;
-      flex-shrink: 0;
       display: flex;
-      align-items: stretch;
-      justify-content: space-around;
-      z-index: 30;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* RAID ARENA: stretches to fill ALL space between top bar and the vault */
+    #raid-area {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 24px;
+      border-radius: 20px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 75% 55% at 50% 95%, rgba(53, 224, 255, 0.22) 0%, rgba(53, 224, 255, 0) 70%),
+        radial-gradient(ellipse 90% 50% at 50% 0%, rgba(155, 77, 255, 0.16) 0%, transparent 65%),
+        linear-gradient(180deg, rgba(12, 6, 32, 0.92) 0%, rgba(20, 10, 52, 0.86) 65%, rgba(28, 15, 68, 0.94) 100%);
+      border: 1.5px solid rgba(53, 224, 255, 0.3);
+      box-shadow: inset 0 8px 24px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.35);
+      z-index: 12;
+    }
+
+    /* Faint perspective floor grid overlay inside Raid Arena */
+    #raid-area::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(180deg, rgba(53, 224, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(53, 224, 255, 0.05) 1px, transparent 1px);
+      background-size: 100% 22px, 34px 100%;
+      pointer-events: none;
+      opacity: 0.85;
     }
 
     #raid-area.raid-danger {
-      border-color: rgba(255, 59, 107, 0.75);
-      background: linear-gradient(180deg, rgba(88, 10, 36, 0.65) 0%, rgba(44, 8, 32, 0.45) 100%);
-      box-shadow: 0 0 18px rgba(255, 45, 95, 0.4), inset 0 0 16px rgba(255, 45, 95, 0.25);
+      border-color: rgba(255, 59, 107, 0.85);
+      background:
+        radial-gradient(ellipse 75% 55% at 50% 95%, rgba(255, 45, 95, 0.32) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(58, 6, 26, 0.9) 0%, rgba(36, 6, 28, 0.88) 100%);
+      box-shadow: 0 0 20px rgba(255, 45, 95, 0.4), inset 0 0 24px rgba(255, 45, 95, 0.25);
+    }
+
+    /* Converging Perspective Lanes SVG */
+    .raid-lanes-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #raid-area.raid-danger .lane-track-poly {
+      fill: rgba(255, 59, 107, 0.16);
+      stroke: rgba(255, 92, 138, 0.55);
+    }
+
+    #raid-area.raid-danger .lane-center-line {
+      stroke: rgba(255, 110, 145, 0.75);
+    }
+
+    /* 3 Spawn Gates at the top of the 3 lanes (20%, 50%, 80%) */
+    .spawn-gates-row {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .spawn-gate {
+      position: absolute;
+      top: 3px;
+      transform: translateX(-50%);
+      width: 58px;
+      height: 22px;
+      border-radius: 12px 12px 6px 6px;
+      background: radial-gradient(ellipse at 50% 80%, rgba(53, 224, 255, 0.45) 0%, rgba(20, 10, 52, 0.95) 75%);
+      border: 2px solid rgba(53, 224, 255, 0.65);
+      border-bottom: 2px solid #35E0FF;
+      box-shadow: 0 0 12px rgba(53, 224, 255, 0.5), inset 0 2px 6px rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spawn-gate::after {
+      content: '';
+      width: 34px;
+      height: 6px;
+      border-radius: 999px;
+      background: #35E0FF;
+      box-shadow: 0 0 8px #35E0FF;
+      opacity: 0.85;
+    }
+
+    .spawn-gate.gate-0 { left: 20%; }
+    .spawn-gate.gate-1 { left: 50%; }
+    .spawn-gate.gate-2 { left: 80%; }
+
+    #raid-area.raid-danger .spawn-gate {
+      border-color: #FF3B6B;
+      background: radial-gradient(ellipse at 50% 80%, rgba(255, 59, 107, 0.6) 0%, rgba(48, 6, 22, 0.95) 75%);
+      box-shadow: 0 0 14px rgba(255, 59, 107, 0.8);
+    }
+
+    #raid-area.raid-danger .spawn-gate::after {
+      background: #FF4D6D;
+      box-shadow: 0 0 10px #FF4D6D;
+    }
+
+    /* Slow Floating Light Particles inside Raid Arena */
+    @keyframes arenaMoteFloat {
+      0% {
+        transform: translate3d(0, 0, 0) scale(0.85);
+        opacity: 0.2;
+      }
+      50% {
+        transform: translate3d(var(--dx, 10px), -22px, 0) scale(1.15);
+        opacity: 0.75;
+      }
+      100% {
+        transform: translate3d(0, -44px, 0) scale(0.85);
+        opacity: 0.15;
+      }
+    }
+
+    .arena-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .arena-mote {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFFFFF 0%, #35E0FF 60%, transparent 100%);
+      box-shadow: 0 0 8px #35E0FF;
+      animation: arenaMoteFloat var(--dur, 6s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
     }
 
     /* Laser Fence Visual Overlay across the 3 lanes */
     .laser-beam {
       position: absolute;
-      left: 6%;
-      right: 6%;
+      left: 10%;
+      right: 10%;
       top: 52%;
-      height: 3px;
+      height: 4px;
+      border-radius: 4px;
       background: linear-gradient(90deg, transparent 0%, #35E0FF 15%, #FF4FA3 50%, #35E0FF 85%, transparent 100%);
-      box-shadow: 0 0 10px #35E0FF;
+      box-shadow: 0 0 12px #35E0FF, 0 0 20px #FF4FA3;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
+      z-index: 4;
     }
 
     .laser-beam.active {
-      opacity: 0.75;
+      opacity: 0.85;
     }
 
-    /* 3 Straight Lane Paths toward the Vault */
-    .raid-lane {
-      position: relative;
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .raid-lane::before {
-      content: '';
-      position: absolute;
-      top: 4px;
-      bottom: -8px;
-      width: 3px;
-      border-radius: 3px;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(53, 224, 255, 0.26) 0px,
-        rgba(53, 224, 255, 0.26) 6px,
-        transparent 6px,
-        transparent 12px
-      );
-    }
-
-    #raid-area.raid-danger .raid-lane::before {
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(255, 75, 115, 0.65) 0px,
-        rgba(255, 75, 115, 0.65) 6px,
-        transparent 6px,
-        transparent 12px
-      );
-    }
-
-    /* Status strip inside Raid Area */
+    /* Status pill & Guard Dog badge inside Raid Arena */
     #raid-hud-pill {
       position: absolute;
-      top: 3px;
+      top: 27px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 8, 38, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(12, 6, 34, 0.86);
+      border: 1px solid rgba(53, 224, 255, 0.35);
       border-radius: 999px;
-      padding: 2px 10px;
-      font-size: 11px;
-      color: #C4B5FD;
+      padding: 2px 11px;
+      font-size: clamp(10.5px, 2.2vw, 12px);
+      color: #D8CEFF;
       white-space: nowrap;
       pointer-events: none;
-      z-index: 2;
+      z-index: 6;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     }
 
     #raid-area.raid-danger #raid-hud-pill {
-      background: rgba(110, 8, 38, 0.92);
+      background: rgba(110, 8, 38, 0.94);
       border-color: #FF4D6D;
       color: #FFD34D;
     }
 
-    /* Guard Dog Indicator in Raid Area */
     #guard-dog-badge {
       position: absolute;
-      bottom: 3px;
+      top: 27px;
       left: 8px;
       font-size: 11px;
-      background: rgba(20, 10, 48, 0.85);
+      background: rgba(16, 8, 40, 0.9);
       border: 1.5px solid #5CFF9D;
-      border-radius: 10px;
-      padding: 1px 7px;
+      border-radius: 999px;
+      padding: 2px 8px;
       color: #5CFF9D;
       display: none;
       align-items: center;
       gap: 4px;
       pointer-events: none;
-      z-index: 3;
+      z-index: 6;
     }
 
-    /* Raider Entity Running Down Lane */
+    /* Layer where interactive raiders run along the 3 converging lanes */
+    #raiders-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Hidden lane markers preserved for compatibility */
+    .raid-lane {
+      display: none;
+    }
+
+    /* Raider Entity: Visually >= 56px wide on phones, Tap Area >= 64px wide */
     @keyframes raiderBounce {
       0%, 100% { transform: translateY(0) scale(1, 1); }
       50% { transform: translateY(-5px) scale(1.06, 0.94); }
@@ -548,54 +628,75 @@
 
     .raider-node {
       position: absolute;
-      top: 0;
+      top: 24px;
       left: 50%;
-      width: 54px;
-      height: 54px;
-      margin-left: -27px;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 68px;
+      min-width: 64px;
+      min-height: 64px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       pointer-events: auto;
-      z-index: 15;
+      z-index: 22;
       touch-action: manipulation;
     }
 
     .raider-node.boss-raider {
-      width: 64px;
-      height: 64px;
-      margin-left: -32px;
+      width: 78px;
+      height: 78px;
+      min-width: 74px;
+      min-height: 74px;
     }
 
+    /* Raider visual disc >= 56px wide on phones */
     .raider-sprite {
-      font-size: 34px;
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255, 90, 130, 0.45) 0%, rgba(36, 12, 54, 0.92) 70%);
+      border: 2.5px solid #FF4D6D;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.75), 0 0 12px rgba(255, 59, 107, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
       line-height: 1;
-      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.75));
       animation: raiderBounce 0.32s infinite ease-in-out;
       transition: filter 0.08s ease, transform 0.08s ease;
     }
 
     .raider-node.boss-raider .raider-sprite {
-      font-size: 42px;
+      width: 64px;
+      height: 64px;
+      min-width: 64px;
+      min-height: 64px;
+      font-size: 44px;
+      border-color: #FFD34D;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.85), 0 0 16px rgba(255, 211, 77, 0.75);
     }
 
     .raider-node.hit-flash .raider-sprite {
-      filter: brightness(3) drop-shadow(0 0 12px #FFFFFF);
-      transform: scale(1.22);
+      filter: brightness(2.8) drop-shadow(0 0 12px #FFFFFF);
+      transform: scale(1.18);
     }
 
     .raider-hp-bar {
-      width: 38px;
+      width: 46px;
       height: 6px;
-      background: rgba(12, 6, 28, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: rgba(12, 6, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.55);
       border-radius: 4px;
       overflow: hidden;
       margin-bottom: 2px;
       opacity: 0;
       transition: opacity 0.12s ease;
+      flex-shrink: 0;
     }
 
     .raider-node.was-hit .raider-hp-bar {
@@ -609,107 +710,166 @@
       transition: width 0.1s ease;
     }
 
-    /* Hero Vault Section: Vault is the glowing central hero of the screen */
+    /* ==========================================================================
+       7. VAULT CORE: LARGE CIRCULAR GLOWING CRYSTAL (~120px) + SIDE PILLS
+       Centered where the 3 lanes converge, with pulsing glow, rotating ring,
+       small platform under it, "Tap +N" left pill, "Slots X/12" right pill,
+       and round "+" Buy Slot badge.
+       ========================================================================== */
     .vault-deck {
       position: relative;
-      z-index: 20;
+      z-index: 25;
       width: 100%;
-      max-width: 680px;
+      max-width: 560px;
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 8px;
-      background: linear-gradient(180deg, rgba(35, 20, 79, 0.85) 0%, rgba(22, 12, 52, 0.92) 100%);
-      border: 2px solid rgba(53, 224, 255, 0.38);
-      border-radius: 22px;
-      padding: 4px 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 28px rgba(53, 224, 255, 0.15);
+      gap: 6px;
+      padding: 0 4px;
+      pointer-events: none;
       flex-shrink: 0;
     }
 
-    @keyframes vaultRedAlert {
-      0%, 100% {
-        border-color: #FF2A55;
-        box-shadow: 0 0 24px rgba(255, 42, 85, 0.9), 0 0 48px rgba(255, 42, 85, 0.55), 0 5px 0 #6B001B, inset 0 4px 10px rgba(255, 255, 255, 0.8);
-        background: radial-gradient(circle at 35% 28%, #FFD6E0 0%, #FF3B6B 45%, #B80033 85%, #4A0014 100%);
-      }
-      50% {
-        border-color: #FFD34D;
-        box-shadow: 0 0 36px rgba(255, 42, 85, 1), 0 0 68px rgba(255, 42, 85, 0.85), 0 5px 0 #6B001B, inset 0 4px 12px rgba(255, 255, 255, 0.95);
-        background: radial-gradient(circle at 35% 28%, #FFF0F3 0%, #FF1F5A 45%, #990029 85%, #38000F 100%);
-      }
-    }
-
-    .vault-deck.vault-danger {
-      border-color: rgba(255, 59, 107, 0.85);
-      box-shadow: 0 6px 22px rgba(255, 30, 80, 0.45), inset 0 0 28px rgba(255, 45, 95, 0.28);
-    }
-
-    #vault-btn.vault-danger {
-      animation: vaultRedAlert 0.55s infinite ease-in-out;
-    }
-
-    .vault-stats-side {
+    .vault-side-left {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 2px;
-      min-width: 0;
+      justify-content: flex-end;
+      align-items: center;
+      pointer-events: auto;
     }
 
-    .vault-title {
-      font-size: clamp(12px, 2.8vw, 16px);
+    .vault-side-right {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 5px;
+      pointer-events: auto;
+    }
+
+    .vault-pill {
+      background: linear-gradient(180deg, rgba(34, 19, 76, 0.94) 0%, rgba(18, 9, 44, 0.96) 100%);
+      border: 1.5px solid rgba(53, 224, 255, 0.48);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: clamp(11px, 2.5vw, 13.5px);
       font-weight: 900;
-      color: #35E0FF;
-      text-shadow: 0 0 10px rgba(53, 224, 255, 0.65);
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-    }
-
-    .vault-sub {
-      font-size: clamp(11px, 2.4vw, 14px);
       color: #E2D9FF;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       white-space: nowrap;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
-    .vault-sub strong {
+    .vault-pill strong {
       color: #FFD34D;
     }
 
-    .vault-center-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2px 4px;
+    .vault-deck.vault-danger .vault-pill {
+      border-color: rgba(255, 59, 107, 0.85);
     }
 
-    /* Glowing Cyan Vault Core Hero Button */
+    /* Small round "+" badge with its price for Buy Slot */
+    #buy-slot-btn {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
+      border-radius: 50%;
+      padding: 2px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      line-height: 1.02;
+      flex-shrink: 0;
+    }
+
+    .buy-badge-plus {
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .buy-badge-price {
+      font-size: 9.5px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    /* Center Crystal + Platform Assembly */
+    .vault-center-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      padding-bottom: 6px;
+    }
+
+    /* Small glowing platform under the crystal */
+    .vault-platform {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(104px, 16vh, 134px);
+      height: 22px;
+      border-radius: 50%;
+      background:
+        radial-gradient(ellipse at 50% 40%, #6FF0FF 0%, #0077B6 55%, #160B36 100%);
+      border: 2px solid rgba(196, 250, 255, 0.75);
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.75), 0 0 22px rgba(53, 224, 255, 0.75);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .vault-deck.vault-danger .vault-platform {
+      background: radial-gradient(ellipse at 50% 40%, #FF8FA8 0%, #C9184A 55%, #2B0310 100%);
+      border-color: #FF4D6D;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 45, 95, 0.85);
+    }
+
     @keyframes vaultPulseGlow {
       0%, 100% {
         box-shadow:
           0 0 24px rgba(53, 224, 255, 0.9),
           0 0 48px rgba(53, 224, 255, 0.45),
           0 5px 0 #004E75,
-          inset 0 4px 10px rgba(255, 255, 255, 0.8);
+          inset 0 5px 14px rgba(255, 255, 255, 0.85);
       }
       50% {
         box-shadow:
-          0 0 34px rgba(53, 224, 255, 1),
-          0 0 64px rgba(53, 224, 255, 0.65),
+          0 0 36px rgba(53, 224, 255, 1),
+          0 0 68px rgba(53, 224, 255, 0.7),
           0 5px 0 #004E75,
-          inset 0 4px 12px rgba(255, 255, 255, 0.95);
+          inset 0 6px 16px rgba(255, 255, 255, 0.95);
       }
     }
 
+    @keyframes vaultRedAlert {
+      0%, 100% {
+        border-color: #FF2A55;
+        box-shadow: 0 0 26px rgba(255, 42, 85, 0.95), 0 0 52px rgba(255, 42, 85, 0.6), 0 5px 0 #6B001B, inset 0 4px 12px rgba(255, 255, 255, 0.8);
+        background: radial-gradient(circle at 35% 28%, #FFD6E0 0%, #FF3B6B 45%, #B80033 85%, #4A0014 100%);
+      }
+      50% {
+        border-color: #FFD34D;
+        box-shadow: 0 0 38px rgba(255, 42, 85, 1), 0 0 70px rgba(255, 42, 85, 0.85), 0 5px 0 #6B001B, inset 0 4px 14px rgba(255, 255, 255, 0.95);
+        background: radial-gradient(circle at 35% 28%, #FFF0F3 0%, #FF1F5A 45%, #990029 85%, #38000F 100%);
+      }
+    }
+
+    /* Large circular glowing crystal (~120px) */
     #vault-btn {
       position: relative;
-      width: 74px;
-      height: 74px;
+      z-index: 2;
+      width: clamp(96px, 15.5vh, 120px);
+      height: clamp(96px, 15.5vh, 120px);
       border-radius: 50%;
-      border: 3.5px solid #C4FAFF;
-      background: radial-gradient(circle at 35% 28%, #DDFDFF 0%, #35E0FF 42%, #0088CC 82%, #003865 100%);
+      border: 4px solid #DDFDFF;
+      background:
+        radial-gradient(circle at 32% 26%, #FFFFFF 0%, #9BF6FF 24%, #35E0FF 52%, #0077B6 82%, #032B43 100%);
       animation: vaultPulseGlow 2.4s infinite ease-in-out;
       cursor: pointer;
       display: flex;
@@ -720,13 +880,28 @@
       transition: transform 0.1s ease;
     }
 
+    #vault-btn.vault-danger {
+      animation: vaultRedAlert 0.55s infinite ease-in-out;
+    }
+
+    /* Slowly rotating outer energy ring */
     #vault-btn::after {
       content: '';
       position: absolute;
-      inset: -6px;
+      inset: -8px;
       border-radius: 50%;
-      border: 2.5px dashed rgba(53, 224, 255, 0.65);
+      border: 2.5px dashed rgba(111, 240, 255, 0.8);
       animation: spinSlow 14s linear infinite;
+      pointer-events: none;
+    }
+
+    /* Inner crystal facet ring */
+    #vault-btn::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
       pointer-events: none;
     }
 
@@ -736,46 +911,29 @@
     }
 
     .vault-icon {
-      font-size: 30px;
+      font-size: clamp(38px, 6.2vh, 48px);
       line-height: 1;
-      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
     }
 
     .vault-tap-tag {
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 900;
       color: #062338;
-      background: #FFD34D;
-      padding: 1px 7px;
-      border-radius: 8px;
+      background: linear-gradient(180deg, #FFF3B0 0%, #FFD34D 100%);
+      padding: 1px 8px;
+      border-radius: 999px;
       margin-top: 2px;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
-      letter-spacing: 0.03em;
-    }
-
-    .vault-action-side {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    #buy-slot-btn {
-      font-size: clamp(11px, 2.4vw, 14px);
-      padding: 6px 10px;
-      min-height: 48px;
-      width: 100%;
-      max-width: 148px;
-      white-space: normal;
-      text-align: center;
-      line-height: 1.15;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45);
+      letter-spacing: 0.04em;
     }
 
     /* Squash and stretch animation */
     @keyframes squashStretch {
       0% { transform: scale(1, 1); }
-      30% { transform: scale(1.24, 0.78); }
-      60% { transform: scale(0.88, 1.14); }
-      80% { transform: scale(1.06, 0.96); }
+      30% { transform: scale(1.22, 0.8); }
+      60% { transform: scale(0.9, 1.12); }
+      80% { transform: scale(1.05, 0.97); }
       100% { transform: scale(1, 1); }
     }
 
@@ -784,56 +942,69 @@
     }
 
     /* ==========================================================================
-       7. COMPACT 4x3 CREATURE GRID CENTERED UNDER THE VAULT
+       8. CREATURE GRID: ROUNDED GLASS-STYLE PANEL USING FULL SCREEN WIDTH
+       4 x 3 grid with large plates (>=64px tap area) & readable name + income
        ========================================================================== */
-    .slots-grid {
+    .creature-glass-panel {
       position: relative;
-      z-index: 15;
+      z-index: 20;
       width: 100%;
-      max-width: 680px;
+      background: linear-gradient(180deg, rgba(40, 23, 88, 0.68) 0%, rgba(19, 10, 46, 0.84) 100%);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(111, 240, 255, 0.32);
+      border-radius: 20px;
+      padding: 5px 6px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      flex-shrink: 0;
+    }
+
+    .slots-grid {
+      width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(3, auto);
       gap: 3px 6px;
       align-items: start;
       justify-items: center;
-      align-content: center;
-      padding: 1px;
-      flex-shrink: 0;
     }
 
+    /* Every creature slot has a tap area of at least 64px */
     .slot-cell {
       position: relative;
       width: 100%;
+      min-width: 64px;
+      min-height: 64px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       border-radius: 14px;
       cursor: pointer;
+      touch-action: manipulation;
       transition: transform 0.12s ease;
     }
 
-    /* Glossy Circular Plate */
+    /* Large Glossy Circular Plate (always at least 64px x 64px) */
     .slot-plate {
       position: relative;
-      width: clamp(68px, 18.8vw, 88px);
-      height: clamp(68px, 18.8vw, 88px);
+      width: clamp(64px, min(18vw, 9.8vh), 82px);
+      height: clamp(64px, min(18vw, 9.8vh), 82px);
+      min-width: 64px;
+      min-height: 64px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.38) 0%, rgba(56, 33, 114, 0.94) 48%, rgba(20, 10, 48, 0.98) 100%);
       border: 3.5px solid var(--ring-color, rgba(176, 184, 197, 0.4));
       box-shadow:
-        0 0 15px var(--ring-glow, rgba(0, 0, 0, 0.35)),
+        0 0 14px var(--ring-glow, rgba(0, 0, 0, 0.35)),
         inset 0 4px 8px rgba(255, 255, 255, 0.3),
         inset 0 -5px 10px rgba(0, 0, 0, 0.65),
-        0 4px 8px rgba(0, 0, 0, 0.45);
+        0 3px 7px rgba(0, 0, 0, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
 
-    /* Kidnapped Creature Slot State */
     .slot-plate.kidnapped-plate {
       filter: grayscale(0.92) brightness(0.75);
       border-color: #FF3B6B !important;
@@ -841,7 +1012,6 @@
       animation: none !important;
     }
 
-    /* Glossy top arc reflection on plate */
     .slot-plate::before {
       content: '';
       position: absolute;
@@ -854,45 +1024,28 @@
       pointer-events: none;
     }
 
-    /* Mythic Animated Rainbow Ring */
     @keyframes mythicRainbow {
-      0% {
-        border-color: #FF4FA3;
-        box-shadow: 0 0 18px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4);
-      }
-      25% {
-        border-color: #FFD34D;
-        box-shadow: 0 0 18px #FFD34D, inset 0 4px 8px rgba(255, 255, 255, 0.4);
-      }
-      50% {
-        border-color: #5CFF9D;
-        box-shadow: 0 0 18px #5CFF9D, inset 0 4px 8px rgba(255, 255, 255, 0.4);
-      }
-      75% {
-        border-color: #35E0FF;
-        box-shadow: 0 0 18px #35E0FF, inset 0 4px 8px rgba(255, 255, 255, 0.4);
-      }
-      100% {
-        border-color: #FF4FA3;
-        box-shadow: 0 0 18px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4);
-      }
+      0%   { border-color: #FF4FA3; box-shadow: 0 0 16px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
+      25%  { border-color: #FFD34D; box-shadow: 0 0 16px #FFD34D, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
+      50%  { border-color: #5CFF9D; box-shadow: 0 0 16px #5CFF9D, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
+      75%  { border-color: #35E0FF; box-shadow: 0 0 16px #35E0FF, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
+      100% { border-color: #FF4FA3; box-shadow: 0 0 16px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
     }
 
     .slot-plate.mythic-ring {
       animation: mythicRainbow 2.4s linear infinite;
     }
 
-    /* Creature Emoji: At least 56px */
     @keyframes creatureBob {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
+      50% { transform: translateY(-3px); }
     }
 
     .creature-emoji {
-      font-size: 56px;
+      font-size: clamp(38px, min(10.5vw, 5.8vh), 50px);
       line-height: 1;
       display: block;
-      filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.45));
+      filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5));
       animation: creatureBob 2.2s ease-in-out infinite;
       animation-delay: var(--bob-delay, 0s);
       will-change: transform;
@@ -901,12 +1054,12 @@
     /* Level tag on slot (top-right) */
     .slot-level-badge {
       position: absolute;
-      top: -3px;
+      top: -2px;
       right: -3px;
       background: linear-gradient(180deg, #3A1C71 0%, #160B36 100%);
       border: 1.5px solid var(--ring-color, #B0B8C5);
       color: #FFFFFF;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
       padding: 1px 5px;
       border-radius: 8px;
@@ -914,15 +1067,15 @@
       z-index: 2;
     }
 
-    /* Gold Star Milestone Badge on slot (top-left, e.g. ★3 for every multiple of 10) */
+    /* Gold Star Milestone Badge on slot (top-left) */
     .slot-star-badge {
       position: absolute;
-      top: -3px;
+      top: -2px;
       left: -3px;
       background: linear-gradient(180deg, #FFF099 0%, #FFD34D 55%, #D98200 100%);
       border: 1.5px solid #FFFFFF;
       color: #2A1205;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
       padding: 1px 5px;
       border-radius: 8px;
@@ -931,22 +1084,27 @@
       display: none;
     }
 
-    /* Larger, easy-to-read creature name and income text under each plate */
+    /* Readable creature name and income text under each plate */
     .slot-caption {
-      margin-top: 2px;
+      position: relative;
+      z-index: 3;
+      margin-top: -4px;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.08;
+      line-height: 1.05;
       text-align: center;
+      background: rgba(14, 7, 36, 0.78);
+      border-radius: 8px;
+      padding: 1px 3px;
     }
 
     .slot-name {
-      font-size: clamp(11px, 2.7vw, 14px);
+      font-size: clamp(11px, 2.6vw, 13.5px);
       font-weight: 900;
       color: #FFFFFF;
-      text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.95);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
       white-space: nowrap;
       max-width: 100%;
       overflow: hidden;
@@ -954,14 +1112,13 @@
     }
 
     .slot-income {
-      font-size: clamp(11px, 2.5vw, 13px);
+      font-size: clamp(10.5px, 2.4vw, 12.5px);
       font-weight: 900;
       color: #FFD34D;
-      text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.95);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
       white-space: nowrap;
     }
 
-    /* Empty Unlocked Plate */
     .slot-plate.empty-plate {
       background: radial-gradient(circle at 50% 45%, rgba(53, 224, 255, 0.16) 0%, rgba(24, 14, 54, 0.8) 100%);
       border: 2.5px dashed rgba(53, 224, 255, 0.48);
@@ -969,32 +1126,30 @@
     }
 
     .empty-plus {
-      font-size: 24px;
+      font-size: 22px;
       color: rgba(53, 224, 255, 0.55);
     }
 
-    /* Next Buyable Slot Plate */
     .slot-plate.buy-plate {
       background: radial-gradient(circle at 50% 40%, rgba(53, 224, 255, 0.3) 0%, rgba(30, 18, 68, 0.94) 100%);
       border: 3px solid #35E0FF;
       box-shadow: 0 0 15px rgba(53, 224, 255, 0.5);
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
 
     .buy-plate-icon {
-      font-size: 22px;
+      font-size: 19px;
       line-height: 1;
     }
 
     .buy-plate-cost {
-      font-size: 12px;
+      font-size: 11px;
       color: #FFD34D;
       font-weight: 900;
       text-shadow: 0 1px 2px #000;
     }
 
-    /* Locked Future Slot Plate */
     .slot-plate.locked-plate {
       background: radial-gradient(circle at 50% 50%, rgba(32, 20, 62, 0.65) 0%, rgba(18, 10, 38, 0.82) 100%);
       border: 2.5px solid rgba(255, 255, 255, 0.16);
@@ -1003,19 +1158,20 @@
     }
 
     .locked-icon {
-      font-size: 22px;
+      font-size: 20px;
       opacity: 0.75;
     }
 
     /* ==========================================================================
-       8. EGG SELECTOR STRIP & BOTTOM BAR
-       Small egg selector (Basic / Golden / Cosmic) above the Hatch button.
+       9. BOTTOM DOCK: EGG SELECTOR ABOVE 4 LARGE ACTION BUTTONS
        ========================================================================== */
     .bottom-dock {
       position: relative;
       z-index: 30;
+      width: 100%;
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 3px;
       flex-shrink: 0;
     }
@@ -1025,17 +1181,16 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 5px;
       width: 100%;
-      max-width: 480px;
     }
 
     .egg-tab-btn {
-      min-height: 28px;
+      min-height: 26px;
       border-radius: 10px;
       border: 1.5px solid rgba(255, 255, 255, 0.25);
-      background: rgba(26, 14, 58, 0.82);
+      background: rgba(26, 14, 58, 0.86);
       color: #D8CEFF;
       font-family: inherit;
-      font-size: clamp(10px, 2.2vw, 12px);
+      font-size: clamp(10.5px, 2.3vw, 12.5px);
       font-weight: 900;
       padding: 2px 6px;
       cursor: pointer;
@@ -1048,7 +1203,7 @@
     }
 
     .egg-tab-btn.active {
-      background: linear-gradient(180deg, rgba(255, 79, 163, 0.38) 0%, rgba(88, 28, 135, 0.92) 100%);
+      background: linear-gradient(180deg, rgba(255, 79, 163, 0.42) 0%, rgba(88, 28, 135, 0.94) 100%);
       border-color: #FFD34D;
       color: #FFFFFF;
       box-shadow: 0 0 10px rgba(255, 211, 77, 0.45);
@@ -1061,36 +1216,37 @@
     }
 
     .bottom-bar {
+      width: 100%;
       display: grid;
       grid-template-columns: 1.15fr 1.25fr 1.05fr 0.85fr;
-      gap: 6px;
+      gap: 5px;
     }
 
     .bottom-bar .btn-3d {
       width: 100%;
-      min-height: 48px;
-      padding: 4px 6px;
+      min-height: 46px;
+      padding: 4px 5px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      line-height: 1.12;
+      gap: 1px;
+      line-height: 1.1;
       white-space: normal;
       text-align: center;
     }
 
     .btn-main-label {
-      font-size: clamp(12px, 2.6vw, 15px);
+      font-size: clamp(12px, 2.7vw, 15px);
       font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
     }
 
     .btn-sub-label {
-      font-size: clamp(11px, 2.2vw, 13px);
+      font-size: clamp(10.5px, 2.2vw, 13px);
       font-weight: 800;
       color: #FFE89E;
     }
@@ -1100,11 +1256,55 @@
     }
 
     /* ==========================================================================
-       9. DESKTOP LANDSCAPE ADAPTATION (e.g. 1280x720)
+       10. TALL PHONE & DESKTOP LANDSCAPE ADAPTATIONS
+       (360x800, 412x915, 1280x720)
        ========================================================================== */
+    @media (min-height: 740px) {
+      #app {
+        padding: 6px 8px;
+        gap: 6px;
+      }
+
+      .top-bar {
+        min-height: 52px;
+        padding: 5px 12px;
+      }
+
+      #vault-btn {
+        width: 120px;
+        height: 120px;
+      }
+
+      .vault-platform {
+        width: 136px;
+        height: 24px;
+      }
+
+      .creature-glass-panel {
+        padding: 8px 8px;
+      }
+
+      .slots-grid {
+        gap: 6px 8px;
+      }
+
+      .slot-plate {
+        width: clamp(68px, 18.5vw, 84px);
+        height: clamp(68px, 18.5vw, 84px);
+      }
+
+      .egg-tab-btn {
+        min-height: 30px;
+      }
+
+      .bottom-bar .btn-3d {
+        min-height: 52px;
+      }
+    }
+
     @media (min-width: 760px) and (min-height: 540px) {
       #app {
-        padding: 8px 20px;
+        padding: 6px 16px;
         gap: 5px;
       }
 
@@ -1112,103 +1312,70 @@
         display: flex;
       }
 
-      #raid-area {
-        max-width: 760px;
-        height: 68px;
-      }
-
-      .vault-deck {
-        max-width: 760px;
-        padding: 5px 20px;
-      }
-
       #vault-btn {
-        width: 86px;
-        height: 86px;
+        width: 116px;
+        height: 116px;
       }
 
-      .vault-icon {
-        font-size: 36px;
-      }
-
-      .vault-tap-tag {
-        font-size: 11px;
-        padding: 2px 9px;
+      .vault-pill {
+        font-size: 14px;
+        padding: 5px 14px;
       }
 
       #buy-slot-btn {
-        max-width: 180px;
-        font-size: 14px;
+        width: 52px;
+        height: 52px;
+      }
+
+      .creature-glass-panel {
+        padding: 6px 14px;
       }
 
       .slots-grid {
-        max-width: 760px;
-        gap: 5px 16px;
-        background: rgba(20, 11, 48, 0.42);
-        border: 2px solid rgba(255, 255, 255, 0.12);
-        border-radius: 22px;
-        padding: 6px 18px;
+        gap: 4px 14px;
       }
 
       .slot-plate {
-        width: 78px;
-        height: 78px;
+        width: 72px;
+        height: 72px;
       }
 
       .creature-emoji {
-        font-size: 56px;
+        font-size: 46px;
       }
 
       .slot-name {
-        font-size: 14px;
+        font-size: 13.5px;
       }
 
       .slot-income {
-        font-size: 13px;
-      }
-
-      .egg-selector-bar {
-        max-width: 520px;
-      }
-
-      .egg-tab-btn {
-        min-height: 30px;
-        font-size: 12px;
+        font-size: 12.5px;
       }
 
       .bottom-bar {
-        grid-template-columns: 1.2fr 1.2fr 1.1fr 0.9fr;
-        gap: 12px;
+        gap: 10px;
       }
 
       .bottom-bar .btn-3d {
-        min-height: 50px;
+        min-height: 48px;
         flex-direction: row;
         gap: 8px;
-      }
-
-      .btn-main-label {
-        font-size: 16px;
-      }
-
-      .btn-sub-label {
-        font-size: 14px;
       }
     }
 
     /* ==========================================================================
-       10. POPUP MODALS (Creature Upgrade/Rescue, Defense, Hatch, Settings, Debug)
+       11. POPUP MODALS (Centered and never cut off on any viewport)
        ========================================================================== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 65;
-      background: rgba(12, 6, 30, 0.78);
+      z-index: 75;
+      background: rgba(12, 6, 30, 0.8);
       backdrop-filter: blur(5px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 14px;
+      padding: 12px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.18s ease;
@@ -1222,13 +1389,15 @@
     .modal-card {
       position: relative;
       width: 100%;
-      max-width: 360px;
+      max-width: 356px;
+      max-height: calc(100dvh - 24px);
+      overflow-y: auto;
       background: linear-gradient(180deg, #2D1863 0%, #1B1040 100%);
       border: 3px solid #35E0FF;
       border-radius: 24px;
-      padding: 18px 16px;
+      padding: 16px 15px;
       text-align: center;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 28px rgba(53, 224, 255, 0.35);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 28px rgba(53, 224, 255, 0.35);
       transform: scale(0.85);
       transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -1241,13 +1410,13 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
       border: 2px solid rgba(255, 255, 255, 0.25);
       background: rgba(0, 0, 0, 0.35);
       color: #FFFFFF;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 900;
       cursor: pointer;
       display: flex;
@@ -1256,22 +1425,22 @@
     }
 
     .modal-plate {
-      margin: 4px auto 12px;
-      width: 100px;
-      height: 100px;
+      margin: 4px auto 10px;
+      width: 94px !important;
+      height: 94px !important;
     }
 
     .modal-title {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 900;
       color: #FFFFFF;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .modal-rarity {
       font-size: 13px;
       font-weight: 800;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       letter-spacing: 0.04em;
     }
 
@@ -1279,12 +1448,12 @@
       background: rgba(13, 7, 32, 0.65);
       border: 1.5px solid rgba(255, 255, 255, 0.14);
       border-radius: 16px;
-      padding: 10px 14px;
-      margin-bottom: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      font-size: 14px;
+      gap: 5px;
+      font-size: 13.5px;
     }
 
     .modal-stat-row {
@@ -1301,12 +1470,11 @@
       color: #FFD34D;
     }
 
-    /* Defense Upgrades List Inside Defense Modal */
     .defense-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 8px;
       text-align: left;
     }
 
@@ -1329,7 +1497,7 @@
     }
 
     .defense-emoji {
-      font-size: 28px;
+      font-size: 26px;
       line-height: 1;
       flex-shrink: 0;
     }
@@ -1342,7 +1510,7 @@
     }
 
     .defense-name {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 900;
       color: #FFFFFF;
     }
@@ -1359,9 +1527,9 @@
     }
 
     .defense-buy-btn {
-      min-width: 106px;
-      min-height: 48px;
-      padding: 6px 10px;
+      min-width: 102px;
+      min-height: 46px;
+      padding: 5px 8px;
       font-size: 12px;
       flex-shrink: 0;
       display: flex;
@@ -1369,12 +1537,12 @@
       gap: 1px;
     }
 
-    /* Egg Hatch Animation Styles */
+    /* Egg Hatch Flash & Stage */
     #hatch-flash {
       position: fixed;
       inset: 0;
       background: #FFFFFF;
-      z-index: 70;
+      z-index: 80;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.28s ease-out;
@@ -1401,15 +1569,15 @@
     }
 
     .egg-stage {
-      height: 120px;
+      height: 114px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 8px 0;
+      margin: 6px 0;
     }
 
     .egg-emoji {
-      font-size: 76px;
+      font-size: 72px;
       line-height: 1;
       filter: drop-shadow(0 0 20px rgba(255, 79, 163, 0.7));
     }
@@ -1423,14 +1591,14 @@
     }
 
     .hatch-outcome-note {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: #FFF7D6;
       background: rgba(255, 211, 77, 0.16);
       border: 1.5px solid #FFD34D;
       border-radius: 12px;
       padding: 8px 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -1452,7 +1620,7 @@
 
   <!-- Main Non-Scrolling Game Container -->
   <main id="app">
-    <!-- 1. TOP BAR -->
+    <!-- 1. TOP BAR: Coins & income/sec on left, mute & gear icons on right -->
     <header class="top-bar">
       <div id="coin-cluster" class="coin-cluster" title="Coins">
         <div id="coin-target" class="coin-badge" aria-hidden="true">🪙</div>
@@ -1476,47 +1644,98 @@
       </div>
     </header>
 
-    <!-- 2. MIDDLE ARENA: RAID AREA (3 LANES) + HERO VAULT + COMPACT 4x3 CREATURE BLOCK -->
+    <!-- 2, 3, 4. MIDDLE ARENA: STRETCHING PERSPECTIVE RAID ARENA + VAULT CRYSTAL + GLASS 4x3 GRID -->
     <section class="arena" aria-label="Meme Vault">
-      <!-- Raid Area between Top Bar and Vault -->
-      <div id="raid-area" aria-label="Raid Approach Lanes">
-        <div id="raid-hud-pill">🛡️ Hatch an egg to start raids</div>
-        <div id="laser-beam" class="laser-beam"></div>
-        <div id="guard-dog-badge">🐕 <span id="guard-dog-timer">Ready</span></div>
-        <div class="raid-lane" data-lane="0"></div>
-        <div class="raid-lane" data-lane="1"></div>
-        <div class="raid-lane" data-lane="2"></div>
+      <div class="raid-vault-stage">
+        <!-- 2. RAID ARENA: Fills ALL space between top bar and vault -->
+        <div id="raid-area" aria-label="Raid Approach Lanes">
+          <!-- 3 Converging Glowing Perspective Lanes SVG -->
+          <svg class="raid-lanes-svg" viewBox="0 0 600 300" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="laneGlowGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#35E0FF" stop-opacity="0.28" />
+                <stop offset="55%" stop-color="#9B4DFF" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="#35E0FF" stop-opacity="0.45" />
+              </linearGradient>
+            </defs>
+            <!-- Left Converging Lane (20% top -> 38% bottom) -->
+            <polygon class="lane-track-poly" points="92,20 148,20 250,296 206,296" fill="url(#laneGlowGrad)" stroke="rgba(53,224,255,0.42)" stroke-width="2" />
+            <line class="lane-center-line" x1="120" y1="22" x2="228" y2="294" stroke="rgba(111,240,255,0.55)" stroke-width="2.5" stroke-dasharray="8 8" />
+
+            <!-- Center Converging Lane (50% top -> 50% bottom) -->
+            <polygon class="lane-track-poly" points="272,20 328,20 322,296 278,296" fill="url(#laneGlowGrad)" stroke="rgba(53,224,255,0.42)" stroke-width="2" />
+            <line class="lane-center-line" x1="300" y1="22" x2="300" y2="294" stroke="rgba(111,240,255,0.55)" stroke-width="2.5" stroke-dasharray="8 8" />
+
+            <!-- Right Converging Lane (80% top -> 62% bottom) -->
+            <polygon class="lane-track-poly" points="452,20 508,20 394,296 350,296" fill="url(#laneGlowGrad)" stroke="rgba(53,224,255,0.42)" stroke-width="2" />
+            <line class="lane-center-line" x1="480" y1="22" x2="372" y2="294" stroke="rgba(111,240,255,0.55)" stroke-width="2.5" stroke-dasharray="8 8" />
+          </svg>
+
+          <!-- 3 Spawn Gates at the top -->
+          <div class="spawn-gates-row" aria-hidden="true">
+            <div class="spawn-gate gate-0"></div>
+            <div class="spawn-gate gate-1"></div>
+            <div class="spawn-gate gate-2"></div>
+          </div>
+
+          <!-- Slow floating light particles inside Raid Arena -->
+          <div class="arena-particles" aria-hidden="true">
+            <span class="arena-mote" style="left: 14%; top: 78%; --dx: 12px; --dur: 5.8s; --delay: 0s;"></span>
+            <span class="arena-mote" style="left: 26%; top: 55%; --dx: -10px; --dur: 6.6s; --delay: 1.1s;"></span>
+            <span class="arena-mote" style="left: 38%; top: 82%; --dx: 8px; --dur: 5.2s; --delay: 2.3s;"></span>
+            <span class="arena-mote" style="left: 50%; top: 64%; --dx: -8px; --dur: 6.2s; --delay: 0.6s;"></span>
+            <span class="arena-mote" style="left: 64%; top: 76%; --dx: 11px; --dur: 5.6s; --delay: 1.7s;"></span>
+            <span class="arena-mote" style="left: 78%; top: 58%; --dx: -12px; --dur: 6.4s; --delay: 2.8s;"></span>
+            <span class="arena-mote" style="left: 86%; top: 80%; --dx: -9px; --dur: 5.4s; --delay: 0.9s;"></span>
+            <span class="arena-mote" style="left: 44%; top: 38%; --dx: 10px; --dur: 6.8s; --delay: 1.5s;"></span>
+          </div>
+
+          <div id="raid-hud-pill">🛡️ Hatch an egg to start raids</div>
+          <div id="laser-beam" class="laser-beam"></div>
+          <div id="guard-dog-badge">🐕 <span id="guard-dog-timer">Ready</span></div>
+
+          <!-- Interactive Raiders Layer -->
+          <div id="raiders-layer"></div>
+          <div class="raid-lane" data-lane="0"></div>
+          <div class="raid-lane" data-lane="1"></div>
+          <div class="raid-lane" data-lane="2"></div>
+        </div>
+
+        <!-- 3. VAULT CORE: Large circular glowing crystal centered where lanes converge -->
+        <div id="vault-deck" class="vault-deck">
+          <!-- Left Pill: Tap +N -->
+          <div class="vault-side-left">
+            <div class="vault-pill">Tap <strong id="tap-power-display">+1</strong></div>
+          </div>
+
+          <!-- Center Crystal + Rotating Ring + Small Platform Under It -->
+          <div class="vault-center-wrap">
+            <div class="vault-platform" aria-hidden="true"></div>
+            <button id="vault-btn" type="button" aria-label="Tap Vault Crystal for Coins">
+              <span class="vault-icon">💎</span>
+              <span class="vault-tap-tag">TAP!</span>
+            </button>
+          </div>
+
+          <!-- Right Pill: Slots X/12 + Round "+" Buy Slot Badge -->
+          <div class="vault-side-right">
+            <div class="vault-pill">Slots <strong id="slots-count-display">4/12</strong></div>
+            <button id="buy-slot-btn" class="btn-3d btn-cyan" type="button" aria-label="Buy Slot">
+              <span class="buy-badge-plus">+</span>
+              <span id="buy-slot-price" class="buy-badge-price">🪙500</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <!-- Central Hero Vault Deck -->
-      <div id="vault-deck" class="vault-deck">
-        <div class="vault-stats-side">
-          <div class="vault-title">MEME VAULT</div>
-          <div class="vault-sub">Tap: <strong id="tap-power-display">+1</strong></div>
-          <div class="vault-sub">Slots: <strong id="slots-count-display">0/4</strong></div>
-        </div>
-
-        <div class="vault-center-wrap">
-          <button id="vault-btn" type="button" aria-label="Tap Vault for Coins">
-            <span class="vault-icon">💎</span>
-            <span class="vault-tap-tag">TAP!</span>
-          </button>
-        </div>
-
-        <div class="vault-action-side">
-          <button id="buy-slot-btn" class="btn-3d btn-cyan" type="button">
-            + Slot 5 · 🪙 500
-          </button>
-        </div>
+      <!-- 4. CREATURE GRID: Rounded glass-style panel using full width (small side margins) -->
+      <div class="creature-glass-panel">
+        <div id="slots-grid" class="slots-grid"></div>
       </div>
-
-      <!-- Compact 4x3 Creature Slots Block Centered Under the Vault -->
-      <div id="slots-grid" class="slots-grid"></div>
     </section>
 
-    <!-- 3. BOTTOM DOCK: EGG SELECTOR + ACTION BAR -->
+    <!-- 5. BOTTOM DOCK: EGG SELECTOR ABOVE HATCH, UPGRADE, DEFENSE, BOOK -->
     <div class="bottom-dock">
-      <!-- Small Egg Selector (Basic / Golden / Cosmic) above the Hatch button -->
       <div class="egg-selector-bar" role="group" aria-label="Select Egg Type">
         <button id="egg-tab-basic" class="egg-tab-btn active" type="button">
           🥚 Basic
@@ -1531,7 +1750,7 @@
 
       <nav class="bottom-bar" aria-label="Game Actions">
         <button id="hatch-btn" class="btn-3d btn-pink" type="button">
-          <span id="hatch-main-label" class="btn-main-label">🥚 Hatch Basic</span>
+          <span id="hatch-main-label" class="btn-main-label">🥚 Hatch</span>
           <span id="hatch-cost-label" class="btn-sub-label">🪙 50</span>
         </button>
 
@@ -1687,11 +1906,11 @@
   <!-- OFFLINE EARNINGS POPUP -->
   <div id="offline-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="offline-modal-title">
     <div class="modal-card">
-      <div class="egg-stage" style="height: 86px;">
-        <span style="font-size: 62px;">🪙</span>
+      <div class="egg-stage" style="height: 82px;">
+        <span style="font-size: 58px;">🪙</span>
       </div>
       <div id="offline-modal-title" class="modal-title">Welcome back!</div>
-      <p id="offline-modal-text" style="color: #E2D9FF; font-size: 15px; margin: 8px 0 16px;">
+      <p id="offline-modal-text" style="color: #E2D9FF; font-size: 15px; margin: 8px 0 14px;">
         Welcome back! You earned <strong style="color: #FFD34D;">0</strong>
       </p>
       <button id="offline-collect-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
@@ -1815,6 +2034,8 @@
       RAID_WIN_INCOME_SECONDS: 60,
       KIDNAP_DURATION_SEC: 90,
       RESCUE_INCOME_SECONDS: 120,
+      LANE_START_X_PCT: [20, 50, 80],
+      LANE_END_X_PCT: [38, 50, 62],
 
       // Defense Upgrades: Levels 1 to 10, cost = 600 * 2^(current level)
       DEFENSE_MAX_LEVEL: 10,
@@ -1902,7 +2123,6 @@
         }
         return String(Math.floor(val));
       }
-      // Scientific notation for numbers beyond Decillion (>= 1e36)
       if (val >= 1e36) {
         return val.toExponential(2).replace('+', '');
       }
@@ -2152,7 +2372,7 @@
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return;
 
-        // Rule 8: If an older save is found (saveVersion !== 2), start a fresh game (120 coins)
+        // If an older save is found (saveVersion !== 2), start a fresh game (120 coins)
         if (parsed.saveVersion !== CONFIG.SAVE_VERSION) {
           resetStateToFresh();
           saveGame();
@@ -2236,7 +2456,7 @@
         }
         state.discoveredCreatures = validDiscovered;
 
-        // Rule 4: Offline earnings = 50% of income x time away (max 2 hours)
+        // Offline earnings = 50% of income x time away (max 2 hours)
         const incomePerSec = getTotalIncomePerSecond();
         if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
           const earned = Math.floor(incomePerSec * clampedElapsedSec * CONFIG.OFFLINE_INCOME_FACTOR);
@@ -2605,6 +2825,7 @@
     const tapPowerDisplayEl = document.getElementById('tap-power-display');
     const slotsCountDisplayEl = document.getElementById('slots-count-display');
     const buySlotBtnEl = document.getElementById('buy-slot-btn');
+    const buySlotPriceEl = document.getElementById('buy-slot-price');
     const slotsGridEl = document.getElementById('slots-grid');
 
     // Egg Selector & Bottom Bar
@@ -2625,12 +2846,12 @@
 
     // Raid DOM elements
     const raidAreaEl = document.getElementById('raid-area');
+    const raidersLayerEl = document.getElementById('raiders-layer');
     const raidHudPillEl = document.getElementById('raid-hud-pill');
     const laserBeamEl = document.getElementById('laser-beam');
     const guardDogBadgeEl = document.getElementById('guard-dog-badge');
     const guardDogTimerEl = document.getElementById('guard-dog-timer');
     const raidVignetteEl = document.getElementById('raid-vignette');
-    const laneEls = Array.from(document.querySelectorAll('.raid-lane'));
 
     // Modals
     const upgradeModalEl = document.getElementById('upgrade-modal');
@@ -2825,7 +3046,6 @@
             node.plate.classList.add('mythic-ring');
           }
 
-          // Show small gold star badge on plate for each multiple of 10 reached
           const milestoneStars = getMilestoneStars(owned.level);
           if (milestoneStars > 0) {
             node.starBadge.style.display = 'block';
@@ -2843,7 +3063,6 @@
             node.incomeEl.textContent = `Kidnapped (${kidnapSec}s)`;
             node.incomeEl.style.color = '#FF4D6D';
           } else {
-            // MAX badge only at level 100
             node.badge.textContent = owned.level >= CONFIG.MAX_CREATURE_LEVEL ? 'MAX' : `Lv.${owned.level}`;
             node.content.innerHTML = `<span class="creature-emoji" style="--bob-delay: ${((i * 0.23) % 1.8).toFixed(2)}s">${def.emoji}</span>`;
             const inc = getCreatureIncome(owned.id, owned.level);
@@ -3005,11 +3224,9 @@
         state.selectedEgg = 'basic';
       }
 
-      // Basic Tab
       eggTabBasicEl.className = `egg-tab-btn ${state.selectedEgg === 'basic' ? 'active' : ''}`;
       eggTabBasicEl.textContent = `🥚 Basic (${formatNumber(getEggCost('basic'))})`;
 
-      // Golden Tab
       if (goldenUnlocked) {
         eggTabGoldenEl.className = `egg-tab-btn ${state.selectedEgg === 'golden' ? 'active' : ''}`;
         eggTabGoldenEl.textContent = `✨ Golden (${formatNumber(getEggCost('golden'))})`;
@@ -3018,7 +3235,6 @@
         eggTabGoldenEl.textContent = `🔒 Golden (${formatNumber(CONFIG.EGG_TYPES.golden.unlockTotalCoins)})`;
       }
 
-      // Cosmic Tab
       if (cosmicUnlocked) {
         eggTabCosmicEl.className = `egg-tab-btn ${state.selectedEgg === 'cosmic' ? 'active' : ''}`;
         eggTabCosmicEl.textContent = `🌌 Cosmic (${formatNumber(getEggCost('cosmic'))})`;
@@ -3037,7 +3253,7 @@
       totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
       muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
 
-      // Laser Beam & Guard Dog indicators in Raid Area
+      // Laser Beam & Guard Dog indicators in Raid Arena
       if (state.defenseUpgrades.laserFence > 0) {
         laserBeamEl.classList.add('active');
       } else {
@@ -3051,17 +3267,16 @@
         guardDogBadgeEl.style.display = 'none';
       }
 
-      // Vault Deck
+      // Vault Core Pills ("Tap +N" and "Slots X/12") & Round "+" Buy Slot Badge
       tapPowerDisplayEl.textContent = `+${formatNumber(getVaultTapReward(), true)}`;
-      slotsCountDisplayEl.textContent = `${state.ownedCreatures.length}/${state.slotsUnlocked}`;
+      slotsCountDisplayEl.textContent = `${state.slotsUnlocked}/${CONFIG.MAX_SLOTS}`;
 
       if (state.slotsUnlocked >= CONFIG.MAX_SLOTS) {
-        buySlotBtnEl.textContent = 'Max 12 Slots';
-        buySlotBtnEl.classList.remove('affordable');
-        buySlotBtnEl.classList.add('disabled');
+        buySlotBtnEl.style.display = 'none';
       } else {
+        buySlotBtnEl.style.display = 'inline-flex';
         const slotCost = getNextSlotCost(state.slotsUnlocked);
-        buySlotBtnEl.textContent = `+ Slot ${state.slotsUnlocked + 1} · 🪙 ${formatNumber(slotCost)}`;
+        buySlotPriceEl.textContent = `🪙${formatNumber(slotCost)}`;
         if (state.coins >= slotCost) {
           buySlotBtnEl.classList.remove('disabled');
           buySlotBtnEl.classList.add('affordable');
@@ -3135,7 +3350,7 @@
     }
 
     /* ==========================================================================
-       8. RAID SYSTEM: WARNING, SPAWNING, 3 LANES, GUARD DOG, WIN/LOSE & KIDNAP
+       8. RAID SYSTEM: WARNING, SPAWNING, 3 CONVERGING LANES, GUARD DOG, WIN/LOSE
        ========================================================================== */
     function buildRaidSchedule(raidNum) {
       const isFirstRaid = raidNum === 1;
@@ -3218,9 +3433,21 @@
       raidRuntime.activeRaiders = [];
     }
 
+    function positionRaiderAlongLane(raiderObj) {
+      const areaHeight = Math.max(76, raidAreaEl.clientHeight);
+      const startY = 26;
+      const endY = Math.max(startY + 24, areaHeight - 36);
+      const sx = CONFIG.LANE_START_X_PCT[raiderObj.lane] ?? 50;
+      const ex = CONFIG.LANE_END_X_PCT[raiderObj.lane] ?? 50;
+      const xPct = sx + (ex - sx) * raiderObj.progress;
+      const yPx = Math.round(startY + (endY - startY) * raiderObj.progress);
+
+      raiderObj.el.style.left = `${xPct.toFixed(2)}%`;
+      raiderObj.el.style.top = `${yPx}px`;
+    }
+
     function spawnRaiderEntity(spec) {
       const cfg = CONFIG.RAIDERS[spec.typeKey] || CONFIG.RAIDERS.raccoon;
-      const laneEl = laneEls[spec.lane] || laneEls[1];
 
       const el = document.createElement('div');
       el.className = cfg.isBoss ? 'raider-node boss-raider' : 'raider-node';
@@ -3243,6 +3470,8 @@
         hpFillEl
       };
 
+      positionRaiderAlongLane(raiderObj);
+
       el.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -3250,7 +3479,7 @@
         damageRaider(raiderObj, e.clientX, e.clientY);
       });
 
-      laneEl.appendChild(el);
+      raidersLayerEl.appendChild(el);
       raidRuntime.activeRaiders.push(raiderObj);
     }
 
@@ -3435,8 +3664,6 @@
           }
         }
 
-        const areaHeight = Math.max(44, raidAreaEl.clientHeight);
-        const runDistancePx = areaHeight - 18;
         const laserSlowMult = getLaserSlowMultiplier(state.defenseUpgrades.laserFence);
         const doorExtraSec = getVaultDoorExtraSec(state.defenseUpgrades.vaultDoor);
         const firstRaidSpeedFactor = raidRuntime.raidNumber === 1 ? 0.58 : 1.0;
@@ -3455,8 +3682,7 @@
             }
           }
 
-          const yPx = Math.round(r.progress * runDistancePx);
-          r.el.style.top = `${yPx}px`;
+          positionRaiderAlongLane(r);
         }
 
         if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
@@ -3496,7 +3722,8 @@
       state.slotsUnlocked += 1;
       sfxUpgrade();
 
-      const rect = (originEl || buySlotBtnEl).getBoundingClientRect();
+      const targetEl = (originEl && originEl.getBoundingClientRect().width > 0) ? originEl : vaultBtnEl;
+      const rect = targetEl.getBoundingClientRect();
       spawnBurstSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2, '#35E0FF', 10);
       spawnFloatingText(rect.left + rect.width / 2, rect.top, `Slot ${state.slotsUnlocked} Unlocked!`, '#35E0FF');
       showBanner(`Unlocked Vault Slot ${state.slotsUnlocked}!`, false);
@@ -3702,7 +3929,6 @@
     }
 
     function resolveHatchedCreature(creatureDef) {
-      // Every hatched creature is added to discoveredCreatures, even if converted
       recordDiscovery(creatureDef.id);
 
       // a) If the player already owns it: level it up by 1 (if already Level 100, convert to coins instead)
@@ -3714,7 +3940,6 @@
           const msg = `Duplicate! ${creatureDef.name} leveled up to Lv.${existing.level}!`;
           return { type: 'levelup', slotIndex: existingIndex, message: msg };
         } else {
-          // Duplicate of a Level 100 creature -> 60s of that creature's current income
           const convertedCoins = getConversionCoins(creatureDef.id, existing.level);
           addCoins(convertedCoins);
           const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
@@ -3799,7 +4024,6 @@
       sfxEggShake();
       const shakeTimer = setInterval(sfxEggShake, 180);
 
-      // Step 1: Crack after shake
       setTimeout(() => {
         clearInterval(shakeTimer);
         hatchModalTitleEl.textContent = 'Cracking Open...';
@@ -3807,7 +4031,6 @@
         sfxPop();
       }, CONFIG.HATCH_SHAKE_MS);
 
-      // Step 2: White Flash + Creature Reveal
       setTimeout(() => {
         const hatched = rollCreatureFromEgg(eggCfg.id);
         const rarity = CONFIG.RARITIES[hatched.rarity] || CONFIG.RARITIES.Common;
@@ -3858,6 +4081,9 @@
       window.addEventListener('contextmenu', (e) => e.preventDefault());
       window.addEventListener('resize', () => {
         updateCanvasSizes();
+        for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
+          positionRaiderAlongLane(raidRuntime.activeRaiders[i]);
+        }
       });
 
       // Debug Tools: Tapping the coin counter 5 times quickly opens the Debug Panel
