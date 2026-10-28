@@ -1041,6 +1041,39 @@
       50% { transform: translateY(-3px); }
     }
 
+    @keyframes idleSway {
+      0%, 100% { transform: rotate(-4.5deg) translateY(0px); }
+      50% { transform: rotate(4.5deg) translateY(-2px); }
+    }
+
+    @keyframes idleWobble {
+      0%, 100% { transform: scale(1.04, 0.95) skewX(-2.5deg); }
+      50% { transform: scale(0.96, 1.05) skewX(2.5deg) translateY(-2px); }
+    }
+
+    @keyframes idleHop {
+      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1.03, 0.97); }
+      30% { transform: translateY(-5px) rotate(-4deg) scale(0.97, 1.04); }
+      60% { transform: translateY(0px) rotate(0deg) scale(1.03, 0.97); }
+      85% { transform: translateY(-4px) rotate(4deg) scale(0.98, 1.03); }
+    }
+
+    @keyframes idleFlex {
+      0%, 100% { transform: scale(1, 1) translateY(0px); }
+      40% { transform: scale(1.08, 0.94) translateY(1px); }
+      70% { transform: scale(0.96, 1.06) translateY(-3px); }
+    }
+
+    @keyframes idleFloat {
+      0%, 100% { transform: translateY(1px) scale(1); }
+      50% { transform: translateY(-5px) scale(1.04); }
+    }
+
+    @keyframes idlePrance {
+      0%, 100% { transform: translateY(0px) rotate(-3.5deg); }
+      50% { transform: translateY(-4px) rotate(3.5deg); }
+    }
+
     .creature-emoji {
       font-size: clamp(38px, min(10.5vw, 5.8vh), 50px);
       line-height: 1;
@@ -1050,6 +1083,31 @@
       animation-delay: var(--bob-delay, 0s);
       will-change: transform;
     }
+
+    .creature-art-img {
+      width: clamp(48px, min(14vw, 7.6vh), 64px);
+      height: clamp(48px, min(14vw, 7.6vh), 64px);
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.55));
+      animation-delay: var(--bob-delay, 0s);
+      will-change: transform;
+    }
+
+    .modal-plate .creature-art-img {
+      width: 76px;
+      height: 76px;
+    }
+
+    .creature-idle-sway   { animation: idleSway 2.3s ease-in-out infinite; transform-origin: 50% 85%; }
+    .creature-idle-wobble { animation: idleWobble 2.1s ease-in-out infinite; transform-origin: 50% 90%; }
+    .creature-idle-hop    { animation: idleHop 1.7s ease-in-out infinite; transform-origin: 50% 90%; }
+    .creature-idle-flex   { animation: idleFlex 2.0s ease-in-out infinite; transform-origin: 50% 88%; }
+    .creature-idle-float  { animation: idleFloat 2.4s ease-in-out infinite; transform-origin: 50% 50%; }
+    .creature-idle-prance { animation: idlePrance 1.9s ease-in-out infinite; transform-origin: 50% 88%; }
 
     /* Level tag on slot (top-right) */
     .slot-level-badge {
@@ -1778,7 +1836,7 @@
       <button id="upgrade-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
       <div id="upgrade-modal-plate" class="slot-plate modal-plate">
         <span id="upgrade-modal-star" class="slot-star-badge">★1</span>
-        <span id="upgrade-modal-emoji" class="creature-emoji">🐱</span>
+        <div id="upgrade-modal-emoji" style="display:flex;align-items:center;justify-content:center;"></div>
       </div>
       <div id="upgrade-modal-title" class="modal-title">Noodle Cat</div>
       <div id="upgrade-modal-rarity" class="modal-rarity">Common</div>
@@ -2103,6 +2161,843 @@
     for (let i = 0; i < CONFIG.CREATURES.length; i++) {
       const c = CONFIG.CREATURES[i];
       CREATURE_MAP[c.id] = c;
+    }
+
+    /* ==========================================================================
+       1B. DRAWN CREATURE ART ENGINE (FIRST 6 CREATURES ON OFFSCREEN CANVAS)
+       - Pre-renders open-eye and closed-eye (blink) canvases once at devicePixelRatio
+       - Consistent cute style: #1B1040 thick outline (~4px), big glossy eyes with
+         white highlights, small blush marks, simple mouth, 1-2 signature accessories
+       - Unmistakable silhouettes at 56px + distinct idle motions + 3-5s blink
+       - Keeps emoji fallback for the remaining 6 creatures
+       ========================================================================== */
+    const DRAWN_CREATURE_SPEC = {
+      noodle_cat:  { idleClass: 'creature-idle-sway',   drawFn: drawNoodleCat },
+      soggy_toast: { idleClass: 'creature-idle-wobble', drawFn: drawSoggyToast },
+      disco_duck:  { idleClass: 'creature-idle-hop',    drawFn: drawDiscoDuck },
+      cactus_bro:  { idleClass: 'creature-idle-flex',   drawFn: drawCactusBro },
+      cyber_frog:  { idleClass: 'creature-idle-float',  drawFn: drawCyberFrog },
+      lava_llama:  { idleClass: 'creature-idle-prance', drawFn: drawLavaLlama }
+    };
+
+    const CREATURE_ART_CACHE = {};
+    const creatureBlinkState = {};
+    let cachedArtDpr = 0;
+
+    function strokeAndFill(ctx, fillStyle, strokeStyle = '#1B1040', lineWidth = 4.6) {
+      if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+      }
+      if (strokeStyle && lineWidth > 0) {
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    function drawCuteGlossyEye(ctx, cx, cy, rx, ry, isBlink, opts = {}) {
+      ctx.save();
+      if (isBlink) {
+        ctx.beginPath();
+        ctx.moveTo(cx - rx * 1.05, cy + 1);
+        ctx.quadraticCurveTo(cx, cy + ry * 0.85, cx + rx * 1.05, cy + 1);
+        ctx.lineWidth = 4.2;
+        ctx.strokeStyle = '#1B1040';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Tiny cute eyelash tick
+        ctx.beginPath();
+        ctx.moveTo(cx + rx * 0.85, cy + 1);
+        ctx.lineTo(cx + rx * 1.25, cy - 2);
+        ctx.lineWidth = 3.2;
+        ctx.stroke();
+      } else {
+        // Dark glossy iris/pupil
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#1B1040';
+        ctx.fill();
+
+        if (opts.droopy) {
+          // Sad droopy upper eyelid for Soggy Toast
+          ctx.save();
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, rx + 0.5, ry + 0.5, 0, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.beginPath();
+          ctx.rect(cx - rx - 3, cy - ry - 3, (rx + 3) * 2, ry * 0.9);
+          ctx.fillStyle = opts.lidColor || '#E5C083';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(cx - rx - 2, cy - ry * 0.12);
+          ctx.lineTo(cx + rx + 2, cy - ry * 0.12);
+          ctx.lineWidth = 3.6;
+          ctx.strokeStyle = '#1B1040';
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Big primary white highlight
+        const hOffY = opts.droopy ? ry * 0.12 : -ry * 0.3;
+        ctx.beginPath();
+        ctx.arc(cx - rx * 0.28, cy + hOffY, Math.max(2.2, rx * 0.38), 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+
+        // Secondary bottom-right sparkle highlight
+        ctx.beginPath();
+        ctx.arc(cx + rx * 0.32, cy + ry * 0.34, Math.max(1.2, rx * 0.2), 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawBlushCheeks(ctx, leftX, rightX, y, rx = 6.5, ry = 3.8, color = 'rgba(255, 92, 148, 0.72)') {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.ellipse(leftX, y, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(rightX, y, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // 1. NOODLE CAT: cream cat, pointed ears, curved tail like a chopstick, noodle scarf
+    function drawNoodleCat(ctx, isBlink) {
+      ctx.save();
+
+      // Curved tail on right shaped & painted like a wooden chopstick holding a noodle strand
+      ctx.beginPath();
+      ctx.moveTo(74, 88);
+      ctx.bezierCurveTo(104, 84, 112, 46, 98, 20);
+      ctx.lineTo(91, 23);
+      ctx.bezierCurveTo(102, 46, 94, 76, 70, 80);
+      ctx.closePath();
+      strokeAndFill(ctx, '#E5943A', '#1B1040', 4.5);
+
+      // Chopstick red decorative band near tip
+      ctx.beginPath();
+      ctx.arc(96, 26, 4.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#FF4D6D';
+      ctx.fill();
+
+      // Golden noodle loop hanging from chopstick tail tip
+      ctx.beginPath();
+      ctx.moveTo(95, 22);
+      ctx.bezierCurveTo(112, 28, 106, 48, 112, 56);
+      ctx.lineWidth = 5.5;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+      ctx.lineWidth = 2.8;
+      ctx.strokeStyle = '#FFD34D';
+      ctx.stroke();
+
+      // Seated cat body
+      ctx.beginPath();
+      ctx.ellipse(54, 84, 24, 20, 0, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFF3D6', '#1B1040', 4.6);
+
+      // Front paws
+      ctx.beginPath();
+      ctx.ellipse(43, 100, 7, 5, 0, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFF8E8', '#1B1040', 4.2);
+      ctx.beginPath();
+      ctx.ellipse(65, 100, 7, 5, 0, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFF8E8', '#1B1040', 4.2);
+
+      // Cat Head with tall pointed triangular ears (distinct feline silhouette)
+      ctx.beginPath();
+      ctx.moveTo(24, 48);
+      ctx.lineTo(18, 14); // Left pointed ear tip
+      ctx.lineTo(42, 28);
+      ctx.quadraticCurveTo(54, 24, 66, 28);
+      ctx.lineTo(90, 14); // Right pointed ear tip
+      ctx.lineTo(84, 48);
+      ctx.bezierCurveTo(90, 66, 76, 76, 54, 76);
+      ctx.bezierCurveTo(32, 76, 18, 66, 24, 48);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFF3D6', '#1B1040', 4.8);
+
+      // Pink inner ears
+      ctx.beginPath();
+      ctx.moveTo(25, 42);
+      ctx.lineTo(22, 21);
+      ctx.lineTo(37, 31);
+      ctx.closePath();
+      ctx.fillStyle = '#FF8FA8';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(83, 42);
+      ctx.lineTo(86, 21);
+      ctx.lineTo(71, 31);
+      ctx.closePath();
+      ctx.fillStyle = '#FF8FA8';
+      ctx.fill();
+
+      // Wavy golden Noodle Scarf around neck + hanging wavy ends on left
+      ctx.beginPath();
+      ctx.moveTo(27, 70);
+      ctx.bezierCurveTo(40, 78, 68, 78, 81, 70);
+      ctx.bezierCurveTo(84, 77, 70, 86, 54, 86);
+      ctx.bezierCurveTo(38, 86, 24, 77, 27, 70);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 4.4);
+
+      // Noodle strand ridges on scarf
+      ctx.beginPath();
+      ctx.moveTo(33, 76);
+      ctx.quadraticCurveTo(54, 83, 75, 76);
+      ctx.lineWidth = 2.4;
+      ctx.strokeStyle = '#D98200';
+      ctx.stroke();
+
+      // Hanging noodle scarf tails on left (adds left silhouette asymmetry)
+      ctx.beginPath();
+      ctx.moveTo(34, 78);
+      ctx.bezierCurveTo(14, 82, 18, 98, 26, 102);
+      ctx.lineTo(35, 98);
+      ctx.bezierCurveTo(28, 92, 30, 84, 41, 82);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 4.2);
+
+      // Whiskers sticking out left & right
+      ctx.lineWidth = 3.2;
+      ctx.strokeStyle = '#1B1040';
+      ctx.beginPath();
+      ctx.moveTo(24, 54); ctx.lineTo(10, 51);
+      ctx.moveTo(24, 60); ctx.lineTo(11, 61);
+      ctx.moveTo(84, 54); ctx.lineTo(98, 51);
+      ctx.moveTo(84, 60); ctx.lineTo(97, 61);
+      ctx.stroke();
+
+      // Blush marks
+      drawBlushCheeks(ctx, 33, 75, 59, 6.2, 3.6);
+
+      // Big glossy eyes
+      drawCuteGlossyEye(ctx, 39, 50, 7.2, 8.0, isBlink);
+      drawCuteGlossyEye(ctx, 69, 50, 7.2, 8.0, isBlink);
+
+      // Cute pink nose & :3 cat mouth
+      ctx.beginPath();
+      ctx.arc(54, 55, 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = '#FF6B9E';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(46, 60);
+      ctx.quadraticCurveTo(50, 64, 54, 59);
+      ctx.quadraticCurveTo(58, 64, 62, 60);
+      ctx.lineWidth = 3.4;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 2. SOGGY TOAST: square toast slice with bumpy crust top, sad droopy eyes, butter drip
+    function drawSoggyToast(ctx, isBlink) {
+      ctx.save();
+
+      // Outer Dark Crust Silhouette: wide square base + overhanging double-bumpy top loaf
+      ctx.beginPath();
+      ctx.moveTo(24, 48);
+      ctx.bezierCurveTo(10, 42, 12, 18, 36, 18);
+      ctx.quadraticCurveTo(52, 18, 60, 25);
+      ctx.quadraticCurveTo(68, 18, 84, 18);
+      ctx.bezierCurveTo(108, 18, 110, 42, 96, 48);
+      ctx.lineTo(94, 96);
+      ctx.quadraticCurveTo(94, 104, 84, 104);
+      ctx.lineTo(36, 104);
+      ctx.quadraticCurveTo(26, 104, 26, 96);
+      ctx.closePath();
+      strokeAndFill(ctx, '#C87828', '#1B1040', 4.8);
+
+      // Inner Bread Crumb
+      ctx.beginPath();
+      ctx.moveTo(31, 47);
+      ctx.bezierCurveTo(21, 42, 22, 26, 39, 26);
+      ctx.quadraticCurveTo(52, 26, 60, 32);
+      ctx.quadraticCurveTo(68, 26, 81, 26);
+      ctx.bezierCurveTo(98, 26, 99, 42, 89, 47);
+      ctx.lineTo(87, 92);
+      ctx.quadraticCurveTo(87, 97, 81, 97);
+      ctx.lineTo(39, 97);
+      ctx.quadraticCurveTo(33, 97, 33, 92);
+      ctx.closePath();
+      strokeAndFill(ctx, '#F5D69B', '#9E5814', 2.4);
+
+      // Soggy damp bottom tint + puddle droplet on left
+      ctx.beginPath();
+      ctx.moveTo(33, 76);
+      ctx.quadraticCurveTo(60, 72, 87, 78);
+      ctx.lineTo(87, 93);
+      ctx.quadraticCurveTo(87, 97, 81, 97);
+      ctx.lineTo(39, 97);
+      ctx.quadraticCurveTo(33, 97, 33, 93);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(122, 162, 188, 0.42)';
+      ctx.fill();
+
+      // Soggy water drop falling off the left side (enhances silhouette)
+      ctx.beginPath();
+      ctx.moveTo(15, 72);
+      ctx.bezierCurveTo(9, 82, 13, 90, 17, 90);
+      ctx.bezierCurveTo(21, 90, 23, 82, 15, 72);
+      ctx.closePath();
+      strokeAndFill(ctx, '#6FF0FF', '#1B1040', 3.6);
+
+      // Melting Butter Pat + Long Butter Drip on top-right/center
+      ctx.beginPath();
+      ctx.moveTo(54, 22);
+      ctx.lineTo(86, 17);
+      ctx.quadraticCurveTo(94, 24, 88, 34);
+      ctx.lineTo(84, 52);
+      ctx.quadraticCurveTo(81, 60, 76, 52);
+      ctx.lineTo(74, 38);
+      ctx.lineTo(66, 45);
+      ctx.quadraticCurveTo(62, 51, 58, 44);
+      ctx.lineTo(56, 33);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFE45E', '#1B1040', 4.2);
+
+      // White gloss on butter drip
+      ctx.beginPath();
+      ctx.ellipse(73, 27, 6, 2.5, -0.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 37, 83, 72, 6, 3.6);
+
+      // Sad droopy glossy eyes
+      drawCuteGlossyEye(ctx, 44, 62, 7.4, 8.2, isBlink, { droopy: true, lidColor: '#E5C083' });
+      drawCuteGlossyEye(ctx, 76, 62, 7.4, 8.2, isBlink, { droopy: true, lidColor: '#E5C083' });
+
+      // Sad angled eyebrows
+      ctx.lineWidth = 3.6;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(35, 52);
+      ctx.lineTo(50, 47);
+      ctx.moveTo(85, 52);
+      ctx.lineTo(70, 47);
+      ctx.stroke();
+
+      // Sad wobbly mouth
+      ctx.beginPath();
+      ctx.moveTo(51, 80);
+      ctx.quadraticCurveTo(60, 73, 69, 80);
+      ctx.lineWidth = 3.8;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 3. DISCO DUCK: duck in profile with a beak and flat feet, sunglasses, tiny disco-ball hat
+    function drawDiscoDuck(ctx, isBlink) {
+      ctx.save();
+
+      // Flat orange webbed feet at bottom
+      ctx.beginPath();
+      ctx.moveTo(38, 96);
+      ctx.lineTo(24, 105);
+      ctx.lineTo(48, 105);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF7B00', '#1B1040', 4.2);
+
+      ctx.beginPath();
+      ctx.moveTo(64, 96);
+      ctx.lineTo(52, 105);
+      ctx.lineTo(76, 105);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF7B00', '#1B1040', 4.2);
+
+      // Duck body in profile (plump chest on left, upturned tail feathers on right)
+      ctx.beginPath();
+      ctx.moveTo(40, 62);
+      ctx.bezierCurveTo(26, 68, 28, 94, 52, 96);
+      ctx.lineTo(78, 96);
+      ctx.bezierCurveTo(96, 94, 108, 76, 106, 58); // Upturned tail tip
+      ctx.lineTo(94, 64);
+      ctx.lineTo(98, 52);
+      ctx.lineTo(82, 62);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFE135', '#1B1040', 4.8);
+
+      // Duck head in profile
+      ctx.beginPath();
+      ctx.arc(52, 48, 21, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFE135', '#1B1040', 4.8);
+
+      // Seamless yellow neck fill over seam
+      ctx.beginPath();
+      ctx.ellipse(54, 66, 15, 10, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFE135';
+      ctx.fill();
+
+      // Side Wing
+      ctx.beginPath();
+      ctx.moveTo(56, 72);
+      ctx.bezierCurveTo(82, 68, 86, 86, 62, 89);
+      ctx.bezierCurveTo(50, 89, 48, 76, 56, 72);
+      ctx.closePath();
+      strokeAndFill(ctx, '#F7B801', '#1B1040', 4.0);
+
+      // Prominent Duck Beak sticking out to the LEFT (clear profile silhouette)
+      ctx.beginPath();
+      ctx.moveTo(35, 43);
+      ctx.quadraticCurveTo(10, 41, 10, 50);
+      ctx.quadraticCurveTo(10, 59, 36, 57);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF7B00', '#1B1040', 4.6);
+
+      // Beak smile line
+      ctx.beginPath();
+      ctx.moveTo(15, 51);
+      ctx.quadraticCurveTo(25, 53, 34, 50);
+      ctx.lineWidth = 3.0;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      // Blush cheek
+      drawBlushCheeks(ctx, 44, 65, 56, 5.2, 3.2);
+
+      // Big glossy eyes (visible just above/behind the cool low-rider disco shades)
+      drawCuteGlossyEye(ctx, 43, 44, 6.4, 7.2, isBlink);
+      drawCuteGlossyEye(ctx, 61, 44, 6.2, 7.0, isBlink);
+
+      // Funky Magenta-Rimmed Sunglasses perched slightly low on the beak bridge
+      ctx.beginPath();
+      ctx.roundRect(31, 46, 17, 10, 3);
+      ctx.roundRect(51, 46, 17, 10, 3);
+      strokeAndFill(ctx, 'rgba(27, 16, 64, 0.82)', '#FF2A85', 3.4);
+
+      // Sunglasses bridge + shine
+      ctx.beginPath();
+      ctx.moveTo(48, 49);
+      ctx.lineTo(51, 49);
+      ctx.lineWidth = 3.4;
+      ctx.strokeStyle = '#FF2A85';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(34, 48); ctx.lineTo(39, 53);
+      ctx.moveTo(54, 48); ctx.lineTo(59, 53);
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = '#35E0FF';
+      ctx.stroke();
+
+      // Tiny Disco-Ball Hat on top of head
+      // Hat brim
+      ctx.beginPath();
+      ctx.ellipse(54, 27, 16, 4.5, -0.08, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#94A3B8', '#1B1040', 4.0);
+
+      // Disco ball dome
+      ctx.beginPath();
+      ctx.arc(54, 18, 12, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#E2E8F0', '#1B1040', 4.4);
+
+      // Disco ball grid lines & cyan sparkle facets
+      ctx.beginPath();
+      ctx.moveTo(43, 18); ctx.lineTo(65, 18);
+      ctx.moveTo(54, 7);  ctx.lineTo(54, 29);
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.fillStyle = '#35E0FF';
+      ctx.fillRect(48, 11, 5, 5);
+      ctx.fillStyle = '#FF4FA3';
+      ctx.fillRect(55, 19, 5, 5);
+
+      ctx.restore();
+    }
+
+    // 4. CACTUS BRO: tall body with two raised flexing arms, sunglasses, pink flower on top
+    function drawCactusBro(ctx, isBlink) {
+      ctx.save();
+
+      // Left Raised Flexing Arm (L-shape pointing up)
+      ctx.beginPath();
+      ctx.moveTo(40, 68);
+      ctx.lineTo(18, 68);
+      ctx.quadraticCurveTo(10, 68, 10, 58);
+      ctx.lineTo(10, 36);
+      ctx.arc(18, 36, 8, Math.PI, 0, false);
+      ctx.lineTo(26, 54);
+      ctx.lineTo(40, 54);
+      ctx.closePath();
+      strokeAndFill(ctx, '#2EC466', '#1B1040', 4.6);
+
+      // Right Raised Flexing Arm (L-shape pointing up)
+      ctx.beginPath();
+      ctx.moveTo(80, 68);
+      ctx.lineTo(102, 68);
+      ctx.quadraticCurveTo(110, 68, 110, 58);
+      ctx.lineTo(110, 36);
+      ctx.arc(102, 36, 8, 0, Math.PI, true);
+      ctx.lineTo(94, 54);
+      ctx.lineTo(80, 54);
+      ctx.closePath();
+      strokeAndFill(ctx, '#2EC466', '#1B1040', 4.6);
+
+      // Neon pink gym sweatband on left wrist
+      ctx.beginPath();
+      ctx.roundRect(10, 41, 16, 6, 2);
+      strokeAndFill(ctx, '#FF4FA3', '#1B1040', 3.2);
+
+      // Tall Vertical Cactus Trunk Body
+      ctx.beginPath();
+      ctx.moveTo(38, 102);
+      ctx.lineTo(38, 38);
+      ctx.arc(60, 38, 22, Math.PI, 0, false);
+      ctx.lineTo(82, 102);
+      ctx.quadraticCurveTo(60, 106, 38, 102);
+      ctx.closePath();
+      strokeAndFill(ctx, '#2EC466', '#1B1040', 4.8);
+
+      // Vertical cactus ribs
+      ctx.beginPath();
+      ctx.moveTo(48, 24); ctx.lineTo(48, 100);
+      ctx.moveTo(72, 24); ctx.lineTo(72, 100);
+      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = '#1B8A43';
+      ctx.stroke();
+
+      // Pink Flower on top of head
+      const petalAngles = [0, 1.25, 2.5, 3.75, 5.0];
+      for (let i = 0; i < petalAngles.length; i++) {
+        const a = petalAngles[i];
+        const px = 60 + Math.cos(a) * 8.5;
+        const py = 15 + Math.sin(a) * 6.5;
+        ctx.beginPath();
+        ctx.arc(px, py, 6.5, 0, Math.PI * 2);
+        strokeAndFill(ctx, '#FF4FA3', '#1B1040', 3.8);
+      }
+      ctx.beginPath();
+      ctx.arc(60, 15, 5.2, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 3.4);
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 44, 76, 62, 5.5, 3.4);
+
+      // Big glossy eyes
+      drawCuteGlossyEye(ctx, 49, 52, 6.5, 7.4, isBlink);
+      drawCuteGlossyEye(ctx, 71, 52, 6.5, 7.4, isBlink);
+
+      // Cool V-Shaped Bro Sunglasses propped stylishly on forehead/brow
+      ctx.beginPath();
+      ctx.moveTo(36, 34);
+      ctx.lineTo(60, 39);
+      ctx.lineTo(84, 34);
+      ctx.lineTo(80, 45);
+      ctx.lineTo(60, 42);
+      ctx.lineTo(40, 45);
+      ctx.closePath();
+      strokeAndFill(ctx, '#1B1040', '#1B1040', 3.4);
+
+      // Cyan reflective slash on shades
+      ctx.beginPath();
+      ctx.moveTo(42, 37); ctx.lineTo(54, 41);
+      ctx.moveTo(66, 37); ctx.lineTo(78, 41);
+      ctx.lineWidth = 2.6;
+      ctx.strokeStyle = '#35E0FF';
+      ctx.stroke();
+
+      // Confident bro grin
+      ctx.beginPath();
+      ctx.arc(60, 63, 8, 0.1 * Math.PI, 0.9 * Math.PI, false);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFFFFF', '#1B1040', 3.6);
+
+      ctx.restore();
+    }
+
+    // 5. CYBER FROG: wide flat body with bulging eyes, neon green, visor and glowing circuit lines
+    function drawCyberFrog(ctx, isBlink) {
+      ctx.save();
+
+      // Wide splayed webbed frog feet at bottom left & right
+      ctx.beginPath();
+      ctx.ellipse(24, 96, 14, 6, -0.2, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#2CE673', '#1B1040', 4.4);
+      ctx.beginPath();
+      ctx.ellipse(96, 96, 14, 6, 0.2, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#2CE673', '#1B1040', 4.4);
+
+      // Wide flat frog body with two giant bulging eye domes on top-left and top-right
+      ctx.beginPath();
+      ctx.moveTo(14, 72);
+      ctx.bezierCurveTo(8, 56, 16, 46, 22, 44);
+      // Left bulging eye dome
+      ctx.arc(35, 34, 16, Math.PI * 0.88, Math.PI * 0.05, false);
+      // Flat bridge between eyes
+      ctx.quadraticCurveTo(60, 38, 69, 35);
+      // Right bulging eye dome
+      ctx.arc(85, 34, 16, Math.PI * 0.95, Math.PI * 0.12, false);
+      ctx.bezierCurveTo(104, 46, 112, 56, 106, 72);
+      ctx.bezierCurveTo(110, 90, 90, 98, 60, 98);
+      ctx.bezierCurveTo(30, 98, 10, 90, 14, 72);
+      ctx.closePath();
+      strokeAndFill(ctx, '#4DFF88', '#1B1040', 4.8);
+
+      // Lighter neon belly patch
+      ctx.beginPath();
+      ctx.ellipse(60, 82, 26, 11, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#B8FFD0';
+      ctx.fill();
+
+      // Glowing Cyan Circuit Lines + nodes on body
+      ctx.lineWidth = 3.0;
+      ctx.strokeStyle = '#00B4D8';
+      ctx.beginPath();
+      ctx.moveTo(20, 74); ctx.lineTo(34, 74); ctx.lineTo(40, 82);
+      ctx.moveTo(100, 74); ctx.lineTo(86, 74); ctx.lineTo(80, 82);
+      ctx.moveTo(60, 43); ctx.lineTo(60, 52);
+      ctx.stroke();
+
+      ctx.fillStyle = '#35E0FF';
+      ctx.beginPath();
+      ctx.arc(40, 82, 3, 0, Math.PI * 2);
+      ctx.arc(80, 82, 3, 0, Math.PI * 2);
+      ctx.arc(60, 43, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Big Bulging Glossy Eyes inside the top domes
+      drawCuteGlossyEye(ctx, 35, 35, 8.2, 8.8, isBlink);
+      drawCuteGlossyEye(ctx, 85, 35, 8.2, 8.8, isBlink);
+
+      // Futuristic Holographic Cyber Visor spanning across the face
+      ctx.beginPath();
+      ctx.moveTo(16, 48);
+      ctx.quadraticCurveTo(60, 41, 104, 48);
+      ctx.lineTo(100, 59);
+      ctx.quadraticCurveTo(60, 53, 20, 59);
+      ctx.closePath();
+      strokeAndFill(ctx, 'rgba(53, 224, 255, 0.58)', '#1B1040', 3.8);
+
+      // Visor side ear-pods
+      ctx.beginPath();
+      ctx.roundRect(10, 47, 8, 12, 3);
+      ctx.roundRect(102, 47, 8, 12, 3);
+      strokeAndFill(ctx, '#FF4FA3', '#1B1040', 3.4);
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 28, 92, 66, 6.5, 3.6);
+
+      // Wide cute frog mouth
+      ctx.beginPath();
+      ctx.moveTo(38, 67);
+      ctx.quadraticCurveTo(60, 77, 82, 67);
+      ctx.lineWidth = 3.8;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 6. LAVA LLAMA: long neck and tall ears, orange, lava hair and ember cheeks
+    function drawLavaLlama(ctx, isBlink) {
+      ctx.save();
+
+      // Tall Long Banana-Shaped Ears sticking straight up
+      ctx.beginPath();
+      ctx.moveTo(36, 36);
+      ctx.bezierCurveTo(28, 16, 32, 6, 40, 8);
+      ctx.bezierCurveTo(46, 10, 46, 24, 45, 34);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF6B1A', '#1B1040', 4.4);
+
+      ctx.beginPath();
+      ctx.moveTo(55, 34);
+      ctx.bezierCurveTo(56, 14, 62, 6, 69, 8);
+      ctx.bezierCurveTo(75, 10, 70, 24, 64, 36);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF6B1A', '#1B1040', 4.4);
+
+      // Inner ear glow
+      ctx.fillStyle = '#FFD34D';
+      ctx.beginPath();
+      ctx.ellipse(39, 21, 2.5, 7, -0.1, 0, Math.PI * 2);
+      ctx.ellipse(63, 21, 2.5, 7, 0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Long Slender Neck + Compact Fluffy Llama Body at Bottom (unmistakable llama silhouette)
+      ctx.beginPath();
+      ctx.moveTo(35, 38);
+      ctx.lineTo(35, 80);
+      ctx.quadraticCurveTo(22, 82, 22, 94);
+      ctx.quadraticCurveTo(22, 105, 38, 105);
+      ctx.lineTo(84, 105);
+      ctx.quadraticCurveTo(100, 105, 100, 90);
+      ctx.quadraticCurveTo(100, 76, 82, 76);
+      ctx.lineTo(65, 76);
+      ctx.lineTo(65, 58);
+      // Snout projecting to the right
+      ctx.quadraticCurveTo(84, 58, 84, 47);
+      ctx.quadraticCurveTo(84, 36, 64, 36);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF6B1A', '#1B1040', 4.8);
+
+      // Molten Lava Hair Tuft on top of head + flowing down left neck
+      ctx.beginPath();
+      ctx.moveTo(34, 40);
+      ctx.bezierCurveTo(20, 34, 24, 20, 38, 25);
+      ctx.bezierCurveTo(44, 14, 58, 14, 62, 26);
+      ctx.bezierCurveTo(74, 22, 74, 36, 62, 40);
+      ctx.quadraticCurveTo(48, 43, 34, 40);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 4.2);
+
+      // Lava hair inner flame core
+      ctx.beginPath();
+      ctx.arc(49, 30, 6.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#FF2A55';
+      ctx.fill();
+
+      // Lava mane drips along left side of long neck
+      ctx.beginPath();
+      ctx.moveTo(35, 48);
+      ctx.quadraticCurveTo(22, 54, 26, 63);
+      ctx.quadraticCurveTo(30, 68, 35, 62);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 3.8);
+
+      // Glowing Ember Cheeks (bright orange-gold + fiery core)
+      drawBlushCheeks(ctx, 41, 69, 55, 6.5, 4.0, 'rgba(255, 211, 77, 0.9)');
+      drawBlushCheeks(ctx, 41, 69, 55, 3.8, 2.2, 'rgba(255, 42, 85, 0.85)');
+
+      // Big Glossy Eyes
+      drawCuteGlossyEye(ctx, 45, 46, 6.4, 7.2, isBlink);
+      drawCuteGlossyEye(ctx, 64, 46, 6.4, 7.2, isBlink);
+
+      // Simple happy smile on snout
+      ctx.beginPath();
+      ctx.moveTo(52, 54);
+      ctx.quadraticCurveTo(58, 60, 65, 54);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function renderCreatureOffscreenCanvas(drawFn, isBlink, dpr) {
+      const logicalSize = 120;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(logicalSize * dpr);
+      canvas.height = Math.round(logicalSize * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      drawFn(ctx, isBlink);
+      return canvas;
+    }
+
+    function initCreatureArtCache(force = false) {
+      const dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
+      if (!force && cachedArtDpr === dpr && Object.keys(CREATURE_ART_CACHE).length > 0) {
+        return;
+      }
+      cachedArtDpr = dpr;
+      const now = performance.now();
+      const ids = Object.keys(DRAWN_CREATURE_SPEC);
+
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        const spec = DRAWN_CREATURE_SPEC[id];
+        const openCanvas = renderCreatureOffscreenCanvas(spec.drawFn, false, dpr);
+        const blinkCanvas = renderCreatureOffscreenCanvas(spec.drawFn, true, dpr);
+        CREATURE_ART_CACHE[id] = {
+          openCanvas,
+          blinkCanvas,
+          openUrl: openCanvas.toDataURL('image/png'),
+          blinkUrl: blinkCanvas.toDataURL('image/png'),
+          idleClass: spec.idleClass
+        };
+        if (!creatureBlinkState[id]) {
+          creatureBlinkState[id] = {
+            isBlinking: false,
+            nextSwitchMs: now + 3000 + Math.random() * 2000
+          };
+        }
+      }
+    }
+
+    function getCreatureVisualHTML(creatureId, opts = {}) {
+      const def = CREATURE_MAP[creatureId];
+      if (!def) return '';
+      const delaySec = typeof opts.delaySec === 'number' ? opts.delaySec : 0;
+      const paused = Boolean(opts.paused);
+
+      const art = CREATURE_ART_CACHE[creatureId];
+      if (art) {
+        const bState = creatureBlinkState[creatureId];
+        const isBlink = !paused && bState && bState.isBlinking;
+        const src = isBlink ? art.blinkUrl : art.openUrl;
+        const animClass = paused ? 'creature-art-img' : `creature-art-img ${art.idleClass}`;
+        const styleAttr = paused
+          ? 'animation: none;'
+          : `--bob-delay: ${delaySec.toFixed(2)}s;`;
+        return `<img class="${animClass}" data-creature-id="${creatureId}" data-paused="${paused ? '1' : '0'}" src="${src}" alt="${def.name}" style="${styleAttr}">`;
+      }
+
+      // Fallback emoji for the remaining 6 creatures
+      const styleAttr = paused
+        ? 'animation: none;'
+        : `--bob-delay: ${delaySec.toFixed(2)}s;`;
+      return `<span class="creature-emoji" style="${styleAttr}">${def.emoji}</span>`;
+    }
+
+    function updateCreatureBlinks(nowMs) {
+      const ids = Object.keys(DRAWN_CREATURE_SPEC);
+      let anyChanged = false;
+
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        const bState = creatureBlinkState[id];
+        if (!bState) continue;
+        if (nowMs >= bState.nextSwitchMs) {
+          if (bState.isBlinking) {
+            bState.isBlinking = false;
+            bState.nextSwitchMs = nowMs + 3000 + Math.random() * 2000; // Next blink in 3 to 5 seconds
+          } else {
+            bState.isBlinking = true;
+            bState.nextSwitchMs = nowMs + 150; // Short natural blink
+          }
+          anyChanged = true;
+        }
+      }
+
+      if (!anyChanged) return;
+
+      const imgs = document.querySelectorAll('img.creature-art-img[data-creature-id]');
+      for (let i = 0; i < imgs.length; i++) {
+        const img = imgs[i];
+        if (img.getAttribute('data-paused') === '1') continue;
+        const cid = img.getAttribute('data-creature-id');
+        const art = CREATURE_ART_CACHE[cid];
+        const bState = creatureBlinkState[cid];
+        if (!art || !bState) continue;
+        const targetSrc = bState.isBlinking ? art.blinkUrl : art.openUrl;
+        if (img.getAttribute('src') !== targetSrc) {
+          img.setAttribute('src', targetSrc);
+        }
+      }
     }
 
     /* ==========================================================================
@@ -3057,14 +3952,14 @@
           if (kidnapSec > 0) {
             node.plate.classList.add('kidnapped-plate');
             node.badge.textContent = `⛓️ ${kidnapSec}s`;
-            node.content.innerHTML = `<span class="creature-emoji" style="animation: none;">${def.emoji}</span>`;
+            node.content.innerHTML = getCreatureVisualHTML(owned.id, { paused: true });
             node.nameEl.textContent = def.name;
             node.nameEl.style.color = '#FF8FA8';
             node.incomeEl.textContent = `Kidnapped (${kidnapSec}s)`;
             node.incomeEl.style.color = '#FF4D6D';
           } else {
             node.badge.textContent = owned.level >= CONFIG.MAX_CREATURE_LEVEL ? 'MAX' : `Lv.${owned.level}`;
-            node.content.innerHTML = `<span class="creature-emoji" style="--bob-delay: ${((i * 0.23) % 1.8).toFixed(2)}s">${def.emoji}</span>`;
+            node.content.innerHTML = getCreatureVisualHTML(owned.id, { delaySec: (i * 0.23) % 1.8, paused: false });
             const inc = getCreatureIncome(owned.id, owned.level);
             node.nameEl.textContent = def.name;
             node.nameEl.style.color = '#FFFFFF';
@@ -3764,7 +4659,11 @@
       const milestoneStars = getMilestoneStars(entry.level);
       const starMult = Math.pow(CONFIG.MILESTONE_MULT_BASE, milestoneStars);
 
-      upgradeModalEmojiEl.textContent = def.emoji;
+      const modalArtSig = `${entry.id}:${kidnapSec > 0 ? 1 : 0}`;
+      if (upgradeModalEmojiEl.dataset.artSig !== modalArtSig) {
+        upgradeModalEmojiEl.dataset.artSig = modalArtSig;
+        upgradeModalEmojiEl.innerHTML = getCreatureVisualHTML(entry.id, { delaySec: 0, paused: kidnapSec > 0 });
+      }
       upgradeModalTitleEl.textContent = def.name;
       upgradeModalRarityEl.textContent = `${rarity.name} Creature`;
       upgradeModalRarityEl.style.color = rarity.color;
@@ -4048,7 +4947,7 @@
         const ringClass = rarity.rainbow ? 'slot-plate modal-plate mythic-ring hatched-pop' : 'slot-plate modal-plate hatched-pop';
         hatchStageEl.innerHTML = `
           <div class="${ringClass}" style="--ring-color: ${rarity.color}; --ring-glow: ${rarity.glow}; margin: 0;">
-            <span class="creature-emoji">${hatched.emoji}</span>
+            ${getCreatureVisualHTML(hatched.id, { delaySec: 0, paused: false })}
           </div>
         `;
 
@@ -4081,6 +4980,7 @@
       window.addEventListener('contextmenu', (e) => e.preventDefault());
       window.addEventListener('resize', () => {
         updateCanvasSizes();
+        initCreatureArtCache();
         for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
           positionRaiderAlongLane(raidRuntime.activeRaiders[i]);
         }
@@ -4431,7 +5331,8 @@
         updateHUD();
       }
 
-      // 5. Update & draw stars and particles
+      // 5. Update & draw stars, particles, and 3-5s creature blinks
+      updateCreatureBlinks(now);
       updateAndDrawParticles(baseDtSec);
     }
 
@@ -4440,6 +5341,7 @@
        ========================================================================== */
     function init() {
       updateCanvasSizes();
+      initCreatureArtCache();
       initStars();
       initSlotsGrid();
       loadGame();
