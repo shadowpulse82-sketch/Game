@@ -56,10 +56,10 @@
       z-index: 55;
     }
 
-    /* Red Vignette Overlay for Raid Warning & Active Raid */
+    /* Red Vignette Overlay for Raid Warning & Active Raid (transform & opacity only) */
     @keyframes vignettePulse {
-      0%, 100% { opacity: 0.45; }
-      50% { opacity: 0.9; }
+      0%, 100% { opacity: 0.28; }
+      50% { opacity: 0.52; }
     }
 
     #raid-vignette {
@@ -67,27 +67,26 @@
       inset: 0;
       pointer-events: none;
       z-index: 40;
-      background: radial-gradient(circle at 50% 50%, rgba(255, 0, 55, 0) 52%, rgba(255, 20, 70, 0.55) 100%);
-      box-shadow: inset 0 0 65px rgba(255, 25, 75, 0.75);
+      background: radial-gradient(circle at 50% 50%, rgba(255, 0, 55, 0) 56%, rgba(255, 20, 70, 0.45) 100%);
       opacity: 0;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.35s ease;
+      will-change: opacity;
     }
 
     #raid-vignette.active {
-      animation: vignettePulse 0.9s infinite ease-in-out;
+      animation: vignettePulse 1.8s infinite ease-in-out;
     }
 
-    /* Screen Shake Animation */
+    /* Subtle Screen Shake Animation (transform only on #app single wrapper) */
     @keyframes screenShake {
-      0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(-5px, 3px); }
-      40% { transform: translate(5px, -4px); }
-      60% { transform: translate(-4px, -2px); }
-      80% { transform: translate(4px, 3px); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      25% { transform: translate3d(-1.5px, 1px, 0); }
+      50% { transform: translate3d(1.5px, -1px, 0); }
+      75% { transform: translate3d(-1px, 0.5px, 0); }
     }
 
     #app.shake {
-      animation: screenShake 0.24s ease-in-out;
+      animation: screenShake 0.18s ease-in-out;
     }
 
     /* ==========================================================================
@@ -220,7 +219,7 @@
       justify-content: center;
       gap: 6px;
       text-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
-      transition: transform 0.1s ease, filter 0.15s ease, box-shadow 0.2s ease;
+      transition: transform 0.12s ease, opacity 0.15s ease;
       overflow: hidden;
       white-space: nowrap;
     }
@@ -243,27 +242,27 @@
 
     .btn-pink {
       background: linear-gradient(180deg, #FF70B8 0%, #FF4FA3 55%, #D9237B 100%);
-      box-shadow: 0 4px 0 #8F0D4C, 0 6px 14px rgba(255, 79, 163, 0.35);
+      box-shadow: 0 4px 0 #8F0D4C, 0 6px 14px rgba(255, 79, 163, 0.45);
     }
 
     .btn-gold {
       background: linear-gradient(180deg, #FFE066 0%, #FFB020 55%, #E08200 100%);
       color: #2A1205;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-      box-shadow: 0 4px 0 #8A4B00, 0 6px 14px rgba(255, 176, 32, 0.35);
+      box-shadow: 0 4px 0 #8A4B00, 0 6px 14px rgba(255, 176, 32, 0.45);
     }
 
     .btn-cyan {
       background: linear-gradient(180deg, #6FF0FF 0%, #35E0FF 55%, #00A8D6 100%);
       color: #092235;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-      box-shadow: 0 4px 0 #00668A, 0 6px 14px rgba(53, 224, 255, 0.35);
+      box-shadow: 0 4px 0 #00668A, 0 6px 14px rgba(53, 224, 255, 0.45);
     }
 
     .btn-purple {
       background: linear-gradient(180deg, #C078FF 0%, #9B4DFF 55%, #6E22CC 100%);
       color: #FFFFFF;
-      box-shadow: 0 4px 0 #430F85, 0 6px 14px rgba(155, 77, 255, 0.35);
+      box-shadow: 0 4px 0 #430F85, 0 6px 14px rgba(155, 77, 255, 0.45);
     }
 
     .btn-danger {
@@ -283,30 +282,27 @@
       font-size: 18px;
     }
 
-    @keyframes affordablePulsePink {
-      0%, 100% { box-shadow: 0 4px 0 #8F0D4C, 0 0 10px rgba(255, 79, 163, 0.55); }
-      50% { box-shadow: 0 4px 0 #8F0D4C, 0 0 20px rgba(255, 79, 163, 0.95), 0 0 30px rgba(255, 211, 77, 0.5); }
+    @keyframes affordablePulseScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.028); }
     }
 
-    @keyframes affordablePulseGold {
-      0%, 100% { box-shadow: 0 4px 0 #8A4B00, 0 0 10px rgba(255, 211, 77, 0.55); }
-      50% { box-shadow: 0 4px 0 #8A4B00, 0 0 20px rgba(255, 211, 77, 0.95), 0 0 30px rgba(255, 211, 77, 0.6); }
+    .btn-pink.affordable {
+      box-shadow: 0 4px 0 #8F0D4C, 0 0 18px rgba(255, 79, 163, 0.85);
+      animation: affordablePulseScale 1.6s infinite ease-in-out;
     }
-
-    @keyframes affordablePulseCyan {
-      0%, 100% { box-shadow: 0 3px 0 #00668A, 0 0 10px rgba(53, 224, 255, 0.55); }
-      50% { box-shadow: 0 3px 0 #00668A, 0 0 20px rgba(53, 224, 255, 0.95), 0 0 30px rgba(53, 224, 255, 0.65); }
+    .btn-gold.affordable {
+      box-shadow: 0 4px 0 #8A4B00, 0 0 18px rgba(255, 211, 77, 0.85);
+      animation: affordablePulseScale 1.6s infinite ease-in-out;
     }
-
-    @keyframes affordablePulsePurple {
-      0%, 100% { box-shadow: 0 4px 0 #430F85, 0 0 10px rgba(192, 120, 255, 0.55); }
-      50% { box-shadow: 0 4px 0 #430F85, 0 0 20px rgba(192, 120, 255, 0.95), 0 0 30px rgba(53, 224, 255, 0.5); }
+    .btn-cyan.affordable {
+      box-shadow: 0 3px 0 #00668A, 0 0 18px rgba(53, 224, 255, 0.85);
+      animation: affordablePulseScale 1.6s infinite ease-in-out;
     }
-
-    .btn-pink.affordable { animation: affordablePulsePink 1.6s infinite ease-in-out; }
-    .btn-gold.affordable { animation: affordablePulseGold 1.6s infinite ease-in-out; }
-    .btn-cyan.affordable { animation: affordablePulseCyan 1.6s infinite ease-in-out; }
-    .btn-purple.affordable { animation: affordablePulsePurple 1.6s infinite ease-in-out; }
+    .btn-purple.affordable {
+      box-shadow: 0 4px 0 #430F85, 0 0 18px rgba(192, 120, 255, 0.85);
+      animation: affordablePulseScale 1.6s infinite ease-in-out;
+    }
 
     .btn-3d.disabled {
       background: linear-gradient(180deg, #554D74 0%, #3E3759 60%, #2D2742 100%) !important;
@@ -547,23 +543,58 @@
     }
 
     /* Laser Fence Visual Overlay across the 3 lanes */
-    .laser-beam {
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      top: 52%;
-      height: 4px;
-      border-radius: 4px;
-      background: linear-gradient(90deg, transparent 0%, #35E0FF 15%, #FF4FA3 50%, #35E0FF 85%, transparent 100%);
-      box-shadow: 0 0 12px #35E0FF, 0 0 20px #FF4FA3;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-      z-index: 4;
+    @keyframes laserBeamPulse {
+      0%, 100% {
+        transform: scaleY(1);
+        opacity: 0.86;
+      }
+      50% {
+        transform: scaleY(1.38);
+        opacity: 1;
+      }
     }
 
+    .laser-beam {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 53%;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(
+        180deg,
+        #35E0FF 0%,
+        #FFFFFF 50%,
+        #FF4FA3 100%
+      );
+      box-shadow: 0 0 12px #35E0FF, 0 0 22px #FF4FA3;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 5;
+      will-change: transform, opacity;
+    }
+
+    .laser-beam::before,
+    .laser-beam::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      margin-top: -7px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFFFFF 0%, #35E0FF 55%, #1B1040 100%);
+      border: 2px solid #FFD34D;
+      box-shadow: 0 0 10px #35E0FF;
+    }
+
+    .laser-beam::before { left: -6px; }
+    .laser-beam::after  { right: -6px; }
+
     .laser-beam.active {
-      opacity: 0.85;
+      opacity: 0.92;
+      animation: laserBeamPulse 1.1s ease-in-out infinite;
     }
 
     /* Status pill & Guard Dog badge inside Raid Arena */
@@ -590,6 +621,50 @@
       color: #FFD34D;
     }
 
+    /* Big Combo Counter near the raiders */
+    @keyframes comboPopAnim {
+      0%   { transform: translateX(-50%) scale(1.36) rotate(-4deg); opacity: 1; }
+      60%  { transform: translateX(-50%) scale(0.95) rotate(2deg); opacity: 1; }
+      100% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    #raid-combo-badge {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.75);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 26;
+      font-size: clamp(18px, 4.4vw, 27px);
+      font-weight: 900;
+      color: #FFD34D;
+      text-shadow:
+        0 3px 0 #1B1040,
+        -2px -2px 0 #1B1040,
+        2px -2px 0 #1B1040,
+        -2px 2px 0 #1B1040,
+        2px 2px 0 #1B1040,
+        0 0 14px rgba(255, 211, 77, 0.9);
+      background: linear-gradient(180deg, rgba(46, 18, 98, 0.92) 0%, rgba(22, 9, 52, 0.94) 100%);
+      border: 2px solid #FFD34D;
+      border-radius: 999px;
+      padding: 2px 14px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65);
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      will-change: transform, opacity;
+    }
+
+    #raid-combo-badge.active {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    #raid-combo-badge.combo-pop {
+      animation: comboPopAnim 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
     #guard-dog-badge {
       position: absolute;
       top: 27px;
@@ -607,10 +682,62 @@
       z-index: 6;
     }
 
+    /* Custom Guard Dog defender actor that dashes from vault to target raider */
+    @keyframes guardDogIdleBob {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-3px) scale(1.04, 0.97); }
+    }
+
+    #guard-dog-actor {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      margin-left: -24px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 24;
+      transform: translate3d(0, 0, 0) scale(1);
+      transition: transform 0.17s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
+      will-change: transform, opacity;
+    }
+
+    #guard-dog-actor.visible {
+      display: flex;
+    }
+
+    #guard-dog-img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      display: block;
+      animation: guardDogIdleBob 1.3s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    #guard-dog-lvl-tag {
+      position: absolute;
+      bottom: -2px;
+      background: rgba(16, 8, 40, 0.94);
+      border: 1.5px solid #5CFF9D;
+      color: #5CFF9D;
+      font-size: 9px;
+      font-weight: 900;
+      border-radius: 999px;
+      padding: 0 5px;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
     /* Layer where interactive raiders run along the 3 converging lanes */
     #raiders-layer {
       position: absolute;
       inset: 0;
+      overflow: hidden;
       pointer-events: none;
       z-index: 20;
     }
@@ -620,94 +747,167 @@
       display: none;
     }
 
-    /* Raider Entity: Visually >= 56px wide on phones, Tap Area >= 64px wide */
-    @keyframes raiderBounce {
-      0%, 100% { transform: translateY(0) scale(1, 1); }
-      50% { transform: translateY(-5px) scale(1.06, 0.94); }
+    /* Raider Entity: ~70% of lane width (at least 56px on phones, up to 110px on desktop),
+       Tap Area at least 64px wide, shadow underneath, and >=8px readable HP bar above */
+    @keyframes raiderRunBob {
+      0%, 100% { transform: translateY(0px) rotate(-2deg) scale(1, 1); }
+      50% { transform: translateY(-5px) rotate(2deg) scale(1.04, 0.96); }
+    }
+
+    @keyframes raiderHitSquash {
+      0%   { transform: scale(1, 1); }
+      28%  { transform: scale(1.28, 0.74); }
+      62%  { transform: scale(0.88, 1.15); }
+      100% { transform: scale(1, 1); }
+    }
+
+    @keyframes raiderWhiteFlash {
+      0%   { opacity: 0.92; transform: scale(1.06); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
+    @keyframes raiderDefeatSpin {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) rotate(540deg) scale(0.05);
+        opacity: 0;
+      }
     }
 
     .raider-node {
       position: absolute;
-      top: 24px;
+      top: 28px;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 68px;
-      height: 68px;
+      width: clamp(64px, 16.5vw, 102px);
+      height: clamp(72px, 18vw, 112px);
       min-width: 64px;
       min-height: 64px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       cursor: pointer;
       pointer-events: auto;
       z-index: 22;
       touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: transform, opacity;
     }
 
     .raider-node.boss-raider {
-      width: 78px;
-      height: 78px;
+      width: clamp(74px, 19vw, 114px);
+      height: clamp(82px, 20.5vw, 124px);
       min-width: 74px;
       min-height: 74px;
+      z-index: 23;
     }
 
-    /* Raider visual disc >= 56px wide on phones */
-    .raider-sprite {
-      width: 56px;
-      height: 56px;
-      min-width: 56px;
-      min-height: 56px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, rgba(255, 90, 130, 0.45) 0%, rgba(36, 12, 54, 0.92) 70%);
-      border: 2.5px solid #FF4D6D;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.75), 0 0 12px rgba(255, 59, 107, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 36px;
-      line-height: 1;
-      animation: raiderBounce 0.32s infinite ease-in-out;
-      transition: filter 0.08s ease, transform 0.08s ease;
+    .raider-node.defeated-spin {
+      pointer-events: none !important;
+      animation: raiderDefeatSpin 0.25s cubic-bezier(0.4, 0, 0.8, 1) forwards !important;
     }
 
-    .raider-node.boss-raider .raider-sprite {
-      width: 64px;
-      height: 64px;
-      min-width: 64px;
-      min-height: 64px;
-      font-size: 44px;
-      border-color: #FFD34D;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.85), 0 0 16px rgba(255, 211, 77, 0.75);
-    }
-
-    .raider-node.hit-flash .raider-sprite {
-      filter: brightness(2.8) drop-shadow(0 0 12px #FFFFFF);
-      transform: scale(1.18);
-    }
-
+    /* Health bar above each raider: at least 8px tall, clearly readable */
     .raider-hp-bar {
-      width: 46px;
-      height: 6px;
-      background: rgba(12, 6, 28, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      border-radius: 4px;
+      position: relative;
+      width: clamp(50px, 12.5vw, 78px);
+      height: 9px;
+      min-height: 8px;
+      background: rgba(10, 4, 26, 0.96);
+      border: 1.5px solid #FFFFFF;
+      border-radius: 999px;
       overflow: hidden;
       margin-bottom: 2px;
-      opacity: 0;
-      transition: opacity 0.12s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.85);
       flex-shrink: 0;
+      z-index: 3;
     }
 
-    .raider-node.was-hit .raider-hp-bar {
-      opacity: 1;
+    .raider-node.boss-raider .raider-hp-bar {
+      width: clamp(60px, 15vw, 92px);
+      height: 11px;
+      min-height: 9px;
+      border-color: #FFD34D;
     }
 
     .raider-hp-fill {
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, #FF3B6B 0%, #FFD34D 100%);
-      transition: width 0.1s ease;
+      background: linear-gradient(90deg, #FF2A55 0%, #FFB020 55%, #5CFF9D 100%);
+      transform-origin: left center;
+      transform: scaleX(1);
+      transition: transform 0.12s ease-out;
+      will-change: transform;
+    }
+
+    /* Raider character visual (~70% of lane width: >=56px on phones, up to 110px on desktop) */
+    .raider-sprite-wrap {
+      position: relative;
+      width: clamp(56px, 15.5vw, 96px);
+      height: clamp(56px, 15.5vw, 96px);
+      min-width: 56px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 2;
+      will-change: transform;
+    }
+
+    .raider-node.boss-raider .raider-sprite-wrap {
+      width: clamp(66px, 18vw, 110px);
+      height: clamp(66px, 18vw, 110px);
+      min-width: 64px;
+      min-height: 64px;
+    }
+
+    .raider-node.hit-squash .raider-sprite-wrap {
+      animation: raiderHitSquash 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .raider-art-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      animation: raiderRunBob 0.34s infinite ease-in-out;
+      will-change: transform;
+    }
+
+    /* White hit flash overlay (transform & opacity only - no filter/blur) */
+    .raider-flash-overlay {
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFFFFF 0%, rgba(255, 255, 255, 0.88) 58%, rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .raider-node.hit-flash .raider-flash-overlay {
+      animation: raiderWhiteFlash 0.16s ease-out forwards;
+    }
+
+    /* Ground shadow under each raider */
+    .raider-shadow {
+      width: 68%;
+      height: 10px;
+      margin-top: -6px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 50% 50%, rgba(8, 3, 22, 0.82) 0%, rgba(8, 3, 22, 0) 75%);
+      pointer-events: none;
+      flex-shrink: 0;
+      z-index: 1;
     }
 
     /* ==========================================================================
@@ -830,33 +1030,86 @@
       box-shadow: 0 5px 14px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 45, 95, 0.85);
     }
 
-    @keyframes vaultPulseGlow {
+    /* Vault Door Shield around the Vault (visible when Vault Door Lv >= 1) */
+    @keyframes vaultShieldSpin {
+      0%   { transform: rotate(0deg) scale(1); opacity: 0.88; }
+      50%  { transform: rotate(180deg) scale(1.03); opacity: 1; }
+      100% { transform: rotate(360deg) scale(1); opacity: 0.88; }
+    }
+
+    #vault-door-shield {
+      position: absolute;
+      top: -9px;
+      width: clamp(114px, 17.5vh, 138px);
+      height: clamp(114px, 17.5vh, 138px);
+      border-radius: 50%;
+      border: 3.5px solid #FFD34D;
+      outline: 2.5px dashed #35E0FF;
+      outline-offset: 3px;
+      background: radial-gradient(circle, rgba(53, 224, 255, 0.08) 55%, rgba(255, 211, 77, 0.26) 100%);
+      box-shadow: 0 0 16px rgba(255, 211, 77, 0.65), inset 0 0 12px rgba(53, 224, 255, 0.45);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      will-change: transform, opacity;
+    }
+
+    #vault-door-shield.active {
+      opacity: 1;
+      animation: vaultShieldSpin 9s linear infinite;
+    }
+
+    /* Pulsing red danger ring around the vault while any raider is close to it */
+    @keyframes vaultProximityDangerPulse {
       0%, 100% {
-        box-shadow:
-          0 0 24px rgba(53, 224, 255, 0.9),
-          0 0 48px rgba(53, 224, 255, 0.45),
-          0 5px 0 #004E75,
-          inset 0 5px 14px rgba(255, 255, 255, 0.85);
+        transform: scale(0.96);
+        opacity: 0.55;
       }
       50% {
-        box-shadow:
-          0 0 36px rgba(53, 224, 255, 1),
-          0 0 68px rgba(53, 224, 255, 0.7),
-          0 5px 0 #004E75,
-          inset 0 6px 16px rgba(255, 255, 255, 0.95);
+        transform: scale(1.16);
+        opacity: 1;
+      }
+    }
+
+    #vault-danger-ring {
+      position: absolute;
+      top: -12px;
+      width: clamp(120px, 18.5vh, 144px);
+      height: clamp(120px, 18.5vh, 144px);
+      border-radius: 50%;
+      border: 4px solid #FF2A55;
+      background: radial-gradient(circle, rgba(255, 42, 85, 0) 58%, rgba(255, 42, 85, 0.38) 100%);
+      box-shadow: 0 0 22px rgba(255, 42, 85, 0.9);
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      will-change: transform, opacity;
+    }
+
+    #vault-danger-ring.active {
+      opacity: 1;
+      animation: vaultProximityDangerPulse 0.95s ease-in-out infinite;
+    }
+
+    @keyframes vaultPulseGlow {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.03);
       }
     }
 
     @keyframes vaultRedAlert {
       0%, 100% {
-        border-color: #FF2A55;
-        box-shadow: 0 0 26px rgba(255, 42, 85, 0.95), 0 0 52px rgba(255, 42, 85, 0.6), 0 5px 0 #6B001B, inset 0 4px 12px rgba(255, 255, 255, 0.8);
-        background: radial-gradient(circle at 35% 28%, #FFD6E0 0%, #FF3B6B 45%, #B80033 85%, #4A0014 100%);
+        transform: scale(1);
       }
       50% {
-        border-color: #FFD34D;
-        box-shadow: 0 0 38px rgba(255, 42, 85, 1), 0 0 70px rgba(255, 42, 85, 0.85), 0 5px 0 #6B001B, inset 0 4px 14px rgba(255, 255, 255, 0.95);
-        background: radial-gradient(circle at 35% 28%, #FFF0F3 0%, #FF1F5A 45%, #990029 85%, #38000F 100%);
+        transform: scale(1.045);
       }
     }
 
@@ -870,6 +1123,11 @@
       border: 4px solid #DDFDFF;
       background:
         radial-gradient(circle at 32% 26%, #FFFFFF 0%, #9BF6FF 24%, #35E0FF 52%, #0077B6 82%, #032B43 100%);
+      box-shadow:
+        0 0 26px rgba(53, 224, 255, 0.9),
+        0 0 50px rgba(53, 224, 255, 0.48),
+        0 5px 0 #004E75,
+        inset 0 5px 14px rgba(255, 255, 255, 0.85);
       animation: vaultPulseGlow 2.4s infinite ease-in-out;
       cursor: pointer;
       display: flex;
@@ -878,10 +1136,14 @@
       justify-content: center;
       flex-shrink: 0;
       transition: transform 0.1s ease;
+      will-change: transform;
     }
 
     #vault-btn.vault-danger {
-      animation: vaultRedAlert 0.55s infinite ease-in-out;
+      border-color: #FF2A55;
+      background: radial-gradient(circle at 35% 28%, #FFD6E0 0%, #FF3B6B 45%, #B80033 85%, #4A0014 100%);
+      box-shadow: 0 0 28px rgba(255, 42, 85, 0.95), 0 0 54px rgba(255, 42, 85, 0.65), 0 5px 0 #6B001B, inset 0 4px 12px rgba(255, 255, 255, 0.85);
+      animation: vaultRedAlert 0.85s infinite ease-in-out;
     }
 
     /* Slowly rotating outer energy ring */
@@ -1024,16 +1286,80 @@
       pointer-events: none;
     }
 
-    @keyframes mythicRainbow {
-      0%   { border-color: #FF4FA3; box-shadow: 0 0 16px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
-      25%  { border-color: #FFD34D; box-shadow: 0 0 16px #FFD34D, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
-      50%  { border-color: #5CFF9D; box-shadow: 0 0 16px #5CFF9D, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
-      75%  { border-color: #35E0FF; box-shadow: 0 0 16px #35E0FF, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
-      100% { border-color: #FF4FA3; box-shadow: 0 0 16px #FF4FA3, inset 0 4px 8px rgba(255, 255, 255, 0.4); }
+    @keyframes legendarySparklesDrift {
+      0% {
+        transform: translateY(5px) scale(0.9);
+        opacity: 0;
+      }
+      25% {
+        opacity: 0.95;
+      }
+      75% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-9px) scale(1.05);
+        opacity: 0;
+      }
+    }
+
+    .slot-plate.legendary-plate {
+      border-color: #FFD34D;
+    }
+
+    /* Capped at 3 sparkle particles per plate, transform & opacity only */
+    .slot-plate.legendary-plate::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 2;
+      background-image:
+        radial-gradient(circle at 22% 72%, #FFFFFF 0px, #FFD34D 2px, rgba(255, 211, 77, 0) 4px),
+        radial-gradient(circle at 80% 68%, #FFFFFF 0px, #FFD34D 2px, rgba(255, 211, 77, 0) 4px),
+        radial-gradient(circle at 50% 28%, #FFF7C2 0px, #FFB020 2px, rgba(255, 176, 32, 0) 4px);
+      animation: legendarySparklesDrift 2.1s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+
+    @keyframes mythicAuraSpin {
+      0%   { transform: rotate(0deg) scale(0.98); opacity: 0.84; }
+      50%  { transform: rotate(180deg) scale(1.04); opacity: 1; }
+      100% { transform: rotate(360deg) scale(0.98); opacity: 0.84; }
     }
 
     .slot-plate.mythic-ring {
-      animation: mythicRainbow 2.4s linear infinite;
+      isolation: isolate;
+      border-color: #FF4FA3;
+    }
+
+    .slot-plate.mythic-ring::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(255, 79, 163, 0.9),
+        rgba(255, 176, 32, 0.9),
+        rgba(255, 211, 77, 0.9),
+        rgba(92, 255, 157, 0.9),
+        rgba(53, 224, 255, 0.9),
+        rgba(177, 92, 255, 0.9),
+        rgba(255, 79, 163, 0.9)
+      );
+      z-index: -1;
+      pointer-events: none;
+      animation: mythicAuraSpin 3.6s linear infinite;
+      will-change: transform, opacity;
+    }
+
+    /* Pause plate animations while any modal is open to ensure zero background CPU load */
+    body.modal-open .slot-plate::after,
+    body.modal-open .creature-art-img,
+    body.modal-open .creature-emoji {
+      animation-play-state: paused !important;
     }
 
     @keyframes creatureBob {
@@ -1257,7 +1583,7 @@
       justify-content: center;
       gap: 4px;
       white-space: nowrap;
-      transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+      transition: transform 0.1s ease, opacity 0.15s ease;
     }
 
     .egg-tab-btn.active {
@@ -1749,8 +2075,13 @@
           </div>
 
           <div id="raid-hud-pill">🛡️ Hatch an egg to start raids</div>
+          <div id="raid-combo-badge" aria-live="polite"></div>
           <div id="laser-beam" class="laser-beam"></div>
           <div id="guard-dog-badge">🐕 <span id="guard-dog-timer">Ready</span></div>
+          <div id="guard-dog-actor" aria-hidden="true">
+            <img id="guard-dog-img" alt="Guard Dog" />
+            <span id="guard-dog-lvl-tag">Lv.1</span>
+          </div>
 
           <!-- Interactive Raiders Layer -->
           <div id="raiders-layer"></div>
@@ -1769,6 +2100,8 @@
           <!-- Center Crystal + Rotating Ring + Small Platform Under It -->
           <div class="vault-center-wrap">
             <div class="vault-platform" aria-hidden="true"></div>
+            <div id="vault-door-shield" aria-hidden="true"></div>
+            <div id="vault-danger-ring" aria-hidden="true"></div>
             <button id="vault-btn" type="button" aria-label="Tap Vault Crystal for Coins">
               <span class="vault-icon">💎</span>
               <span class="vault-tap-tag">TAP!</span>
@@ -1987,23 +2320,25 @@
 
     const CONFIG = {
       STORAGE_KEY: 'meme_vault_defense_save_v1',
-      SAVE_VERSION: 2, // Older saves without saveVersion === 2 start fresh (120 coins)
-      STARTING_COINS: 120,
+      SAVE_VERSION: 3, // Version 3 rebalance: resets old save once to start fresh with new pacing
+      STARTING_COINS: 100,
       INITIAL_SLOTS: 4,
       MAX_SLOTS: 12,
       FIRST_PAID_SLOT: 5,
-      BASE_SLOT_COST: 500,
-      SLOT_COST_MULTIPLIER: 2.5,
+      BASE_SLOT_COST: 250,
+      SLOT_COST_MULTIPLIER: 2.15,
 
       // Creature Level & Upgrade Economy (Max Level 100)
       MAX_CREATURE_LEVEL: 100,
       MILESTONE_INTERVAL: 10,
-      MILESTONE_MULT_BASE: 2, // Income = baseIncome * level * 2^(floor(level / 10))
-      UPGRADE_BASE_MULTIPLIER: 20,
-      UPGRADE_EXPONENT: 1.15, // Upgrade cost = 20 * baseIncome * 1.15^level
-      CONVERSION_INCOME_SECONDS: 60, // Converted creatures give 60s of their current income
+      INCOME_GROWTH_PER_LEVEL: 1.08, // Income grows ~1.08x per level (8% compounding per level)
+      UPGRADE_BASE_MULTIPLIER: 12,
+      UPGRADE_EARLY_LEVEL_CAP: 20,
+      UPGRADE_EARLY_EXPONENT: 1.12, // First 20 levels grow ~1.12x per level
+      UPGRADE_EXPONENT: 1.18, // Levels 21+ smoothly compound at ~1.18x per level
+      CONVERSION_INCOME_SECONDS: 30, // Converted duplicate/overflow creatures give 30s of income
 
-      // Egg Tiers (Each with its own saved hatch counter, cost curve, unlock goal & odds)
+      // Egg Tiers (Base costs scale with number of creatures player currently owns)
       EGG_TYPES: {
         basic: {
           id: 'basic',
@@ -2012,14 +2347,13 @@
           emoji: '🥚',
           baseCost: 50,
           costMult: 1.15,
+          ownedCostMult: 1.18, // Scales with how many creatures the player owns
           unlockTotalCoins: 0,
           odds: {
             Common: 0.60,
             Uncommon: 0.25,
-            Rare: 0.10,
-            Epic: 0.04,
-            Legendary: 0.009,
-            Mythic: 0.001
+            Rare: 0.11,
+            Epic: 0.04
           }
         },
         golden: {
@@ -2027,14 +2361,14 @@
           name: 'Golden Egg',
           shortName: 'Golden',
           emoji: '✨',
-          baseCost: 5000,
-          costMult: 1.12,
-          unlockTotalCoins: 2000,
+          baseCost: 2500,
+          costMult: 1.18,
+          ownedCostMult: 1.15,
+          unlockTotalCoins: 6000,
           odds: {
-            Rare: 0.60,
+            Rare: 0.68,
             Epic: 0.30,
-            Legendary: 0.09,
-            Mythic: 0.01
+            Legendary: 0.02
           }
         },
         cosmic: {
@@ -2043,8 +2377,9 @@
           shortName: 'Cosmic',
           emoji: '🌌',
           baseCost: 500000,
-          costMult: 1.15,
-          unlockTotalCoins: 200000,
+          costMult: 1.18,
+          ownedCostMult: 1.15,
+          unlockTotalCoins: 300000,
           odds: {
             Epic: 0.55,
             Legendary: 0.38,
@@ -2055,16 +2390,16 @@
 
       // Vault Tap & Offline Earnings
       VAULT_TAP_FLAT: 1,
-      VAULT_TAP_INCOME_PERCENT: 0.05,
-      OFFLINE_INCOME_FACTOR: 0.50, // 50% of income x time away
-      MAX_OFFLINE_SECONDS: 7200, // Max 2 hours
-      MIN_OFFLINE_SECONDS: 3,
+      VAULT_TAP_INCOME_PERCENT: 0.03,
+      OFFLINE_INCOME_FACTOR: 0.25, // 25% of normal passive income when tab is away/hidden/closed
+      MAX_OFFLINE_SECONDS: 3600, // Capped at exactly 1 hour (3600s)
+      MIN_OFFLINE_SECONDS: 5,
 
       // System & Loop Constants
       AUTOSAVE_INTERVAL_MS: 10000, // Every 10 seconds
       MAX_DELTA_MS: 100, // Cap frame delta at 100 ms
-      MAX_PARTICLES: 150, // Total active foreground particles + stars cap
-      STAR_COUNT: 42, // Background drifting stars (part of the 150 cap)
+      MAX_PARTICLES: 12, // Strict mobile performance cap: at most 12 active particles on screen
+      STAR_COUNT: 16, // Lightweight background drifting stars
       COIN_ROLL_SPEED: 14,
       HATCH_SHAKE_MS: 650,
       HATCH_CRACK_MS: 380,
@@ -2088,16 +2423,17 @@
       RAID_MAX_RAIDERS: 6,
       BOSS_EVERY_N_RAIDS: 5,
       RAIDER_BASE_CROSS_SEC: 7.2,
-      RAIDER_HIT_COIN_RATIO: 0.25,
-      RAID_WIN_INCOME_SECONDS: 60,
+      RAIDER_HIT_COIN_RATIO: 0.08, // Reduced tap rewards per raider hit
+      RAID_WIN_INCOME_SECONDS: 10, // Victory reward is ~10s of income (before combo mult, capped at 2x)
+      RAID_STEAL_COIN_PENALTY_RATIO: 0.05, // 5% coin loss when a creature is successfully stolen
       KIDNAP_DURATION_SEC: 90,
-      RESCUE_INCOME_SECONDS: 120,
+      RESCUE_INCOME_SECONDS: 60,
       LANE_START_X_PCT: [20, 50, 80],
       LANE_END_X_PCT: [38, 50, 62],
 
-      // Defense Upgrades: Levels 1 to 10, cost = 600 * 2^(current level)
+      // Defense Upgrades: Levels 1 to 10, cost = 200 * 2^(current level)
       DEFENSE_MAX_LEVEL: 10,
-      DEFENSE_BASE_COST: 600,
+      DEFENSE_BASE_COST: 200,
       DEFENSE_COST_MULTIPLIER: 2,
       DEFENSE_UPGRADES: {
         guardDog: {
@@ -2139,19 +2475,20 @@
         Legendary: { name: 'Legendary', chance: 0.009, color: '#FFB020', glow: 'rgba(255, 176, 32, 0.85)',  pitch: 760 },
         Mythic:    { name: 'Mythic',    chance: 0.001, color: '#FF4FA3', glow: 'rgba(255, 79, 163, 0.92)',  pitch: 900, rainbow: true }
       },
+      // Creature definitions (base income scaled 10x for responsive early game)
       CREATURES: [
-        { id: 'noodle_cat',   name: 'Noodle Cat',   emoji: '🐱', rarity: 'Common',    baseIncome: 1 },
-        { id: 'soggy_toast',  name: 'Soggy Toast',  emoji: '🍞', rarity: 'Common',    baseIncome: 2 },
-        { id: 'disco_duck',   name: 'Disco Duck',   emoji: '🦆', rarity: 'Uncommon',  baseIncome: 5 },
-        { id: 'cactus_bro',   name: 'Cactus Bro',   emoji: '🌵', rarity: 'Uncommon',  baseIncome: 9 },
-        { id: 'cyber_frog',   name: 'Cyber Frog',   emoji: '🐸', rarity: 'Rare',      baseIncome: 20 },
-        { id: 'lava_llama',   name: 'Lava Llama',   emoji: '🦙', rarity: 'Rare',      baseIncome: 35 },
-        { id: 'ghost_burger', name: 'Ghost Burger', emoji: '👻', rarity: 'Epic',      baseIncome: 80 },
-        { id: 'moon_penguin', name: 'Moon Penguin', emoji: '🐧', rarity: 'Epic',      baseIncome: 140 },
-        { id: 'golden_capy',  name: 'Golden Capy',  emoji: '🦫', rarity: 'Legendary', baseIncome: 400 },
-        { id: 'thunder_taco', name: 'Thunder Taco', emoji: '🌮', rarity: 'Legendary', baseIncome: 700 },
-        { id: 'galaxy_jelly', name: 'Galaxy Jelly', emoji: '🪼', rarity: 'Mythic',    baseIncome: 2500 },
-        { id: 'king_pickle',  name: 'King Pickle',  emoji: '🥒', rarity: 'Mythic',    baseIncome: 5000 }
+        { id: 'noodle_cat',   name: 'Noodle Cat',   emoji: '🐱', rarity: 'Common',    baseIncome: 1.0 },
+        { id: 'soggy_toast',  name: 'Soggy Toast',  emoji: '🍞', rarity: 'Common',    baseIncome: 2.0 },
+        { id: 'disco_duck',   name: 'Disco Duck',   emoji: '🦆', rarity: 'Uncommon',  baseIncome: 5.0 },
+        { id: 'cactus_bro',   name: 'Cactus Bro',   emoji: '🌵', rarity: 'Uncommon',  baseIncome: 9.0 },
+        { id: 'cyber_frog',   name: 'Cyber Frog',   emoji: '🐸', rarity: 'Rare',      baseIncome: 20.0 },
+        { id: 'lava_llama',   name: 'Lava Llama',   emoji: '🦙', rarity: 'Rare',      baseIncome: 35.0 },
+        { id: 'ghost_burger', name: 'Ghost Burger', emoji: '👻', rarity: 'Epic',      baseIncome: 80.0 },
+        { id: 'moon_penguin', name: 'Moon Penguin', emoji: '🐧', rarity: 'Epic',      baseIncome: 140.0 },
+        { id: 'golden_capy',  name: 'Golden Capy',  emoji: '🦫', rarity: 'Legendary', baseIncome: 400.0 },
+        { id: 'thunder_taco', name: 'Thunder Taco', emoji: '🌮', rarity: 'Legendary', baseIncome: 700.0 },
+        { id: 'galaxy_jelly', name: 'Galaxy Jelly', emoji: '🪼', rarity: 'Mythic',    baseIncome: 2500.0 },
+        { id: 'king_pickle',  name: 'King Pickle',  emoji: '🥒', rarity: 'Mythic',    baseIncome: 5000.0 }
       ],
       NUMBER_SUFFIXES: ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc']
     };
@@ -2164,20 +2501,25 @@
     }
 
     /* ==========================================================================
-       1B. DRAWN CREATURE ART ENGINE (FIRST 6 CREATURES ON OFFSCREEN CANVAS)
+       1B. DRAWN CREATURE ART ENGINE (ALL 12 CREATURES ON OFFSCREEN CANVAS)
        - Pre-renders open-eye and closed-eye (blink) canvases once at devicePixelRatio
        - Consistent cute style: #1B1040 thick outline (~4px), big glossy eyes with
          white highlights, small blush marks, simple mouth, 1-2 signature accessories
        - Unmistakable silhouettes at 56px + distinct idle motions + 3-5s blink
-       - Keeps emoji fallback for the remaining 6 creatures
        ========================================================================== */
     const DRAWN_CREATURE_SPEC = {
-      noodle_cat:  { idleClass: 'creature-idle-sway',   drawFn: drawNoodleCat },
-      soggy_toast: { idleClass: 'creature-idle-wobble', drawFn: drawSoggyToast },
-      disco_duck:  { idleClass: 'creature-idle-hop',    drawFn: drawDiscoDuck },
-      cactus_bro:  { idleClass: 'creature-idle-flex',   drawFn: drawCactusBro },
-      cyber_frog:  { idleClass: 'creature-idle-float',  drawFn: drawCyberFrog },
-      lava_llama:  { idleClass: 'creature-idle-prance', drawFn: drawLavaLlama }
+      noodle_cat:   { idleClass: 'creature-idle-sway',   drawFn: drawNoodleCat },
+      soggy_toast:  { idleClass: 'creature-idle-wobble', drawFn: drawSoggyToast },
+      disco_duck:   { idleClass: 'creature-idle-hop',    drawFn: drawDiscoDuck },
+      cactus_bro:   { idleClass: 'creature-idle-flex',   drawFn: drawCactusBro },
+      cyber_frog:   { idleClass: 'creature-idle-float',  drawFn: drawCyberFrog },
+      lava_llama:   { idleClass: 'creature-idle-prance', drawFn: drawLavaLlama },
+      ghost_burger: { idleClass: 'creature-idle-float',  drawFn: drawGhostBurger },
+      moon_penguin: { idleClass: 'creature-idle-wobble', drawFn: drawMoonPenguin },
+      golden_capy:  { idleClass: 'creature-idle-sway',   drawFn: drawGoldenCapy },
+      thunder_taco: { idleClass: 'creature-idle-hop',    drawFn: drawThunderTaco },
+      galaxy_jelly: { idleClass: 'creature-idle-float',  drawFn: drawGalaxyJelly },
+      king_pickle:  { idleClass: 'creature-idle-flex',   drawFn: drawKingPickle }
     };
 
     const CREATURE_ART_CACHE = {};
@@ -2267,6 +2609,22 @@
       ctx.ellipse(rightX, y, rx, ry, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
+    }
+
+    function drawFivePointStar(ctx, cx, cy, outerR, innerR, rotOffset = -Math.PI / 2) {
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const angle = rotOffset + (i * Math.PI) / 5;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.closePath();
     }
 
     // 1. NOODLE CAT: cream cat, pointed ears, curved tail like a chopstick, noodle scarf
@@ -2897,6 +3255,968 @@
       ctx.restore();
     }
 
+    // 7. GHOST BURGER: stacked burger with a wavy ghost tail and a spooky smile
+    function drawGhostBurger(ctx, isBlink) {
+      ctx.save();
+
+      // Wavy Ectoplasm Ghost Tail tapering to an S-curved point at the bottom + stubby ghost arms
+      ctx.beginPath();
+      ctx.moveTo(28, 64);
+      // Left stubby ghost arm sticking out
+      ctx.bezierCurveTo(10, 64, 8, 78, 22, 80);
+      // Taper down into wavy ghost tail
+      ctx.bezierCurveTo(26, 94, 42, 108, 72, 110); // Tail tip curled right
+      ctx.bezierCurveTo(60, 98, 78, 92, 86, 80);
+      // Right stubby ghost arm sticking out
+      ctx.bezierCurveTo(104, 80, 106, 64, 88, 64);
+      ctx.closePath();
+      strokeAndFill(ctx, '#C8FFF4', '#1B1040', 4.6);
+
+      // Spectral inner glow on ghost tail
+      ctx.beginPath();
+      ctx.moveTo(38, 74);
+      ctx.quadraticCurveTo(44, 94, 62, 101);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = '#7CE8D8';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Stacked Burger Patty Layer
+      ctx.beginPath();
+      ctx.roundRect(22, 55, 76, 14, 7);
+      strokeAndFill(ctx, '#7A3E48', '#1B1040', 4.4);
+
+      // Melted Spectral Cheese Layer with triangular drips
+      ctx.beginPath();
+      ctx.moveTo(20, 52);
+      ctx.lineTo(100, 52);
+      ctx.lineTo(96, 59);
+      ctx.lineTo(84, 55);
+      ctx.lineTo(75, 65); // Cheese corner drip
+      ctx.lineTo(64, 55);
+      ctx.lineTo(44, 63); // Left cheese drip
+      ctx.lineTo(35, 55);
+      ctx.lineTo(24, 59);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 4.0);
+
+      // Ruffled Ghost Lettuce Frill sticking out past the bun sides
+      ctx.beginPath();
+      ctx.moveTo(18, 49);
+      ctx.quadraticCurveTo(12, 43, 22, 42);
+      ctx.quadraticCurveTo(32, 36, 44, 43);
+      ctx.quadraticCurveTo(60, 36, 76, 43);
+      ctx.quadraticCurveTo(88, 36, 98, 42);
+      ctx.quadraticCurveTo(108, 43, 102, 49);
+      ctx.quadraticCurveTo(60, 55, 18, 49);
+      ctx.closePath();
+      strokeAndFill(ctx, '#5CFF9D', '#1B1040', 4.2);
+
+      // Rounded Top Burger Bun Dome
+      ctx.beginPath();
+      ctx.moveTo(22, 46);
+      ctx.bezierCurveTo(20, 14, 100, 14, 98, 46);
+      ctx.quadraticCurveTo(60, 50, 22, 46);
+      ctx.closePath();
+      strokeAndFill(ctx, '#A5F3E4', '#1B1040', 4.8);
+
+      // Sesame seeds on top bun
+      ctx.fillStyle = '#FFFFFF';
+      const seeds = [[44, 24, -0.3], [60, 21, 0], [76, 25, 0.3], [52, 29, 0.15], [68, 29, -0.15]];
+      for (let i = 0; i < seeds.length; i++) {
+        ctx.beginPath();
+        ctx.ellipse(seeds[i][0], seeds[i][1], 3.2, 1.7, seeds[i][2], 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Blush cheeks on top bun/face
+      drawBlushCheeks(ctx, 34, 86, 42, 6.2, 3.6, 'rgba(255, 107, 158, 0.78)');
+
+      // Big Glossy Eyes
+      drawCuteGlossyEye(ctx, 45, 37, 6.8, 7.6, isBlink);
+      drawCuteGlossyEye(ctx, 75, 37, 6.8, 7.6, isBlink);
+
+      // Spooky-cute wavy smile with two tiny ghost fangs
+      ctx.beginPath();
+      ctx.moveTo(46, 73);
+      ctx.quadraticCurveTo(53, 81, 60, 75);
+      ctx.quadraticCurveTo(67, 81, 74, 73);
+      ctx.lineWidth = 3.8;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Two tiny white ghost fangs
+      ctx.beginPath();
+      ctx.moveTo(50, 75); ctx.lineTo(53, 81); ctx.lineTo(56, 76);
+      ctx.moveTo(64, 76); ctx.lineTo(67, 81); ctx.lineTo(70, 75);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFFFFF', '#1B1040', 2.4);
+
+      ctx.restore();
+    }
+
+    // 8. MOON PENGUIN: upright penguin with a crescent-moon hat and a star on its belly
+    function drawMoonPenguin(ctx, isBlink) {
+      ctx.save();
+
+      // Stubby orange webbed feet at bottom
+      ctx.beginPath();
+      ctx.ellipse(45, 103, 9, 5, -0.15, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FF8C24', '#1B1040', 4.2);
+      ctx.beginPath();
+      ctx.ellipse(75, 103, 9, 5, 0.15, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FF8C24', '#1B1040', 4.2);
+
+      // Outstretched side flippers (distinct penguin silhouette)
+      ctx.beginPath();
+      ctx.moveTo(34, 58);
+      ctx.quadraticCurveTo(10, 68, 14, 84);
+      ctx.quadraticCurveTo(20, 90, 34, 78);
+      ctx.closePath();
+      strokeAndFill(ctx, '#2B3A70', '#1B1040', 4.4);
+
+      ctx.beginPath();
+      ctx.moveTo(86, 58);
+      ctx.quadraticCurveTo(110, 68, 106, 84);
+      ctx.quadraticCurveTo(100, 90, 86, 78);
+      ctx.closePath();
+      strokeAndFill(ctx, '#2B3A70', '#1B1040', 4.4);
+
+      // Upright Plump Penguin Body
+      ctx.beginPath();
+      ctx.ellipse(60, 68, 29, 34, 0, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#2B3A70', '#1B1040', 4.8);
+
+      // Cream-white Belly Patch
+      ctx.beginPath();
+      ctx.ellipse(60, 76, 20, 22, 0, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFF8EB', '#1B1040', 3.8);
+
+      // 5-Point Golden Star on its Belly
+      drawFivePointStar(ctx, 60, 80, 11.5, 5.2, -Math.PI / 2);
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 3.6);
+
+      // Crescent-Moon Hat atop the penguin's head (curves into a tall crescent horn on top-left)
+      ctx.beginPath();
+      ctx.moveTo(35, 39);
+      ctx.bezierCurveTo(32, 16, 58, 6, 82, 12); // Outer arch of crescent moon hat
+      ctx.bezierCurveTo(64, 16, 58, 28, 83, 39); // Inner scoop of crescent moon
+      ctx.quadraticCurveTo(60, 44, 35, 39);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 4.5);
+
+      // Fluffy Nightcap Trim Band
+      ctx.beginPath();
+      ctx.roundRect(33, 35, 54, 8, 4);
+      strokeAndFill(ctx, '#FFF8EB', '#1B1040', 3.8);
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 41, 79, 58, 5.8, 3.4);
+
+      // Big Glossy Eyes
+      drawCuteGlossyEye(ctx, 47, 51, 6.5, 7.3, isBlink);
+      drawCuteGlossyEye(ctx, 73, 51, 6.5, 7.3, isBlink);
+
+      // Cute Orange Triangle Beak + happy mouth
+      ctx.beginPath();
+      ctx.moveTo(54, 55);
+      ctx.lineTo(66, 55);
+      ctx.lineTo(60, 63);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FF8C24', '#1B1040', 3.6);
+
+      ctx.restore();
+    }
+
+    // 9. GOLDEN CAPY: wide, low barrel-shaped golden capybara with small round ears and a tiny crown, relaxed face
+    function drawGoldenCapy(ctx, isBlink) {
+      ctx.save();
+
+      // Four short stubby legs along the bottom of the wide barrel body
+      const legX = [28, 46, 74, 92];
+      for (let i = 0; i < legX.length; i++) {
+        ctx.beginPath();
+        ctx.roundRect(legX[i] - 6, 88, 12, 14, 5);
+        strokeAndFill(ctx, '#D98200', '#1B1040', 4.2);
+      }
+
+      // Small Round Ears set back on the top-right of the head
+      ctx.beginPath();
+      ctx.arc(44, 41, 7.5, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#D98200', '#1B1040', 4.2);
+      ctx.beginPath();
+      ctx.arc(70, 41, 7.5, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#D98200', '#1B1040', 4.2);
+
+      // Wide, Low Horizontal Barrel-Shaped Capybara Body + Squared Snout on Left
+      ctx.beginPath();
+      ctx.moveTo(26, 42);
+      ctx.lineTo(86, 42);
+      ctx.bezierCurveTo(108, 42, 112, 62, 108, 82);
+      ctx.quadraticCurveTo(106, 94, 88, 94);
+      ctx.lineTo(26, 94);
+      ctx.quadraticCurveTo(10, 94, 10, 76);
+      ctx.lineTo(10, 56);
+      ctx.quadraticCurveTo(10, 42, 26, 42);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFB82E', '#1B1040', 4.8);
+
+      // Golden metallic sheen highlight along back
+      ctx.beginPath();
+      ctx.ellipse(68, 52, 24, 6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFF099';
+      ctx.fill();
+
+      // Distinct Capybara Blunt Muzzle Patch on the left
+      ctx.beginPath();
+      ctx.roundRect(12, 52, 22, 30, 9);
+      strokeAndFill(ctx, '#E08E00', '#1B1040', 3.8);
+
+      // Nostril & peaceful chill capybara mouth on muzzle
+      ctx.beginPath();
+      ctx.arc(20, 61, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#1B1040';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(20, 65);
+      ctx.lineTo(20, 72);
+      ctx.moveTo(15, 74);
+      ctx.quadraticCurveTo(20, 70, 26, 74);
+      ctx.lineWidth = 3.2;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Tiny Royal Crown perched on top of the head
+      ctx.beginPath();
+      ctx.moveTo(46, 42);
+      ctx.lineTo(44, 24);
+      ctx.lineTo(52, 31);
+      ctx.lineTo(57, 21);
+      ctx.lineTo(62, 31);
+      ctx.lineTo(70, 24);
+      ctx.lineTo(68, 42);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFE45E', '#1B1040', 4.0);
+
+      // Crown cyan gem
+      ctx.beginPath();
+      ctx.arc(57, 34, 3.0, 0, Math.PI * 2);
+      ctx.fillStyle = '#35E0FF';
+      ctx.fill();
+
+      // Blush marks
+      drawBlushCheeks(ctx, 40, 74, 71, 6.2, 3.6, 'rgba(255, 92, 148, 0.75)');
+
+      // Relaxed half-lidded glossy eyes
+      drawCuteGlossyEye(ctx, 45, 60, 6.6, 7.2, isBlink, { droopy: true, lidColor: '#FFB82E' });
+      drawCuteGlossyEye(ctx, 69, 60, 6.6, 7.2, isBlink, { droopy: true, lidColor: '#FFB82E' });
+
+      // Content smile
+      ctx.beginPath();
+      ctx.moveTo(51, 72);
+      ctx.quadraticCurveTo(57, 77, 63, 72);
+      ctx.lineWidth = 3.4;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 10. THUNDER TACO: half-moon taco shell with a lightning-bolt tail and cute angry eyebrows
+    function drawThunderTaco(ctx, isBlink) {
+      ctx.save();
+
+      // Jagged Electric Lightning-Bolt Tail jutting out from the right side
+      ctx.beginPath();
+      ctx.moveTo(82, 58);
+      ctx.lineTo(104, 38);
+      ctx.lineTo(95, 36);
+      ctx.lineTo(115, 16); // Sharp lightning tip
+      ctx.lineTo(106, 44);
+      ctx.lineTo(114, 46);
+      ctx.lineTo(88, 72);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFF066', '#1B1040', 4.4);
+
+      // Ruffled Taco Fillings (Lettuce, Salsa & Cheese) along top arch of the taco
+      ctx.beginPath();
+      ctx.moveTo(18, 66);
+      ctx.arc(26, 48, 11, Math.PI * 0.8, Math.PI * 1.9);
+      ctx.arc(43, 39, 12, Math.PI * 0.9, Math.PI * 1.95);
+      ctx.arc(62, 39, 12, Math.PI * 1.0, Math.PI * 2.0);
+      ctx.arc(79, 48, 11, Math.PI * 1.1, Math.PI * 0.2);
+      ctx.lineTo(88, 66);
+      ctx.closePath();
+      strokeAndFill(ctx, '#4CD964', '#1B1040', 4.4);
+
+      // Red salsa chunks & gold cheese strips peeking from the filling
+      ctx.beginPath();
+      ctx.arc(38, 41, 5.5, 0, Math.PI * 2);
+      ctx.arc(66, 40, 5.5, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FF3B6B', '#1B1040', 3.4);
+
+      ctx.beginPath();
+      ctx.arc(52, 38, 5.5, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 3.4);
+
+      // Half-Moon Taco Shell (Flat/curved bottom, high rounded U-arch)
+      ctx.beginPath();
+      ctx.moveTo(14, 68);
+      ctx.bezierCurveTo(14, 34, 92, 34, 92, 68);
+      ctx.bezierCurveTo(92, 92, 76, 98, 53, 98);
+      ctx.bezierCurveTo(30, 98, 14, 92, 14, 68);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFC738', '#1B1040', 4.8);
+
+      // Toasted tortilla spots
+      ctx.fillStyle = '#D98200';
+      ctx.beginPath();
+      ctx.arc(25, 76, 2.5, 0, Math.PI * 2);
+      ctx.arc(80, 78, 2.8, 0, Math.PI * 2);
+      ctx.arc(74, 86, 2.0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 31, 75, 77, 6.2, 3.6);
+
+      // Big Glossy Eyes
+      drawCuteGlossyEye(ctx, 39, 68, 6.8, 7.6, isBlink);
+      drawCuteGlossyEye(ctx, 67, 68, 6.8, 7.6, isBlink);
+
+      // Cute Angry V-Slanted Eyebrows
+      ctx.lineWidth = 4.4;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(29, 55);
+      ctx.lineTo(46, 61);
+      ctx.moveTo(77, 55);
+      ctx.lineTo(60, 61);
+      ctx.stroke();
+
+      // Feisty determined smile
+      ctx.beginPath();
+      ctx.moveTo(45, 81);
+      ctx.quadraticCurveTo(53, 87, 61, 81);
+      ctx.lineWidth = 3.6;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 11. GALAXY JELLY: starry dome with long trailing tentacles that wave
+    function drawGalaxyJelly(ctx, isBlink) {
+      ctx.save();
+
+      // Long Waving Trailing Tentacles extending down from the dome
+      const tentacleSpecs = [
+        { sx: 30, c1x: 14, c1y: 78, c2x: 38, c2y: 94, ex: 22, ey: 110, color: '#35E0FF' },
+        { sx: 48, c1x: 36, c1y: 80, c2x: 58, c2y: 96, ex: 45, ey: 112, color: '#FF4FA3' },
+        { sx: 72, c1x: 84, c1y: 80, c2x: 62, c2y: 96, ex: 75, ey: 112, color: '#FF4FA3' },
+        { sx: 90, c1x: 106, c1y: 78, c2x: 82, c2y: 94, ex: 98, ey: 110, color: '#35E0FF' }
+      ];
+
+      for (let i = 0; i < tentacleSpecs.length; i++) {
+        const t = tentacleSpecs[i];
+        ctx.beginPath();
+        ctx.moveTo(t.sx, 58);
+        ctx.bezierCurveTo(t.c1x, t.c1y, t.c2x, t.c2y, t.ex, t.ey);
+        ctx.lineWidth = 9.2;
+        ctx.strokeStyle = '#1B1040';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        ctx.lineWidth = 4.4;
+        ctx.strokeStyle = t.color;
+        ctx.stroke();
+      }
+
+      // Starry Jellyfish Bell Dome with scalloped bottom lobes
+      ctx.beginPath();
+      ctx.moveTo(16, 54);
+      ctx.bezierCurveTo(14, 12, 106, 12, 104, 54);
+      // Scalloped bell rim
+      ctx.quadraticCurveTo(93, 64, 82, 56);
+      ctx.quadraticCurveTo(71, 64, 60, 56);
+      ctx.quadraticCurveTo(49, 64, 38, 56);
+      ctx.quadraticCurveTo(27, 64, 16, 54);
+      ctx.closePath();
+
+      const grad = ctx.createLinearGradient(60, 14, 60, 62);
+      grad.addColorStop(0, '#5B189A');
+      grad.addColorStop(0.55, '#9D4EDD');
+      grad.addColorStop(1, '#FF4FA3');
+      strokeAndFill(ctx, grad, '#1B1040', 4.8);
+
+      // Tiny glowing galaxy stars & sparkles inside the dome
+      drawFivePointStar(ctx, 36, 28, 5.2, 2.2, 0.2);
+      ctx.fillStyle = '#FFD34D';
+      ctx.fill();
+
+      drawFivePointStar(ctx, 82, 26, 4.8, 2.0, -0.3);
+      ctx.fillStyle = '#35E0FF';
+      ctx.fill();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(58, 22, 2.2, 0, Math.PI * 2);
+      ctx.arc(46, 33, 1.6, 0, Math.PI * 2);
+      ctx.arc(72, 32, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 33, 87, 49, 6.0, 3.5, 'rgba(255, 143, 199, 0.85)');
+
+      // Big Glossy Eyes
+      drawCuteGlossyEye(ctx, 44, 43, 6.8, 7.6, isBlink);
+      drawCuteGlossyEye(ctx, 76, 43, 6.8, 7.6, isBlink);
+
+      // Sweet jellyfish smile
+      ctx.beginPath();
+      ctx.moveTo(53, 50);
+      ctx.quadraticCurveTo(60, 56, 67, 50);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // 12. KING PICKLE: tall bumpy pickle with a gold crown and a red cape
+    function drawKingPickle(ctx, isBlink) {
+      ctx.save();
+
+      // Broad Flowing Royal Red Cape flaring out behind the pickle (distinct triangular silhouette base)
+      ctx.beginPath();
+      ctx.moveTo(36, 48);
+      ctx.quadraticCurveTo(14, 66, 12, 98);
+      ctx.quadraticCurveTo(36, 106, 60, 102);
+      ctx.quadraticCurveTo(84, 106, 108, 98);
+      ctx.quadraticCurveTo(106, 66, 84, 48);
+      ctx.closePath();
+      strokeAndFill(ctx, '#E62E4D', '#1B1040', 4.6);
+
+      // Tall Bumpy Pickle Body with protruding pickle warts along left and right edges
+      ctx.beginPath();
+      ctx.moveTo(40, 34);
+      ctx.arc(60, 34, 20, Math.PI, 0, false);
+      // Right bumpy edge
+      ctx.arc(81, 48, 6, -Math.PI * 0.4, Math.PI * 0.4, false);
+      ctx.lineTo(80, 62);
+      ctx.arc(82, 70, 6.5, -Math.PI * 0.4, Math.PI * 0.4, false);
+      ctx.lineTo(79, 86);
+      ctx.arc(60, 88, 19, 0, Math.PI, false);
+      // Left bumpy edge
+      ctx.lineTo(40, 78);
+      ctx.arc(38, 70, 6.5, Math.PI * 0.6, Math.PI * 1.4, false);
+      ctx.lineTo(40, 56);
+      ctx.arc(39, 46, 6, Math.PI * 0.6, Math.PI * 1.4, false);
+      ctx.closePath();
+      strokeAndFill(ctx, '#32B850', '#1B1040', 4.8);
+
+      // Royal White Ermine Fur Collar around shoulders
+      ctx.beginPath();
+      ctx.arc(35, 52, 7, 0, Math.PI * 2);
+      ctx.arc(85, 52, 7, 0, Math.PI * 2);
+      strokeAndFill(ctx, '#FFF8EB', '#1B1040', 3.8);
+
+      // Dark green pickle bumps/ridges on belly
+      ctx.fillStyle = '#1E7E34';
+      ctx.beginPath();
+      ctx.arc(48, 84, 3.2, 0, Math.PI * 2);
+      ctx.arc(72, 82, 3.5, 0, Math.PI * 2);
+      ctx.arc(60, 92, 3.0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tall 3-Peaked Gold Crown on top of head
+      ctx.beginPath();
+      ctx.moveTo(41, 29);
+      ctx.lineTo(37, 10);
+      ctx.lineTo(50, 19);
+      ctx.lineTo(60, 7);
+      ctx.lineTo(70, 19);
+      ctx.lineTo(83, 10);
+      ctx.lineTo(79, 29);
+      ctx.closePath();
+      strokeAndFill(ctx, '#FFD34D', '#1B1040', 4.2);
+
+      // Jewels on crown
+      ctx.beginPath();
+      ctx.arc(60, 22, 3.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#E62E4D';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(48, 23, 2.4, 0, Math.PI * 2);
+      ctx.arc(72, 23, 2.4, 0, Math.PI * 2);
+      ctx.fillStyle = '#35E0FF';
+      ctx.fill();
+
+      // Blush cheeks
+      drawBlushCheeks(ctx, 45, 75, 62, 5.8, 3.5);
+
+      // Big Glossy Eyes
+      drawCuteGlossyEye(ctx, 50, 52, 6.4, 7.2, isBlink);
+      drawCuteGlossyEye(ctx, 70, 52, 6.4, 7.2, isBlink);
+
+      // Proud royal smile
+      ctx.beginPath();
+      ctx.moveTo(52, 65);
+      ctx.quadraticCurveTo(60, 73, 68, 65);
+      ctx.lineWidth = 3.6;
+      ctx.strokeStyle = '#1B1040';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    /* ==========================================================================
+       1C. ORIGINAL DRAWN RAIDER & GUARD DOG CHARACTERS (Pre-rendered at DPR)
+       - Sneaky Raccoon: Crouched bandit silhouette with huge striped bushy tail,
+         knit burglar beanie, dark bandit mask, and loot sack on shoulder
+       - Speedy Fox: Sleek aerodynamic sprinter with giant swept-back ears,
+         streaming white-tipped tail, and neon cyan speed visor
+       - Big Bandit (Bear): Massive broad-shouldered hulking boss bear with
+         wide-brim outlaw hat, red bandit bandana, and gold belt buckle
+       - Guard Dog: Loyal defender pup with perky ears, spiked cyan collar,
+         and heroic expression
+       ========================================================================== */
+    const RAIDER_ART_CACHE = {};
+
+    function fillAndStroke(ctx, fillStyle, lineWidth = 4.2, strokeStyle = '#1B1040') {
+      strokeAndFill(ctx, fillStyle, strokeStyle, typeof lineWidth === 'number' ? lineWidth : 4.2);
+    }
+
+    function safeRoundRect(ctx, x, y, w, h, r) {
+      const radius = Math.max(0, Math.min(r || 0, Math.min(w, h) / 2));
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(x, y, w, h, radius);
+      } else {
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
+    }
+
+    function drawSneakyRaccoon(ctx) {
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      // 1. Huge striped bushy tail curving out to the right (distinct silhouette)
+      ctx.beginPath();
+      ctx.moveTo(68, 84);
+      ctx.bezierCurveTo(106, 86, 118, 48, 100, 30);
+      ctx.bezierCurveTo(88, 18, 72, 32, 76, 54);
+      ctx.bezierCurveTo(78, 66, 72, 74, 66, 78);
+      ctx.closePath();
+      fillAndStroke(ctx, '#8D869C');
+
+      // Dark tail rings
+      ctx.save();
+      ctx.clip();
+      ctx.fillStyle = '#3B334D';
+      ctx.fillRect(74, 34, 42, 9);
+      ctx.fillRect(74, 52, 42, 9);
+      ctx.fillRect(74, 70, 42, 8);
+      ctx.restore();
+      ctx.beginPath();
+      ctx.moveTo(68, 84);
+      ctx.bezierCurveTo(106, 86, 118, 48, 100, 30);
+      ctx.bezierCurveTo(88, 18, 72, 32, 76, 54);
+      ctx.bezierCurveTo(78, 66, 72, 74, 66, 78);
+      ctx.closePath();
+      ctx.lineWidth = 4.2;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      // 2. Burglar Loot Sack slung over left shoulder
+      ctx.beginPath();
+      ctx.arc(24, 68, 16, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#D9A05B');
+      ctx.font = '900 13px sans-serif';
+      ctx.fillStyle = '#1B1040';
+      ctx.textAlign = 'center';
+      ctx.fillText('$', 24, 73);
+
+      // 3. Crouched body & sneaky feet
+      ctx.beginPath();
+      ctx.ellipse(42, 99, 8.5, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(62, 99, 8.5, 5, 0, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#4B425E');
+
+      ctx.beginPath();
+      ctx.ellipse(52, 79, 21, 18, 0, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#9B94AB');
+
+      // Lighter belly patch
+      ctx.beginPath();
+      ctx.ellipse(52, 82, 12, 11, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#DCD6E8';
+      ctx.fill();
+
+      // 4. Rounded Raccoon Ears
+      ctx.beginPath();
+      ctx.arc(33, 34, 10, 0, Math.PI * 2);
+      ctx.arc(71, 34, 10, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#7E778F');
+
+      // 5. Wide Cheek-to-Cheek Raccoon Head
+      ctx.beginPath();
+      ctx.moveTo(24, 52);
+      ctx.quadraticCurveTo(24, 28, 52, 28);
+      ctx.quadraticCurveTo(80, 28, 80, 52);
+      ctx.quadraticCurveTo(84, 68, 52, 70);
+      ctx.quadraticCurveTo(20, 68, 24, 52);
+      ctx.closePath();
+      fillAndStroke(ctx, '#ABA4BA');
+
+      // 6. Dark Bandit Mask across eyes
+      ctx.beginPath();
+      safeRoundRect(ctx, 28, 42, 48, 16, 8);
+      fillAndStroke(ctx, '#261C38', 3.4);
+
+      // 7. Knit Burglar Beanie Cap on top
+      ctx.beginPath();
+      ctx.arc(52, 32, 20, Math.PI, 0);
+      ctx.closePath();
+      fillAndStroke(ctx, '#2E2347');
+      ctx.beginPath();
+      safeRoundRect(ctx, 30, 29, 44, 7, 3.5);
+      fillAndStroke(ctx, '#FF4D6D', 3.4);
+
+      // Blush & Glossy Eyes
+      drawBlushCheeks(ctx, 34, 70, 60, 5.2, 3.2);
+      drawCuteGlossyEye(ctx, 41, 50, 6.2, 6.8, false);
+      drawCuteGlossyEye(ctx, 63, 50, 6.2, 6.8, false);
+
+      // Cute mischievous smirk + nose
+      ctx.beginPath();
+      ctx.arc(52, 57, 3.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#1B1040';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(46, 63);
+      ctx.quadraticCurveTo(53, 67, 59, 61);
+      ctx.lineWidth = 3.4;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawSpeedyFox(ctx) {
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      // 1. Streaming horizontal white-tipped speed tail (distinct sleek silhouette)
+      ctx.beginPath();
+      ctx.moveTo(64, 76);
+      ctx.bezierCurveTo(96, 62, 116, 68, 114, 84);
+      ctx.bezierCurveTo(112, 98, 86, 98, 62, 86);
+      ctx.closePath();
+      fillAndStroke(ctx, '#FF6B1A');
+
+      // White tail tip
+      ctx.beginPath();
+      ctx.arc(105, 81, 10, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFF9F0';
+      ctx.fill();
+
+      // 2. Dynamic sprinting legs
+      ctx.beginPath();
+      safeRoundRect(ctx, 30, 88, 9, 15, 4.5);
+      safeRoundRect(ctx, 57, 86, 9, 16, 4.5);
+      fillAndStroke(ctx, '#261838');
+
+      // 3. Lean forward-tilted sprinter torso + yellow lightning scarf
+      ctx.beginPath();
+      ctx.ellipse(48, 78, 16, 15, -0.18, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#FF7828');
+
+      ctx.beginPath();
+      ctx.ellipse(47, 80, 9.5, 10, -0.15, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFF5E4';
+      ctx.fill();
+
+      // 4. Giant swept-back pointed Fox Ears (very tall & angular silhouette)
+      ctx.beginPath();
+      ctx.moveTo(28, 38);
+      ctx.lineTo(12, 10);
+      ctx.lineTo(42, 26);
+      ctx.closePath();
+      fillAndStroke(ctx, '#FF6B1A');
+
+      ctx.beginPath();
+      ctx.moveTo(60, 26);
+      ctx.lineTo(84, 8);
+      ctx.lineTo(74, 38);
+      ctx.closePath();
+      fillAndStroke(ctx, '#FF6B1A');
+
+      // Inner ear cream triangles
+      ctx.beginPath();
+      ctx.moveTo(28, 34);
+      ctx.lineTo(18, 16);
+      ctx.lineTo(38, 27);
+      ctx.closePath();
+      ctx.moveTo(63, 27);
+      ctx.lineTo(78, 15);
+      ctx.lineTo(71, 34);
+      ctx.closePath();
+      ctx.fillStyle = '#FFE8C8';
+      ctx.fill();
+
+      // 5. Diamond/Triangular Fox Head with pointed cheeks
+      ctx.beginPath();
+      ctx.moveTo(14, 50);
+      ctx.quadraticCurveTo(26, 24, 50, 24);
+      ctx.quadraticCurveTo(74, 24, 86, 50);
+      ctx.quadraticCurveTo(68, 68, 50, 70);
+      ctx.quadraticCurveTo(32, 68, 14, 50);
+      ctx.closePath();
+      fillAndStroke(ctx, '#FF7A29');
+
+      // White lower cheek fur
+      ctx.beginPath();
+      ctx.moveTo(18, 51);
+      ctx.quadraticCurveTo(34, 54, 50, 68);
+      ctx.quadraticCurveTo(66, 54, 82, 51);
+      ctx.quadraticCurveTo(68, 68, 50, 70);
+      ctx.quadraticCurveTo(32, 68, 18, 51);
+      ctx.closePath();
+      ctx.fillStyle = '#FFF7EB';
+      ctx.fill();
+
+      // Blush & Glossy Eyes
+      drawBlushCheeks(ctx, 30, 70, 58, 5.2, 3.2);
+      drawCuteGlossyEye(ctx, 38, 47, 6.2, 7.0, false);
+      drawCuteGlossyEye(ctx, 62, 47, 6.2, 7.0, false);
+
+      // 6. Signature Neon Cyan Speed Visor across brow
+      ctx.beginPath();
+      ctx.moveTo(22, 39);
+      ctx.lineTo(50, 44);
+      ctx.lineTo(78, 39);
+      ctx.lineTo(74, 31);
+      ctx.lineTo(50, 35);
+      ctx.lineTo(26, 31);
+      ctx.closePath();
+      fillAndStroke(ctx, '#35E0FF', 3.4);
+
+      // Nose & speedy grin
+      ctx.beginPath();
+      ctx.arc(50, 56, 3.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#1B1040';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(44, 61);
+      ctx.quadraticCurveTo(50, 66, 57, 60);
+      ctx.lineWidth = 3.4;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawBigBanditBear(ctx) {
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      // 1. Massive Hulking Shoulders & Boss Bear Torso (huge wide silhouette)
+      ctx.beginPath();
+      ctx.ellipse(38, 103, 11, 6, 0, 0, Math.PI * 2);
+      ctx.ellipse(82, 103, 11, 6, 0, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#4A2B18');
+
+      // Raised muscular bear arms on sides
+      ctx.beginPath();
+      ctx.ellipse(17, 72, 11, 18, 0.35, 0, Math.PI * 2);
+      ctx.ellipse(103, 72, 11, 18, -0.35, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#7A4928');
+
+      // Wide barrel body
+      ctx.beginPath();
+      safeRoundRect(ctx, 24, 52, 72, 50, 26);
+      fillAndStroke(ctx, '#8A5430');
+
+      // Tan belly & Gold Outlaw Belt Buckle
+      ctx.beginPath();
+      ctx.ellipse(60, 79, 22, 17, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#D9A773';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.rect(26, 86, 68, 9);
+      fillAndStroke(ctx, '#2B1B3D', 3.4);
+      ctx.beginPath();
+      safeRoundRect(ctx, 51, 83, 18, 14, 3);
+      fillAndStroke(ctx, '#FFD34D', 3.4);
+
+      // 2. Round Bear Ears
+      ctx.beginPath();
+      ctx.arc(34, 30, 11, 0, Math.PI * 2);
+      ctx.arc(86, 30, 11, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#7A4928');
+
+      // 3. Broad Boss Bear Head
+      ctx.beginPath();
+      safeRoundRect(ctx, 28, 24, 64, 46, 22);
+      fillAndStroke(ctx, '#8A5430');
+
+      // Dark Domino Bandit Mask
+      ctx.beginPath();
+      safeRoundRect(ctx, 33, 36, 54, 16, 8);
+      fillAndStroke(ctx, '#1E1433', 3.4);
+
+      // 4. Red Outlaw Bandana around neck
+      ctx.beginPath();
+      ctx.moveTo(30, 64);
+      ctx.lineTo(90, 64);
+      ctx.lineTo(60, 82);
+      ctx.closePath();
+      fillAndStroke(ctx, '#FF2A55', 3.6);
+
+      // 5. Wide-Brim Outlaw Boss Hat on top
+      ctx.beginPath();
+      ctx.ellipse(60, 24, 38, 7.5, 0, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#2E1F47');
+      ctx.beginPath();
+      ctx.moveTo(40, 24);
+      ctx.lineTo(45, 9);
+      ctx.lineTo(75, 9);
+      ctx.lineTo(80, 24);
+      ctx.closePath();
+      fillAndStroke(ctx, '#3D295E');
+      ctx.beginPath();
+      ctx.rect(42, 19, 36, 5);
+      fillAndStroke(ctx, '#FFD34D', 3.0);
+
+      // Tan Bear Snout
+      ctx.beginPath();
+      ctx.ellipse(60, 56, 13, 9.5, 0, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#E5B887', 3.2);
+
+      // Blush & Big Glossy Eyes
+      drawBlushCheeks(ctx, 39, 81, 55, 5.8, 3.6);
+      drawCuteGlossyEye(ctx, 47, 44, 6.4, 7.0, false);
+      drawCuteGlossyEye(ctx, 73, 44, 6.4, 7.0, false);
+
+      // Boss Bear Nose & Smirk
+      ctx.beginPath();
+      ctx.ellipse(60, 53, 5, 3.6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#1B1040';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(53, 60);
+      ctx.quadraticCurveTo(60, 64, 68, 59);
+      ctx.lineWidth = 3.5;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawGuardDog(ctx) {
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      // Wagging tail
+      ctx.beginPath();
+      ctx.moveTo(82, 78);
+      ctx.quadraticCurveTo(106, 66, 102, 50);
+      ctx.quadraticCurveTo(96, 44, 86, 66);
+      ctx.closePath();
+      fillAndStroke(ctx, '#E09F5A');
+
+      // Sturdy defender body
+      ctx.beginPath();
+      safeRoundRect(ctx, 32, 64, 56, 36, 18);
+      fillAndStroke(ctx, '#E8A864');
+
+      // Cream chest
+      ctx.beginPath();
+      ctx.ellipse(60, 82, 17, 13, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFF3DC';
+      ctx.fill();
+
+      // Spiked Cyan-Gold Guard Collar
+      ctx.beginPath();
+      safeRoundRect(ctx, 34, 61, 52, 10, 5);
+      fillAndStroke(ctx, '#35E0FF', 3.6);
+      ctx.beginPath();
+      ctx.arc(60, 72, 6, 0, Math.PI * 2);
+      fillAndStroke(ctx, '#FFD34D', 3.2);
+
+      // Perky Guard Dog Ears
+      ctx.beginPath();
+      ctx.moveTo(30, 38);
+      ctx.lineTo(22, 14);
+      ctx.lineTo(46, 26);
+      ctx.closePath();
+      ctx.moveTo(90, 38);
+      ctx.lineTo(98, 14);
+      ctx.lineTo(74, 26);
+      ctx.closePath();
+      fillAndStroke(ctx, '#B87333');
+
+      // Head
+      ctx.beginPath();
+      safeRoundRect(ctx, 28, 24, 64, 42, 20);
+      fillAndStroke(ctx, '#F0B26E');
+
+      // Cream muzzle patch
+      ctx.beginPath();
+      ctx.ellipse(60, 52, 15, 10, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFF5E4';
+      ctx.fill();
+
+      // Blush & Big Glossy Eyes
+      drawBlushCheeks(ctx, 38, 82, 54, 5.5, 3.4);
+      drawCuteGlossyEye(ctx, 46, 42, 6.2, 6.8, false);
+      drawCuteGlossyEye(ctx, 74, 42, 6.2, 6.8, false);
+
+      // Heroic eyebrows
+      ctx.beginPath();
+      ctx.moveTo(38, 32);
+      ctx.lineTo(52, 35);
+      ctx.moveTo(82, 32);
+      ctx.lineTo(68, 35);
+      ctx.lineWidth = 4.0;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      // Nose & Determined Smile
+      ctx.beginPath();
+      ctx.ellipse(60, 49, 5, 3.6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#1B1040';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(52, 56);
+      ctx.quadraticCurveTo(60, 62, 68, 56);
+      ctx.lineWidth = 3.4;
+      ctx.strokeStyle = '#1B1040';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
     function renderCreatureOffscreenCanvas(drawFn, isBlink, dpr) {
       const logicalSize = 120;
       const canvas = document.createElement('canvas');
@@ -2908,59 +4228,102 @@
       return canvas;
     }
 
-    function initCreatureArtCache(force = false) {
-      const dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
-      if (!force && cachedArtDpr === dpr && Object.keys(CREATURE_ART_CACHE).length > 0) {
-        return;
-      }
-      cachedArtDpr = dpr;
-      const now = performance.now();
-      const ids = Object.keys(DRAWN_CREATURE_SPEC);
-
-      for (let i = 0; i < ids.length; i++) {
-        const id = ids[i];
-        const spec = DRAWN_CREATURE_SPEC[id];
-        const openCanvas = renderCreatureOffscreenCanvas(spec.drawFn, false, dpr);
-        const blinkCanvas = renderCreatureOffscreenCanvas(spec.drawFn, true, dpr);
-        CREATURE_ART_CACHE[id] = {
-          openCanvas,
-          blinkCanvas,
-          openUrl: openCanvas.toDataURL('image/png'),
-          blinkUrl: blinkCanvas.toDataURL('image/png'),
-          idleClass: spec.idleClass
+    function initRaiderAndDefenseArtCache(dpr) {
+      try {
+        const raiderDrawMap = {
+          raccoon: drawSneakyRaccoon,
+          fox: drawSpeedyFox,
+          bear: drawBigBanditBear,
+          guardDog: drawGuardDog
         };
-        if (!creatureBlinkState[id]) {
-          creatureBlinkState[id] = {
-            isBlinking: false,
-            nextSwitchMs: now + 3000 + Math.random() * 2000
-          };
+        const rKeys = Object.keys(raiderDrawMap);
+        for (let i = 0; i < rKeys.length; i++) {
+          const rk = rKeys[i];
+          try {
+            const rCanvas = renderCreatureOffscreenCanvas(raiderDrawMap[rk], false, dpr);
+            const rUrl = rCanvas.toDataURL('image/png');
+            try {
+              const rImg = new Image();
+              rImg.src = rUrl;
+            } catch (pErr) {}
+            RAIDER_ART_CACHE[rk] = {
+              canvas: rCanvas,
+              url: rUrl
+            };
+          } catch (innerErr) {}
         }
-      }
+        const gdImg = document.getElementById('guard-dog-img');
+        if (gdImg && RAIDER_ART_CACHE.guardDog) {
+          gdImg.src = RAIDER_ART_CACHE.guardDog.url;
+        }
+      } catch (err) {}
+    }
+
+    function initCreatureArtCache(force = false) {
+      try {
+        const dpr = Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
+        if (!force && cachedArtDpr === dpr && Object.keys(CREATURE_ART_CACHE).length > 0) {
+          return;
+        }
+        cachedArtDpr = dpr;
+        const now = performance.now();
+        const ids = Object.keys(DRAWN_CREATURE_SPEC);
+
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          try {
+            const spec = DRAWN_CREATURE_SPEC[id];
+            const openCanvas = renderCreatureOffscreenCanvas(spec.drawFn, false, dpr);
+            const blinkCanvas = renderCreatureOffscreenCanvas(spec.drawFn, true, dpr);
+            const openUrl = openCanvas.toDataURL('image/png');
+            const blinkUrl = blinkCanvas.toDataURL('image/png');
+            // Preload Image objects into browser cache for instant rendering
+            try {
+              const img1 = new Image();
+              img1.src = openUrl;
+              const img2 = new Image();
+              img2.src = blinkUrl;
+            } catch (pErr) {}
+
+            CREATURE_ART_CACHE[id] = {
+              openCanvas,
+              blinkCanvas,
+              openUrl,
+              blinkUrl,
+              idleClass: spec.idleClass
+            };
+            if (!creatureBlinkState[id]) {
+              creatureBlinkState[id] = {
+                isBlinking: false,
+                nextSwitchMs: now + 3000 + Math.random() * 2000
+              };
+            }
+          } catch (innerErr) {}
+        }
+
+        initRaiderAndDefenseArtCache(dpr);
+      } catch (err) {}
     }
 
     function getCreatureVisualHTML(creatureId, opts = {}) {
       const def = CREATURE_MAP[creatureId];
       if (!def) return '';
+      if (!CREATURE_ART_CACHE[creatureId]) {
+        initCreatureArtCache(true);
+      }
+      const art = CREATURE_ART_CACHE[creatureId];
+      if (!art) return '';
+
       const delaySec = typeof opts.delaySec === 'number' ? opts.delaySec : 0;
       const paused = Boolean(opts.paused);
-
-      const art = CREATURE_ART_CACHE[creatureId];
-      if (art) {
-        const bState = creatureBlinkState[creatureId];
-        const isBlink = !paused && bState && bState.isBlinking;
-        const src = isBlink ? art.blinkUrl : art.openUrl;
-        const animClass = paused ? 'creature-art-img' : `creature-art-img ${art.idleClass}`;
-        const styleAttr = paused
-          ? 'animation: none;'
-          : `--bob-delay: ${delaySec.toFixed(2)}s;`;
-        return `<img class="${animClass}" data-creature-id="${creatureId}" data-paused="${paused ? '1' : '0'}" src="${src}" alt="${def.name}" style="${styleAttr}">`;
-      }
-
-      // Fallback emoji for the remaining 6 creatures
+      const bState = creatureBlinkState[creatureId];
+      const isBlink = !paused && bState && bState.isBlinking;
+      const src = isBlink ? art.blinkUrl : art.openUrl;
+      const animClass = paused ? 'creature-art-img' : `creature-art-img ${art.idleClass}`;
       const styleAttr = paused
         ? 'animation: none;'
         : `--bob-delay: ${delaySec.toFixed(2)}s;`;
-      return `<span class="creature-emoji" style="${styleAttr}">${def.emoji}</span>`;
+      return `<img class="${animClass}" data-creature-id="${creatureId}" data-paused="${paused ? '1' : '0'}" src="${src}" alt="${def.name}" style="${styleAttr}">`;
     }
 
     function updateCreatureBlinks(nowMs) {
@@ -3031,25 +4394,35 @@
 
     function getMilestoneStars(level) {
       const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
-      return Math.floor(lvl / CONFIG.MILESTONE_INTERVAL);
+      return Math.floor(lvl / 10);
     }
 
-    // Creature Income = baseIncome * level * 2^(floor(level / 10))
+    // Creature Income grows ~1.08x per level: baseIncome * 1.08^(level - 1)
     function getCreatureIncome(creatureId, level) {
       const def = CREATURE_MAP[creatureId];
       if (!def) return 0;
       const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
-      const stars = Math.floor(lvl / CONFIG.MILESTONE_INTERVAL);
-      return def.baseIncome * lvl * Math.pow(CONFIG.MILESTONE_MULT_BASE, stars);
+      const growthRate = CONFIG.INCOME_GROWTH_PER_LEVEL || 1.08;
+      return def.baseIncome * Math.pow(growthRate, lvl - 1);
     }
 
-    // Upgrade Cost = 20 * baseIncome * 1.15^level
+    // Upgrade Cost grows ~1.12x per level for the first 20 levels, then smoothly compounds at ~1.18x after level 20
     function getCreatureUpgradeCost(creatureId, currentLevel) {
       const def = CREATURE_MAP[creatureId];
       if (!def) return Infinity;
       const lvl = Math.max(1, Math.floor(safeNumber(currentLevel, 1)));
       if (lvl >= CONFIG.MAX_CREATURE_LEVEL) return Infinity;
-      return Math.round(CONFIG.UPGRADE_BASE_MULTIPLIER * def.baseIncome * Math.pow(CONFIG.UPGRADE_EXPONENT, lvl));
+      const baseMult = CONFIG.UPGRADE_BASE_MULTIPLIER || 12;
+      const earlyCap = CONFIG.UPGRADE_EARLY_LEVEL_CAP || 20;
+      const earlyExp = CONFIG.UPGRADE_EARLY_EXPONENT || 1.12;
+      const lateExp = CONFIG.UPGRADE_EXPONENT || 1.18;
+      let mult;
+      if (lvl <= earlyCap) {
+        mult = Math.pow(earlyExp, lvl - 1);
+      } else {
+        mult = Math.pow(earlyExp, earlyCap - 1) * Math.pow(lateExp, lvl - earlyCap);
+      }
+      return Math.max(10, Math.round(baseMult * def.baseIncome * mult));
     }
 
     function isEggUnlocked(eggTypeKey) {
@@ -3058,10 +4431,15 @@
       return state.totalCoinsEarned >= eggCfg.unlockTotalCoins;
     }
 
+    // Egg Cost scales with both hatch count for this egg type and total creatures currently owned
     function getEggCost(eggTypeKey) {
       const eggCfg = CONFIG.EGG_TYPES[eggTypeKey] || CONFIG.EGG_TYPES.basic;
       const count = Math.max(0, Math.floor(safeNumber(state.eggHatches[eggCfg.id], 0)));
-      return Math.round(eggCfg.baseCost * Math.pow(eggCfg.costMult, count));
+      const ownedCount = Math.max(0, state.ownedCreatures ? state.ownedCreatures.length : 0);
+      const ownedMult = eggCfg.ownedCostMult || 1.25;
+      // Scales with egg purchases and number of owned creatures
+      const cost = eggCfg.baseCost * Math.pow(eggCfg.costMult, count) * Math.pow(ownedMult, ownedCount);
+      return Math.round(cost);
     }
 
     function getNextSlotCost(currentSlotsUnlocked) {
@@ -3142,10 +4520,34 @@
     };
 
     let pendingOfflineCoins = 0;
+    let pendingOfflineDurationSec = 0;
     let selectedSlotIndex = -1;
     let isHatching = false;
     let debugSpeed10x = false;
     const debugTapTimestamps = [];
+
+    function formatDuration(totalSeconds) {
+      const s = Math.max(0, Math.floor(safeNumber(totalSeconds, 0)));
+      const hrs = Math.floor(s / 3600);
+      const mins = Math.floor((s % 3600) / 60);
+      const secs = s % 60;
+      if (hrs > 0) {
+        return `${hrs}h ${mins}m`;
+      }
+      if (mins > 0) {
+        return `${mins}m ${secs}s`;
+      }
+      return `${secs}s`;
+    }
+
+    function showOfflineEarningsModal(earnedCoins, durationSec) {
+      if (earnedCoins <= 0) return;
+      pendingOfflineCoins = earnedCoins;
+      pendingOfflineDurationSec = durationSec;
+      const timeStr = formatDuration(durationSec);
+      offlineModalTextEl.innerHTML = `You were away for <strong>${timeStr}</strong> and earned <strong style="color: #FFD34D;">🪙 ${formatNumber(earnedCoins)}</strong> (at 25% passive rate).<br><span style="display:inline-block; margin-top: 8px; font-size: 13px; color: #B0B8C5;">⚠️ Offline earnings capped at 1 hour.</span>`;
+      openModal(offlineModalEl);
+    }
 
     // Active Raid Runtime State
     const raidRuntime = {
@@ -3156,6 +4558,10 @@
       spawnSchedule: [],
       activeRaiders: [],
       guardDogCooldownSec: 0,
+      combo: 0,
+      bestCombo: 1,
+      lastHitTimeMs: 0,
+      rewardGranted: false,
       nextId: 1
     };
 
@@ -3163,6 +4569,10 @@
       clearActiveRaiderNodes();
       raidRuntime.phase = 'idle';
       raidRuntime.warningPlayed = false;
+      raidRuntime.combo = 0;
+      raidRuntime.bestCombo = 1;
+      raidRuntime.lastHitTimeMs = 0;
+      raidRuntime.rewardGranted = false;
       setRaidDangerVisuals(false);
 
       state.saveVersion = CONFIG.SAVE_VERSION;
@@ -3351,12 +4761,13 @@
         }
         state.discoveredCreatures = validDiscovered;
 
-        // Offline earnings = 50% of income x time away (max 2 hours)
+        // Offline earnings: 25% of passive income x time away (capped at 1 hour)
         const incomePerSec = getTotalIncomePerSecond();
         if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
           const earned = Math.floor(incomePerSec * clampedElapsedSec * CONFIG.OFFLINE_INCOME_FACTOR);
           if (earned >= 1) {
             pendingOfflineCoins = earned;
+            pendingOfflineDurationSec = Math.round(clampedElapsedSec);
           }
         }
         state.lastSavedAt = now;
@@ -3517,11 +4928,11 @@
     }
 
     function canSpawnParticle() {
-      return (stars.length + particles.length) < CONFIG.MAX_PARTICLES;
+      return particles.length < CONFIG.MAX_PARTICLES;
     }
 
     function spawnFloatingText(x, y, text, color = '#FFD34D') {
-      if (!canSpawnParticle()) particles.shift();
+      while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
       particles.push({
         type: 'text',
         x,
@@ -3535,30 +4946,31 @@
     }
 
     function spawnFlyingCoin(startX, startY, count = 1) {
-      const maxToSpawn = Math.min(count, 8);
+      const maxToSpawn = Math.min(count, 4);
       for (let i = 0; i < maxToSpawn; i++) {
-        if (!canSpawnParticle()) particles.shift();
-        const spreadX = (Math.random() - 0.5) * 56;
-        const spreadY = (Math.random() - 0.5) * 36;
+        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        const spreadX = (Math.random() - 0.5) * 44;
+        const spreadY = (Math.random() - 0.5) * 28;
         particles.push({
           type: 'coin',
           startX: startX + spreadX,
           startY: startY + spreadY,
           x: startX + spreadX,
           y: startY + spreadY,
-          ctrlX: (startX + coinTargetPos.x) * 0.5 + (Math.random() - 0.5) * 90,
-          ctrlY: Math.min(startY, coinTargetPos.y) - 40 - Math.random() * 50,
+          ctrlX: (startX + coinTargetPos.x) * 0.5 + (Math.random() - 0.5) * 60,
+          ctrlY: Math.min(startY, coinTargetPos.y) - 30 - Math.random() * 40,
           age: 0,
-          life: 0.48 + Math.random() * 0.18
+          life: 0.45 + Math.random() * 0.15
         });
       }
     }
 
-    function spawnBurstSparkles(x, y, color = '#35E0FF', count = 8) {
-      for (let i = 0; i < count; i++) {
-        if (!canSpawnParticle()) particles.shift();
-        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-        const speed = 45 + Math.random() * 85;
+    function spawnBurstSparkles(x, y, color = '#35E0FF', count = 4) {
+      const clampedCount = Math.min(count, 4);
+      for (let i = 0; i < clampedCount; i++) {
+        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        const angle = (Math.PI * 2 * i) / clampedCount + Math.random() * 0.4;
+        const speed = 40 + Math.random() * 65;
         particles.push({
           type: 'spark',
           x,
@@ -3566,31 +4978,56 @@
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           color,
-          r: 3 + Math.random() * 3,
+          r: 2.5 + Math.random() * 2,
           age: 0,
-          life: 0.45 + Math.random() * 0.2
+          life: 0.4 + Math.random() * 0.18
         });
       }
     }
 
-    function spawnHitStars(x, y, count = 7) {
+    function spawnHitStars(x, y, count = 3) {
       const colors = ['#FFD34D', '#35E0FF', '#FF4FA3', '#5CFF9D'];
-      for (let i = 0; i < count; i++) {
-        if (!canSpawnParticle()) particles.shift();
-        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
-        const speed = 55 + Math.random() * 90;
+      const clampedCount = Math.min(count, 3);
+      for (let i = 0; i < clampedCount; i++) {
+        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        const angle = (Math.PI * 2 * i) / clampedCount + (Math.random() - 0.5) * 0.4;
+        const speed = 45 + Math.random() * 70;
         particles.push({
           type: 'star',
           x,
           y,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 20,
+          vy: Math.sin(angle) * speed - 15,
           color: colors[i % colors.length],
-          r: 6 + Math.random() * 4,
+          r: 5 + Math.random() * 3,
           rot: Math.random() * Math.PI * 2,
           vRot: (Math.random() - 0.5) * 8,
           age: 0,
-          life: 0.52 + Math.random() * 0.18
+          life: 0.45 + Math.random() * 0.15
+        });
+      }
+    }
+
+    function spawnConfettiBurst(x, y, count = 6) {
+      const colors = ['#FFD34D', '#FF4FA3', '#35E0FF', '#5CFF9D', '#B15CFF'];
+      const clampedCount = Math.min(count, 6);
+      for (let i = 0; i < clampedCount; i++) {
+        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.0;
+        const speed = 80 + Math.random() * 140;
+        particles.push({
+          type: 'confetti',
+          x: x + (Math.random() - 0.5) * 24,
+          y: y + (Math.random() - 0.5) * 12,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 25,
+          w: 6 + Math.random() * 4,
+          h: 3.5 + Math.random() * 3,
+          color: colors[i % colors.length],
+          rot: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 8,
+          age: 0,
+          life: 0.85 + Math.random() * 0.35
         });
       }
     }
@@ -3701,6 +5138,22 @@
           fxCtx.restore();
 
           if (t >= 1) particles.splice(i, 1);
+        } else if (p.type === 'confetti') {
+          p.x += p.vx * dtSec;
+          p.y += p.vy * dtSec;
+          p.vy += 240 * dtSec;
+          p.vx *= 0.985;
+          p.rot += p.vRot * dtSec;
+          const alpha = t < 0.7 ? 1 : (1 - (t - 0.7) / 0.3);
+          fxCtx.save();
+          fxCtx.globalAlpha = Math.max(0, alpha);
+          fxCtx.translate(p.x, p.y);
+          fxCtx.rotate(p.rot);
+          fxCtx.fillStyle = p.color;
+          fxCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          fxCtx.restore();
+
+          if (t >= 1) particles.splice(i, 1);
         }
       }
     }
@@ -3717,6 +5170,8 @@
     const settingsBtnEl = document.getElementById('settings-btn');
     const vaultDeckEl = document.getElementById('vault-deck');
     const vaultBtnEl = document.getElementById('vault-btn');
+    const vaultDoorShieldEl = document.getElementById('vault-door-shield');
+    const vaultDangerRingEl = document.getElementById('vault-danger-ring');
     const tapPowerDisplayEl = document.getElementById('tap-power-display');
     const slotsCountDisplayEl = document.getElementById('slots-count-display');
     const buySlotBtnEl = document.getElementById('buy-slot-btn');
@@ -3743,9 +5198,13 @@
     const raidAreaEl = document.getElementById('raid-area');
     const raidersLayerEl = document.getElementById('raiders-layer');
     const raidHudPillEl = document.getElementById('raid-hud-pill');
+    const raidComboBadgeEl = document.getElementById('raid-combo-badge');
     const laserBeamEl = document.getElementById('laser-beam');
     const guardDogBadgeEl = document.getElementById('guard-dog-badge');
     const guardDogTimerEl = document.getElementById('guard-dog-timer');
+    const guardDogActorEl = document.getElementById('guard-dog-actor');
+    const guardDogImgEl = document.getElementById('guard-dog-img');
+    const guardDogLvlTagEl = document.getElementById('guard-dog-lvl-tag');
     const raidVignetteEl = document.getElementById('raid-vignette');
 
     // Modals
@@ -3937,8 +5396,12 @@
           const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
           node.plate.style.setProperty('--ring-color', rarity.color);
           node.plate.style.setProperty('--ring-glow', rarity.glow);
-          if (rarity.rainbow && kidnapSec <= 0) {
-            node.plate.classList.add('mythic-ring');
+          if (kidnapSec <= 0) {
+            if (rarity.rainbow) {
+              node.plate.classList.add('mythic-ring');
+            } else if (def.rarity === 'Legendary') {
+              node.plate.classList.add('legendary-plate');
+            }
           }
 
           const milestoneStars = getMilestoneStars(owned.level);
@@ -4139,7 +5602,7 @@
       }
     }
 
-    function updateHUD() {
+    function updateHUD(skipGrid = false) {
       // Top Bar
       coinDisplayEl.textContent = formatNumber(state.displayedCoins);
       const incomePerSec = getTotalIncomePerSecond();
@@ -4148,18 +5611,38 @@
       totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
       muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
 
-      // Laser Beam & Guard Dog indicators in Raid Arena
-      if (state.defenseUpgrades.laserFence > 0) {
-        laserBeamEl.classList.add('active');
-      } else {
-        laserBeamEl.classList.remove('active');
-      }
+      // Laser Fence Beam, Guard Dog Dasher & Vault Door Shield visuals
+      try {
+        if (laserBeamEl) {
+          if (state.defenseUpgrades.laserFence > 0) {
+            laserBeamEl.classList.add('active');
+          } else {
+            laserBeamEl.classList.remove('active');
+          }
+        }
 
-      if (state.defenseUpgrades.guardDog > 0) {
-        guardDogBadgeEl.style.display = 'inline-flex';
-        guardDogTimerEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
-      } else {
-        guardDogBadgeEl.style.display = 'none';
+        if (state.defenseUpgrades.guardDog > 0) {
+          if (guardDogBadgeEl) guardDogBadgeEl.style.display = 'inline-flex';
+          if (guardDogTimerEl) guardDogTimerEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
+          if (guardDogActorEl) guardDogActorEl.classList.add('visible');
+          if (guardDogLvlTagEl) guardDogLvlTagEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
+          if (guardDogImgEl && RAIDER_ART_CACHE.guardDog && !guardDogImgEl.getAttribute('src')) {
+            guardDogImgEl.src = RAIDER_ART_CACHE.guardDog.url;
+          }
+        } else {
+          if (guardDogBadgeEl) guardDogBadgeEl.style.display = 'none';
+          if (guardDogActorEl) guardDogActorEl.classList.remove('visible');
+        }
+
+        if (vaultDoorShieldEl) {
+          if (state.defenseUpgrades.vaultDoor > 0) {
+            vaultDoorShieldEl.classList.add('active');
+          } else {
+            vaultDoorShieldEl.classList.remove('active');
+          }
+        }
+      } catch (err) {
+        console.warn('Non-fatal defense visuals HUD update error:', err);
       }
 
       // Vault Core Pills ("Tap +N" and "Slots X/12") & Round "+" Buy Slot Badge
@@ -4241,12 +5724,83 @@
         settingsDiscoveredEl.textContent = `${state.discoveredCreatures.length} / ${CONFIG.CREATURES.length}`;
       }
 
-      renderSlotsGrid();
+      if (!skipGrid) {
+        renderSlotsGrid();
+      }
     }
 
     /* ==========================================================================
        8. RAID SYSTEM: WARNING, SPAWNING, 3 CONVERGING LANES, GUARD DOG, WIN/LOSE
        ========================================================================== */
+    let guardDogDashResetTimer = null;
+
+    function getComboWinMultiplier(bestCombo) {
+      const stepsAboveOne = Math.max(0, Math.floor(safeNumber(bestCombo, 1)) - 1);
+      return Math.min(2.0, 1 + stepsAboveOne * 0.10);
+    }
+
+    function hideRaidComboBadge() {
+      try {
+        if (!raidComboBadgeEl) return;
+        raidComboBadgeEl.classList.remove('active', 'combo-pop');
+      } catch (err) {
+        console.warn('Non-fatal combo badge hide error:', err);
+      }
+    }
+
+    function registerRaidHitCombo() {
+      try {
+        const nowMs = performance.now();
+        if (raidRuntime.lastHitTimeMs > 0 && (nowMs - raidRuntime.lastHitTimeMs) <= 1500) {
+          raidRuntime.combo += 1;
+        } else {
+          raidRuntime.combo = 1;
+        }
+        raidRuntime.lastHitTimeMs = nowMs;
+        if (raidRuntime.combo > raidRuntime.bestCombo) {
+          raidRuntime.bestCombo = raidRuntime.combo;
+        }
+
+        if (raidRuntime.combo >= 2 && raidComboBadgeEl) {
+          const multPreview = getComboWinMultiplier(raidRuntime.bestCombo);
+          raidComboBadgeEl.textContent = `🔥 COMBO x${raidRuntime.combo} (${multPreview.toFixed(1)}x Bonus)`;
+          raidComboBadgeEl.classList.add('active');
+          raidComboBadgeEl.classList.remove('combo-pop');
+          void raidComboBadgeEl.offsetWidth;
+          raidComboBadgeEl.classList.add('combo-pop');
+        }
+      } catch (err) {
+        console.warn('Non-fatal combo update error:', err);
+      }
+    }
+
+    function triggerGuardDogDash(targetRaider) {
+      try {
+        if (!guardDogActorEl || !raidAreaEl || !targetRaider || !targetRaider.el) return;
+        const areaRect = raidAreaEl.getBoundingClientRect();
+        const targetRect = targetRaider.el.getBoundingClientRect();
+        if (areaRect.width <= 0 || targetRect.width <= 0) return;
+
+        const homeX = areaRect.left + areaRect.width * 0.5;
+        const homeY = areaRect.bottom - 28;
+        const targetX = targetRect.left + targetRect.width * 0.5;
+        const targetY = targetRect.top + targetRect.height * 0.5;
+
+        const dx = Math.round((targetX - homeX) * 0.86);
+        const dy = Math.round((targetY - homeY) * 0.86);
+
+        guardDogActorEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.16)`;
+        if (guardDogDashResetTimer) clearTimeout(guardDogDashResetTimer);
+        guardDogDashResetTimer = setTimeout(() => {
+          if (guardDogActorEl) {
+            guardDogActorEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
+          }
+        }, 185);
+      } catch (err) {
+        console.warn('Non-fatal Guard Dog dash error:', err);
+      }
+    }
+
     function buildRaidSchedule(raidNum) {
       const isFirstRaid = raidNum === 1;
       const isBossRaid = !isFirstRaid && (raidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
@@ -4283,16 +5837,22 @@
     }
 
     function setRaidDangerVisuals(active) {
-      if (active) {
-        raidVignetteEl.classList.add('active');
-        raidAreaEl.classList.add('raid-danger');
-        vaultDeckEl.classList.add('vault-danger');
-        vaultBtnEl.classList.add('vault-danger');
-      } else {
-        raidVignetteEl.classList.remove('active');
-        raidAreaEl.classList.remove('raid-danger');
-        vaultDeckEl.classList.remove('vault-danger');
-        vaultBtnEl.classList.remove('vault-danger');
+      try {
+        if (active) {
+          if (raidVignetteEl) raidVignetteEl.classList.add('active');
+          if (raidAreaEl) raidAreaEl.classList.add('raid-danger');
+          if (vaultDeckEl) vaultDeckEl.classList.add('vault-danger');
+          if (vaultBtnEl) vaultBtnEl.classList.add('vault-danger');
+        } else {
+          if (raidVignetteEl) raidVignetteEl.classList.remove('active');
+          if (raidAreaEl) raidAreaEl.classList.remove('raid-danger');
+          if (vaultDeckEl) vaultDeckEl.classList.remove('vault-danger');
+          if (vaultBtnEl) vaultBtnEl.classList.remove('vault-danger');
+          if (vaultDangerRingEl) vaultDangerRingEl.classList.remove('active');
+          hideRaidComboBadge();
+        }
+      } catch (err) {
+        console.warn('Non-fatal raid danger visuals error:', err);
       }
     }
 
@@ -4313,6 +5873,11 @@
       raidRuntime.spawnSchedule = buildRaidSchedule(state.raidNumber);
       raidRuntime.activeRaiders = [];
       raidRuntime.guardDogCooldownSec = 0.8;
+      raidRuntime.combo = 0;
+      raidRuntime.bestCombo = 1;
+      raidRuntime.lastHitTimeMs = 0;
+      raidRuntime.rewardGranted = false;
+      hideRaidComboBadge();
       setRaidDangerVisuals(true);
       triggerScreenShake();
       sfxSiren();
@@ -4326,12 +5891,16 @@
         }
       }
       raidRuntime.activeRaiders = [];
+      const leftovers = raidersLayerEl ? raidersLayerEl.querySelectorAll('.raider-node') : [];
+      for (let i = 0; i < leftovers.length; i++) {
+        if (leftovers[i].parentNode) leftovers[i].parentNode.removeChild(leftovers[i]);
+      }
     }
 
     function positionRaiderAlongLane(raiderObj) {
-      const areaHeight = Math.max(76, raidAreaEl.clientHeight);
-      const startY = 26;
-      const endY = Math.max(startY + 24, areaHeight - 36);
+      const areaHeight = Math.max(82, raidAreaEl.clientHeight);
+      const startY = 34;
+      const endY = Math.max(startY + 22, areaHeight - 44);
       const sx = CONFIG.LANE_START_X_PCT[raiderObj.lane] ?? 50;
       const ex = CONFIG.LANE_END_X_PCT[raiderObj.lane] ?? 50;
       const xPct = sx + (ex - sx) * raiderObj.progress;
@@ -4343,12 +5912,20 @@
 
     function spawnRaiderEntity(spec) {
       const cfg = CONFIG.RAIDERS[spec.typeKey] || CONFIG.RAIDERS.raccoon;
+      if (!RAIDER_ART_CACHE[spec.typeKey]) {
+        initCreatureArtCache(true);
+      }
+      const artUrl = RAIDER_ART_CACHE[spec.typeKey] ? RAIDER_ART_CACHE[spec.typeKey].url : '';
 
       const el = document.createElement('div');
       el.className = cfg.isBoss ? 'raider-node boss-raider' : 'raider-node';
       el.innerHTML = `
-        <div class="raider-hp-bar"><div class="raider-hp-fill" style="width: 100%;"></div></div>
-        <div class="raider-sprite">${cfg.emoji}</div>
+        <div class="raider-hp-bar"><div class="raider-hp-fill"></div></div>
+        <div class="raider-sprite-wrap">
+          <img class="raider-art-img" src="${artUrl}" alt="${cfg.name}" />
+          <div class="raider-flash-overlay"></div>
+        </div>
+        <div class="raider-shadow"></div>
       `;
 
       const hpFillEl = el.querySelector('.raider-hp-fill');
@@ -4367,11 +5944,17 @@
 
       positionRaiderAlongLane(raiderObj);
 
+      // One tap = 1 hit (use pointerdown only and ignore follow-up click)
       el.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
         unlockAudio();
         damageRaider(raiderObj, e.clientX, e.clientY);
+      });
+
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
       });
 
       raidersLayerEl.appendChild(el);
@@ -4381,15 +5964,17 @@
     function damageRaider(raider, clientX, clientY) {
       if (!raider || raider.hp <= 0 || raidRuntime.phase !== 'active') return;
 
+      registerRaidHitCombo();
+
       raider.hp = Math.max(0, raider.hp - 1);
-      const pct = Math.max(0, Math.min(100, (raider.hp / raider.maxHp) * 100));
-      raider.hpFillEl.style.width = `${pct}%`;
+      const ratio = Math.max(0, Math.min(1, raider.hp / raider.maxHp));
+      raider.hpFillEl.style.transform = `scaleX(${ratio.toFixed(3)})`;
 
-      raider.el.classList.add('was-hit');
-      raider.el.classList.remove('hit-flash');
+      raider.el.classList.remove('hit-flash', 'hit-squash');
       void raider.el.offsetWidth;
-      raider.el.classList.add('hit-flash');
+      raider.el.classList.add('hit-flash', 'hit-squash');
 
+      sfxPop();
       sfxHitRaider();
       triggerScreenShake();
 
@@ -4399,45 +5984,64 @@
 
       const dropCoins = Math.max(1, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAIDER_HIT_COIN_RATIO));
       addCoins(dropCoins);
-      spawnHitStars(cx, cy, 8);
-      spawnFlyingCoin(cx, cy, 2);
-      spawnFloatingText(cx, cy - 10, `+${formatNumber(dropCoins)}`, '#FFD34D');
+      spawnHitStars(cx, cy, 3);
+      // Spawn flying coins ONLY when a raider is defeated, not on every hit
+      spawnFloatingText(cx - 14, cy - 22, '-1', '#FF4D6D');
+      spawnFloatingText(cx + 14, cy - 6, `+${formatNumber(dropCoins)}`, '#FFD34D');
 
       if (raider.hp <= 0) {
-        if (raider.el && raider.el.parentNode) {
-          raider.el.parentNode.removeChild(raider.el);
-        }
         const idx = raidRuntime.activeRaiders.indexOf(raider);
         if (idx !== -1) raidRuntime.activeRaiders.splice(idx, 1);
 
+        // Spawn flying coins only when a raider is defeated
+        spawnFlyingCoin(cx, cy, 3);
+        const dyingEl = raider.el;
+        if (dyingEl && dyingEl.parentNode) {
+          // Remove defeated raiders from the DOM immediately for maximum mobile performance
+          dyingEl.parentNode.removeChild(dyingEl);
+        }
+
         if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
           finishRaidWin();
+          return;
         }
       }
-      updateHUD();
+
+      // Update only coin counter display without re-rendering creature grid
+      coinDisplayEl.textContent = formatNumber(state.coins);
     }
 
     function finishRaidWin() {
+      if (raidRuntime.rewardGranted) return;
+      raidRuntime.rewardGranted = true;
+
+      const bestCombo = raidRuntime.bestCombo || 1;
+      const comboMult = getComboWinMultiplier(bestCombo);
+
       clearActiveRaiderNodes();
       raidRuntime.phase = 'idle';
       raidRuntime.warningPlayed = false;
+      raidRuntime.combo = 0;
       state.raidTimerSec = randomRaidIntervalSec();
       setRaidDangerVisuals(false);
 
-      const winBonus = Math.max(30, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAID_WIN_INCOME_SECONDS));
+      const baseWinBonus = Math.max(30, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAID_WIN_INCOME_SECONDS));
+      const winBonus = Math.round(baseWinBonus * comboMult);
       addCoins(winBonus);
       sfxHatchFanfare('Legendary');
 
       const vRect = vaultBtnEl.getBoundingClientRect();
-      const vx = vRect.left + vRect.width / 2;
-      const vy = vRect.top + vRect.height / 2;
+      const vx = vRect.width > 0 ? (vRect.left + vRect.width / 2) : (viewportW / 2);
+      const vy = vRect.height > 0 ? (vRect.top + vRect.height / 2) : (viewportH * 0.45);
+      spawnConfettiBurst(vx, vy - 16, 30);
       spawnHitStars(vx, vy, 12);
-      spawnFlyingCoin(vx, vy, 7);
-      spawnFloatingText(vx, vy - 20, `+${formatNumber(winBonus)}`, '#5CFF9D');
+      spawnFlyingCoin(vx, vy, 8);
+      spawnFloatingText(vx, vy - 24, `+${formatNumber(winBonus)}`, '#5CFF9D');
 
-      showBanner(`🛡️ VAULT SAFE! (+${formatNumber(winBonus)} coins)`, true, false);
+      const comboNote = bestCombo >= 2 ? ` · x${bestCombo} Combo (${comboMult.toFixed(1)}x)` : '';
+      showBanner(`🛡️ VAULT SAFE! (+${formatNumber(winBonus)} coins${comboNote})`, true, false);
       saveGame();
-      updateHUD();
+      updateHUD(false);
     }
 
     function finishRaidLose(raiderCfg) {
@@ -4449,10 +6053,21 @@
       clearActiveRaiderNodes();
       raidRuntime.phase = 'idle';
       raidRuntime.warningPlayed = false;
+      raidRuntime.combo = 0;
       state.raidTimerSec = randomRaidIntervalSec();
       setRaidDangerVisuals(false);
       triggerScreenShake();
       sfxKidnap();
+
+      // Money sink: when a raider successfully steals a creature, player also loses 5% of their current coins (never below 0)
+      const penaltyCoins = Math.max(0, Math.floor(state.coins * CONFIG.RAID_STEAL_COIN_PENALTY_RATIO));
+      if (penaltyCoins > 0) {
+        state.coins = Math.max(0, state.coins - penaltyCoins);
+        const vRect = vaultBtnEl.getBoundingClientRect();
+        const vx = vRect.width > 0 ? (vRect.left + vRect.width / 2) : (viewportW / 2);
+        const vy = vRect.height > 0 ? (vRect.top + vRect.height / 2) : (viewportH * 0.45);
+        spawnFloatingText(vx, vy - 20, `-5% (-${formatNumber(penaltyCoins)})`, '#FF4D6D');
+      }
 
       const availableIndices = [];
       for (let i = 0; i < state.ownedCreatures.length; i++) {
@@ -4461,18 +6076,19 @@
         }
       }
 
+      const penaltyNote = penaltyCoins > 0 ? ` (-5% coins: -${formatNumber(penaltyCoins)})` : '';
       if (availableIndices.length > 0) {
         const chosenIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
         const victim = state.ownedCreatures[chosenIdx];
         victim.kidnappedRemainingSec = CONFIG.KIDNAP_DURATION_SEC;
         const victimDef = CREATURE_MAP[victim.id];
-        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} kidnapped ${victimDef.name} for 90s!`, true, true);
+        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} kidnapped ${victimDef.name} for 90s!${penaltyNote}`, true, true);
       } else {
-        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} breached the Vault!`, true, true);
+        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} breached the Vault!${penaltyNote}`, true, true);
       }
 
       saveGame();
-      updateHUD();
+      updateHUD(false);
     }
 
     function updateRaidSystem(dtSec) {
@@ -4526,8 +6142,15 @@
       if (raidRuntime.phase === 'active') {
         raidRuntime.elapsedSec += dtSec;
 
+        // Reset active combo display after 1.5s without a hit
+        if (raidRuntime.combo > 0 && (performance.now() - raidRuntime.lastHitTimeMs) > 1500) {
+          raidRuntime.combo = 0;
+          hideRaidComboBadge();
+        }
+
         while (
           raidRuntime.spawnSchedule.length > 0 &&
+          raidRuntime.activeRaiders.length < 5 &&
           raidRuntime.elapsedSec >= raidRuntime.spawnSchedule[0].timeSec
         ) {
           const spec = raidRuntime.spawnSchedule.shift();
@@ -4549,10 +6172,11 @@
               }
             }
             if (nearest) {
+              triggerGuardDogDash(nearest);
               const rect = nearest.el.getBoundingClientRect();
               const cx = rect.left + rect.width / 2;
               const cy = rect.top + rect.height / 2;
-              spawnFloatingText(cx, cy - 22, '🐕 BARK!', '#5CFF9D');
+              spawnFloatingText(cx, cy - 28, '🐕 BARK!', '#5CFF9D');
               damageRaider(nearest, cx, cy);
               if (raidRuntime.phase !== 'active') return;
             }
@@ -4562,6 +6186,8 @@
         const laserSlowMult = getLaserSlowMultiplier(state.defenseUpgrades.laserFence);
         const doorExtraSec = getVaultDoorExtraSec(state.defenseUpgrades.vaultDoor);
         const firstRaidSpeedFactor = raidRuntime.raidNumber === 1 ? 0.58 : 1.0;
+
+        let anyRaiderCloseToVault = false;
 
         for (let i = raidRuntime.activeRaiders.length - 1; i >= 0; i--) {
           const r = raidRuntime.activeRaiders[i];
@@ -4577,7 +6203,19 @@
             }
           }
 
+          if (r.progress >= 0.62) {
+            anyRaiderCloseToVault = true;
+          }
+
           positionRaiderAlongLane(r);
+        }
+
+        if (vaultDangerRingEl) {
+          if (anyRaiderCloseToVault) {
+            vaultDangerRingEl.classList.add('active');
+          } else {
+            vaultDangerRingEl.classList.remove('active');
+          }
         }
 
         if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
@@ -4643,11 +6281,42 @@
       }
     }
 
+    function isAnyModalOpen() {
+      return (
+        (upgradeModalEl && upgradeModalEl.classList.contains('active')) ||
+        (defenseModalEl && defenseModalEl.classList.contains('active')) ||
+        (hatchModalEl && hatchModalEl.classList.contains('active')) ||
+        (settingsModalEl && settingsModalEl.classList.contains('active')) ||
+        (debugModalEl && debugModalEl.classList.contains('active')) ||
+        (offlineModalEl && offlineModalEl.classList.contains('active'))
+      );
+    }
+
+    function syncModalOpenClass() {
+      if (isAnyModalOpen()) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    }
+
+    function openModal(modalEl) {
+      if (!modalEl) return;
+      modalEl.classList.add('active');
+      syncModalOpenClass();
+    }
+
+    function closeModal(modalEl) {
+      if (!modalEl) return;
+      modalEl.classList.remove('active');
+      syncModalOpenClass();
+    }
+
     function openUpgradeModal(slotIndex) {
       if (slotIndex < 0 || slotIndex >= state.ownedCreatures.length) return;
       selectedSlotIndex = slotIndex;
       renderUpgradeModalContent(slotIndex);
-      upgradeModalEl.classList.add('active');
+      openModal(upgradeModalEl);
     }
 
     function renderUpgradeModalContent(slotIndex) {
@@ -4657,7 +6326,6 @@
       const rarity = CONFIG.RARITIES[def.rarity] || CONFIG.RARITIES.Common;
       const kidnapSec = Math.ceil(safeNumber(entry.kidnappedRemainingSec, 0));
       const milestoneStars = getMilestoneStars(entry.level);
-      const starMult = Math.pow(CONFIG.MILESTONE_MULT_BASE, milestoneStars);
 
       const modalArtSig = `${entry.id}:${kidnapSec > 0 ? 1 : 0}`;
       if (upgradeModalEmojiEl.dataset.artSig !== modalArtSig) {
@@ -4678,8 +6346,12 @@
       upgradeModalPlateEl.className = 'slot-plate modal-plate';
       upgradeModalPlateEl.style.setProperty('--ring-color', rarity.color);
       upgradeModalPlateEl.style.setProperty('--ring-glow', rarity.glow);
-      if (rarity.rainbow && kidnapSec <= 0) {
-        upgradeModalPlateEl.classList.add('mythic-ring');
+      if (kidnapSec <= 0) {
+        if (rarity.rainbow) {
+          upgradeModalPlateEl.classList.add('mythic-ring');
+        } else if (def.rarity === 'Legendary') {
+          upgradeModalPlateEl.classList.add('legendary-plate');
+        }
       }
       if (kidnapSec > 0) {
         upgradeModalPlateEl.classList.add('kidnapped-plate');
@@ -4687,7 +6359,7 @@
 
       const curIncome = getCreatureIncome(entry.id, entry.level);
       upgradeModalLevelEl.textContent = `Lv. ${entry.level} / ${CONFIG.MAX_CREATURE_LEVEL}`;
-      upgradeModalStarsRowEl.textContent = `${milestoneStars} ★ (×${formatNumber(starMult)} bonus)`;
+      upgradeModalStarsRowEl.textContent = milestoneStars > 0 ? `${milestoneStars} ★ Milestone` : 'Level 1-9';
 
       if (kidnapSec > 0) {
         upgradeModalStatusEl.textContent = `⛓️ Kidnapped (${kidnapSec}s left)`;
@@ -4911,14 +6583,14 @@
         state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
       }
 
-      updateHUD();
-
+      // Show modal instantly on tap with zero wait on state/DOM passes
       hatchModalTitleEl.textContent = `Hatching ${eggCfg.name}...`;
       hatchModalRarityEl.textContent = '';
       hatchOutcomeBoxEl.style.display = 'none';
       hatchContinueBtnEl.style.display = 'none';
       hatchStageEl.innerHTML = `<div class="egg-emoji shaking">${eggCfg.emoji}</div>`;
-      hatchModalEl.classList.add('active');
+      openModal(hatchModalEl);
+      coinDisplayEl.textContent = formatNumber(state.coins);
 
       sfxEggShake();
       const shakeTimer = setInterval(sfxEggShake, 180);
@@ -4926,7 +6598,7 @@
       setTimeout(() => {
         clearInterval(shakeTimer);
         hatchModalTitleEl.textContent = 'Cracking Open...';
-        hatchStageEl.innerHTML = `<div class="egg-emoji shaking" style="filter: drop-shadow(0 0 28px #35E0FF);">🐣</div>`;
+        hatchStageEl.innerHTML = `<div class="egg-emoji shaking">🐣</div>`;
         sfxPop();
       }, CONFIG.HATCH_SHAKE_MS);
 
@@ -4944,7 +6616,8 @@
         hatchModalRarityEl.textContent = `${rarity.name} · +${formatNumber(hatched.baseIncome)}/sec`;
         hatchModalRarityEl.style.color = rarity.color;
 
-        const ringClass = rarity.rainbow ? 'slot-plate modal-plate mythic-ring hatched-pop' : 'slot-plate modal-plate hatched-pop';
+        const rarityPlateFx = rarity.rainbow ? ' mythic-ring' : hatched.rarity === 'Legendary' ? ' legendary-plate' : '';
+        const ringClass = `slot-plate modal-plate${rarityPlateFx} hatched-pop`;
         hatchStageEl.innerHTML = `
           <div class="${ringClass}" style="--ring-color: ${rarity.color}; --ring-glow: ${rarity.glow}; margin: 0;">
             ${getCreatureVisualHTML(hatched.id, { delaySec: 0, paused: false })}
@@ -5000,7 +6673,7 @@
           debugTapTimestamps.length = 0;
           sfxUpgrade();
           debugSpeedBtnEl.textContent = `⚡ Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`;
-          debugModalEl.classList.add('active');
+          openModal(debugModalEl);
         }
       });
 
@@ -5009,14 +6682,14 @@
         e.preventDefault();
         unlockAudio();
         sfxPop();
-        debugModalEl.classList.remove('active');
+        closeModal(debugModalEl);
       });
 
       debugModalEl.addEventListener('pointerdown', (e) => {
         if (e.target === debugModalEl) {
           unlockAudio();
           sfxPop();
-          debugModalEl.classList.remove('active');
+          closeModal(debugModalEl);
         }
       });
 
@@ -5059,21 +6732,21 @@
         resetInitialBoxEl.style.display = 'block';
         resetConfirmBoxEl.style.display = 'none';
         updateHUD();
-        settingsModalEl.classList.add('active');
+        openModal(settingsModalEl);
       });
 
       settingsModalCloseEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
         sfxPop();
-        settingsModalEl.classList.remove('active');
+        closeModal(settingsModalEl);
       });
 
       settingsModalEl.addEventListener('pointerdown', (e) => {
         if (e.target === settingsModalEl) {
           unlockAudio();
           sfxPop();
-          settingsModalEl.classList.remove('active');
+          closeModal(settingsModalEl);
         }
       });
 
@@ -5099,7 +6772,7 @@
         sfxKidnap();
         resetStateToFresh();
         saveGame();
-        settingsModalEl.classList.remove('active');
+        closeModal(settingsModalEl);
         showBanner('Progress reset! Started fresh with 120 coins.', false);
         updateHUD();
       });
@@ -5173,21 +6846,21 @@
         sfxPop();
         triggerSquash(defenseBtnEl);
         renderDefenseModalContent();
-        defenseModalEl.classList.add('active');
+        openModal(defenseModalEl);
       });
 
       defenseModalCloseEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
         sfxPop();
-        defenseModalEl.classList.remove('active');
+        closeModal(defenseModalEl);
       });
 
       defenseModalEl.addEventListener('pointerdown', (e) => {
         if (e.target === defenseModalEl) {
           unlockAudio();
           sfxPop();
-          defenseModalEl.classList.remove('active');
+          closeModal(defenseModalEl);
         }
       });
 
@@ -5205,7 +6878,7 @@
         e.preventDefault();
         unlockAudio();
         sfxPop();
-        upgradeModalEl.classList.remove('active');
+        closeModal(upgradeModalEl);
         selectedSlotIndex = -1;
       });
 
@@ -5213,7 +6886,7 @@
         if (e.target === upgradeModalEl) {
           unlockAudio();
           sfxPop();
-          upgradeModalEl.classList.remove('active');
+          closeModal(upgradeModalEl);
           selectedSlotIndex = -1;
         }
       });
@@ -5243,14 +6916,14 @@
         e.preventDefault();
         unlockAudio();
         sfxPop();
-        hatchModalEl.classList.remove('active');
+        closeModal(hatchModalEl);
       });
 
       hatchModalEl.addEventListener('pointerdown', (e) => {
         if (!isHatching && e.target === hatchModalEl) {
           unlockAudio();
           sfxPop();
-          hatchModalEl.classList.remove('active');
+          closeModal(hatchModalEl);
         }
       });
 
@@ -5269,21 +6942,43 @@
           spawnFlyingCoin(cx, cy, 8);
           spawnFloatingText(cx, cy - 20, `+${formatNumber(reward)}`, '#FFD34D');
         }
-        offlineModalEl.classList.remove('active');
+        closeModal(offlineModalEl);
         saveGame();
         updateHUD();
       });
 
-      // Autosave when tab is hidden
+      // Background / hidden tab tracking:
+      // While visible, game earns 100% normal passive income.
+      // When hidden/minimized/away, income drops to 25% capped at 1 hour.
+      let hiddenTimestamp = 0;
       document.addEventListener('visibilitychange', () => {
+        const now = Date.now();
         if (document.hidden) {
+          hiddenTimestamp = now;
+          state.lastSavedAt = now;
           saveGame();
         } else {
           lastFrameTime = performance.now();
+          if (hiddenTimestamp > 0) {
+            const awayElapsedSec = (now - hiddenTimestamp) / 1000;
+            hiddenTimestamp = 0;
+            const clampedAwaySec = Math.max(0, Math.min(awayElapsedSec, CONFIG.MAX_OFFLINE_SECONDS));
+            const incomePerSec = getTotalIncomePerSecond();
+            if (clampedAwaySec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
+              const earned = Math.floor(incomePerSec * clampedAwaySec * CONFIG.OFFLINE_INCOME_FACTOR);
+              if (earned >= 1) {
+                showOfflineEarningsModal(earned, Math.round(clampedAwaySec));
+              }
+            }
+          }
+          state.lastSavedAt = now;
         }
       });
 
-      window.addEventListener('pagehide', saveGame);
+      window.addEventListener('pagehide', () => {
+        state.lastSavedAt = Date.now();
+        saveGame();
+      });
     }
 
     /* ==========================================================================
@@ -5322,17 +7017,19 @@
       } else {
         state.displayedCoins += diff * Math.min(1, baseDtSec * CONFIG.COIN_ROLL_SPEED);
       }
-      coinDisplayEl.textContent = formatNumber(state.displayedCoins);
 
-      // 4. Refresh button affordability states periodically (10x/sec)
+      // 4. Batch coin counter display & button affordability states to 10x/sec (100ms)
       hudRefreshAccumulator += baseDtSec;
       if (hudRefreshAccumulator >= 0.1) {
         hudRefreshAccumulator = 0;
+        coinDisplayEl.textContent = formatNumber(state.displayedCoins);
         updateHUD();
       }
 
-      // 5. Update & draw stars, particles, and 3-5s creature blinks
-      updateCreatureBlinks(now);
+      // 5. Update & draw stars, particles, and 3-5s creature blinks (paused if modal open)
+      if (!isAnyModalOpen()) {
+        updateCreatureBlinks(now);
+      }
       updateAndDrawParticles(baseDtSec);
     }
 
@@ -5340,17 +7037,28 @@
        13. INITIALIZATION
        ========================================================================== */
     function init() {
-      updateCanvasSizes();
-      initCreatureArtCache();
-      initStars();
+      try {
+        updateCanvasSizes();
+      } catch (err) {
+        console.error('Canvas size init error:', err);
+      }
+      try {
+        initCreatureArtCache();
+      } catch (err) {
+        console.error('Art cache init error:', err);
+      }
+      try {
+        initStars();
+      } catch (err) {
+        console.error('Stars init error:', err);
+      }
       initSlotsGrid();
       loadGame();
       setupEvents();
       updateHUD();
 
       if (pendingOfflineCoins > 0) {
-        offlineModalTextEl.innerHTML = `Welcome back! You earned <strong style="color: #FFD34D;">${formatNumber(pendingOfflineCoins)}</strong>`;
-        offlineModalEl.classList.add('active');
+        showOfflineEarningsModal(pendingOfflineCoins, pendingOfflineDurationSec);
       }
 
       setInterval(() => {

@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan to replace the first six creature emojis (Noodle Cat, Soggy Toast, Disco Duck, Cactus Bro, Cyber Frog, Lava Llama) with original pre-rendered 2D canvas characters featuring distinct silhouettes, thick #1B1040 outlines, glossy eyes with open/closed blink frame swapping, and creature-specific CSS transform idle animations across vault plates, the hatch reveal modal, and the upgrade modal.",
-  "updatedAt":  "2026-10-28T13:33:06.571636089Z",
+  "summary":  "Updated implementation plan incorporating user revisions: Cosmic Egg cost raised to 500,000 and unlock threshold to 300,000 total coins; Golden Egg drop table updated so Legendary is 2% and Mythic is 0% (Mythic exclusive to Cosmic Egg); all other planned numbers preserved.",
+  "updatedAt":  "2026-11-07T09:22:22.630270533Z",
   "requestFeedback":  true,
   "userFacing":  true
 }
