@@ -280,6 +280,21 @@
       background: linear-gradient(180deg, #4E328C 0%, #351E69 100%);
       box-shadow: 0 3px 0 #1B0D3D, 0 5px 10px rgba(0, 0, 0, 0.35);
       font-size: 18px;
+      overflow: visible;
+    }
+
+    .btn-icon-top.prestige-ready::after {
+      content: '💎';
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      font-size: 12px;
+      line-height: 1;
+      background: #1B1040;
+      border: 1.5px solid #FFD34D;
+      border-radius: 999px;
+      padding: 1px 3px;
+      pointer-events: none;
     }
 
     @keyframes affordablePulseScale {
@@ -665,6 +680,150 @@
       animation: comboPopAnim 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
+    #raid-summary-popup {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%) scale(0.88);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 28;
+      min-width: 210px;
+      max-width: 90%;
+      background: linear-gradient(180deg, rgba(30, 15, 68, 0.96) 0%, rgba(14, 6, 36, 0.97) 100%);
+      border: 2px solid #5CFF9D;
+      border-radius: 14px;
+      padding: 7px 13px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.72);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      will-change: transform, opacity;
+    }
+
+    #raid-summary-popup.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #raid-summary-popup.danger {
+      border-color: #FF4D6D;
+    }
+
+    .raid-summary-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #5CFF9D;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+      text-shadow: 0 2px 0 #12082A;
+    }
+
+    #raid-summary-popup.danger .raid-summary-title {
+      color: #FF4D6D;
+    }
+
+    .raid-summary-sub {
+      font-size: 11px;
+      font-weight: 800;
+      color: #FFFDF7;
+      line-height: 1.3;
+      text-shadow: 0 1px 0 #12082A;
+    }
+
+    .raider-node.raider-stopped .raider-sprite-wrap {
+      animation-play-state: paused !important;
+      filter: grayscale(0.35) brightness(0.88);
+    }
+
+    /* Wide Boss Health Bar & Timer at Top of Arena */
+    #boss-top-bar {
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      width: min(92%, 440px);
+      transform: translateX(-50%) scale(0.94);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 27;
+      background: linear-gradient(180deg, rgba(36, 12, 68, 0.95) 0%, rgba(18, 6, 38, 0.96) 100%);
+      border: 2px solid #FFB020;
+      border-radius: 12px;
+      padding: 4px 10px 6px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.72);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      will-change: transform, opacity;
+    }
+
+    #boss-top-bar.active {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    #boss-top-bar.enraged {
+      border-color: #FF4D6D;
+    }
+
+    .boss-top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      color: #FFD34D;
+      text-shadow: 0 2px 0 #12082A;
+      margin-bottom: 3px;
+      white-space: nowrap;
+    }
+
+    #boss-top-bar.enraged .boss-top-header {
+      color: #FF859B;
+    }
+
+    .boss-top-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFFDF7;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    #boss-top-timer {
+      color: #5CFF9D;
+    }
+
+    .boss-top-track {
+      position: relative;
+      width: 100%;
+      height: 10px;
+      background: rgba(8, 3, 22, 0.96);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    #boss-top-hp-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #FF2A55 0%, #FFB020 55%, #FFD34D 100%);
+      transform-origin: left center;
+      transform: scaleX(1);
+      transition: transform 0.12s ease-out;
+      will-change: transform;
+    }
+
+    @keyframes bossRoarPulse {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(1.18, 1.14); }
+      70%  { transform: scale(0.95, 1.04); }
+      100% { transform: scale(1.05); }
+    }
+
+    .raider-node.boss-raider.boss-roar .raider-sprite-wrap {
+      animation: bossRoarPulse 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
     #guard-dog-badge {
       position: absolute;
       top: 27px;
@@ -800,10 +959,10 @@
     }
 
     .raider-node.boss-raider {
-      width: clamp(74px, 19vw, 114px);
-      height: clamp(82px, 20.5vw, 124px);
-      min-width: 74px;
-      min-height: 74px;
+      width: clamp(96px, 24.5vw, 152px);
+      height: clamp(106px, 26.5vw, 166px);
+      min-width: 96px;
+      min-height: 96px;
       z-index: 23;
     }
 
@@ -829,7 +988,7 @@
     }
 
     .raider-node.boss-raider .raider-hp-bar {
-      width: clamp(60px, 15vw, 92px);
+      width: clamp(76px, 19vw, 118px);
       height: 11px;
       min-height: 9px;
       border-color: #FFD34D;
@@ -861,10 +1020,10 @@
     }
 
     .raider-node.boss-raider .raider-sprite-wrap {
-      width: clamp(66px, 18vw, 110px);
-      height: clamp(66px, 18vw, 110px);
-      min-width: 64px;
-      min-height: 64px;
+      width: clamp(84px, 23vw, 144px);
+      height: clamp(84px, 23vw, 144px);
+      min-width: 84px;
+      min-height: 84px;
     }
 
     .raider-node.hit-squash .raider-sprite-wrap {
@@ -1358,7 +1517,13 @@
     /* Pause plate animations while any modal is open to ensure zero background CPU load */
     body.modal-open .slot-plate::after,
     body.modal-open .creature-art-img,
-    body.modal-open .creature-emoji {
+    body.modal-open .creature-emoji,
+    body.modal-open #tutorial-hand,
+    body.modal-open #floating-gold-coin,
+    body.modal-open #creature-speech-bubble,
+    body.modal-open .slot-new-badge,
+    body.modal-open .new-tag-badge,
+    body.modal-open .new-dot-badge {
       animation-play-state: paused !important;
     }
 
@@ -1984,6 +2149,483 @@
       padding: 8px 10px;
       margin-bottom: 12px;
     }
+
+    /* ==========================================================================
+       12. NEXT GOAL BAR, TUTORIAL, BOOK, NEW TAGS, DAILY GIFT, GOLD COIN & BUBBLES
+       (Animated strictly with transform and opacity only)
+       ========================================================================== */
+    #next-goal-bar {
+      position: relative;
+      z-index: 29;
+      width: 100%;
+      min-height: 22px;
+      background: linear-gradient(90deg, rgba(28, 14, 66, 0.92) 0%, rgba(44, 20, 96, 0.94) 50%, rgba(28, 14, 66, 0.92) 100%);
+      border: 1.5px solid rgba(255, 211, 77, 0.48);
+      border-radius: 999px;
+      padding: 2px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: clamp(10.5px, 2.3vw, 12.5px);
+      font-weight: 900;
+      color: #FFF5C0;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+
+    #next-goal-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* NEW Badges (Reveal, Slot Plate, Book Dot) */
+    @keyframes newBadgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .slot-new-badge {
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #FF4FA3 0%, #D91B73 100%);
+      border: 1.5px solid #FFFFFF;
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      padding: 1px 6px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+      z-index: 4;
+      pointer-events: none;
+      display: none;
+      will-change: transform;
+    }
+
+    .new-tag-badge {
+      display: inline-block;
+      background: linear-gradient(180deg, #FF4FA3 0%, #D91B73 100%);
+      border: 2px solid #FFFFFF;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+      animation: newBadgePulse 1.1s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .new-dot-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: linear-gradient(180deg, #FF4FA3 0%, #D91B73 100%);
+      border: 2px solid #FFFFFF;
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
+      z-index: 5;
+      pointer-events: none;
+      animation: newBadgePulse 1.1s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* Floating Golden Coin (once per minute, 30s income, transform & opacity only) */
+    #floating-gold-coin {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #FFFAD1 0%, #FFD34D 48%, #D97706 92%);
+      border: 2.5px solid #FFFFFF;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65), 0 0 16px rgba(255, 211, 77, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 62;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(-120px, 180px, 0) scale(0.8);
+      transition: opacity 0.2s ease;
+      will-change: transform, opacity;
+    }
+
+    #floating-gold-coin.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .gold-coin-tag {
+      font-size: 9px;
+      font-weight: 900;
+      color: #2A1205;
+      background: #FFF5B8;
+      border-radius: 999px;
+      padding: 0 4px;
+      margin-top: -2px;
+      line-height: 1.15;
+    }
+
+    /* Creature Speech Bubble (every ~20s, max 1 at a time, transform & opacity only) */
+    #creature-speech-bubble {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 58;
+      background: #FFFFFF;
+      color: #1B1040;
+      border: 2px solid #35E0FF;
+      border-radius: 12px;
+      padding: 3px 9px;
+      font-size: 11.5px;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+      opacity: 0;
+      transform: translate3d(0, 0, 0) scale(0.75);
+      transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform, opacity;
+    }
+
+    #creature-speech-bubble.active {
+      opacity: 1;
+    }
+
+    #creature-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: #FFFFFF transparent transparent;
+    }
+
+    /* First-Minute Tutorial Overlay & Pulsing Hand Pointer */
+    @keyframes tutorialHandPulse {
+      0%, 100% { transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(1); }
+      50% { transform: translate3d(var(--tx, 0px), calc(var(--ty, 0px) - 8px), 0) scale(1.16); }
+    }
+
+    #tutorial-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 68;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      will-change: opacity;
+    }
+
+    #tutorial-overlay.active {
+      opacity: 1;
+    }
+
+    #tutorial-bar {
+      position: absolute;
+      top: 84px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(94%, 390px);
+      background: linear-gradient(180deg, rgba(38, 18, 86, 0.97) 0%, rgba(20, 9, 48, 0.98) 100%);
+      border: 2px solid #FFD34D;
+      border-radius: 16px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
+      pointer-events: auto;
+    }
+
+    #tutorial-step-text {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: #FFFDF7;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    #tutorial-skip-btn {
+      min-height: 32px;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    #tutorial-hand {
+      position: fixed;
+      top: 0;
+      left: 0;
+      font-size: 34px;
+      line-height: 1;
+      pointer-events: none;
+      z-index: 69;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.75);
+      animation: tutorialHandPulse 0.85s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* Collection Book Modal & Undiscovered Silhouettes */
+    .book-modal-card {
+      max-width: 420px;
+    }
+
+    .book-summary-banner {
+      background: rgba(15, 8, 38, 0.85);
+      border: 1.5px solid #35E0FF;
+      border-radius: 12px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      color: #FFF7D6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .book-tiers-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    .book-tier-box {
+      background: rgba(16, 9, 40, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 6px 8px;
+    }
+
+    .book-tier-box.tier-complete {
+      border-color: #5CFF9D;
+      background: rgba(20, 38, 48, 0.55);
+    }
+
+    .book-tier-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .book-tier-bonus {
+      font-size: 10.5px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #D8CEFF;
+    }
+
+    .book-tier-box.tier-complete .book-tier-bonus {
+      background: rgba(92, 255, 157, 0.2);
+      color: #5CFF9D;
+      border: 1px solid #5CFF9D;
+    }
+
+    .book-tier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .book-creature-card {
+      background: rgba(10, 5, 26, 0.75);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 5px 7px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .book-creature-card.discovered {
+      border-color: var(--ring-color, #35E0FF);
+    }
+
+    .book-thumb-wrap {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 45%, rgba(56, 33, 114, 0.9) 0%, rgba(16, 8, 38, 0.98) 100%);
+      border: 2px solid var(--ring-color, rgba(255, 255, 255, 0.22));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .book-thumb-wrap img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Undiscovered creatures show as solid dark silhouettes with a "?" */
+    .book-thumb-wrap.undiscovered img {
+      filter: brightness(0) saturate(100%) contrast(200%);
+      opacity: 0.92;
+    }
+
+    .book-silhouette-q {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      color: #C4B5FD;
+      text-shadow: 0 2px 4px #000000;
+      pointer-events: none;
+    }
+
+    .book-card-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      line-height: 1.15;
+    }
+
+    .book-card-name {
+      font-size: 12px;
+      font-weight: 900;
+      color: #FFFFFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .book-card-sub {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #FFD34D;
+    }
+
+    /* Achievements List inside Book Modal */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      text-align: left;
+      margin-top: 4px;
+    }
+
+    .ach-item {
+      background: rgba(12, 6, 30, 0.72);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 5px 7px;
+      font-size: 10.5px;
+      line-height: 1.2;
+      opacity: 0.68;
+    }
+
+    .ach-item.unlocked {
+      border-color: #FFD34D;
+      background: rgba(45, 28, 72, 0.75);
+      opacity: 1;
+    }
+
+    .ach-title {
+      font-weight: 900;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .ach-desc {
+      color: #D8CEFF;
+      font-size: 9.8px;
+      margin-top: 1px;
+    }
+
+    /* 7-Day Daily Gift Streak Grid */
+    .daily-streak-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+
+    .daily-day-box {
+      background: rgba(14, 7, 36, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 10.5px;
+    }
+
+    .daily-day-box.day-7 {
+      grid-column: span 2;
+    }
+
+    .daily-day-box.claimed {
+      border-color: #5CFF9D;
+      background: rgba(20, 52, 46, 0.65);
+      color: #5CFF9D;
+    }
+
+    .daily-day-box.current {
+      border: 2px solid #FFD34D;
+      background: linear-gradient(180deg, rgba(255, 176, 32, 0.32) 0%, rgba(68, 28, 108, 0.92) 100%);
+      transform: scale(1.03);
+    }
+
+    .daily-day-num {
+      font-weight: 900;
+      color: #C4B5FD;
+      font-size: 10px;
+    }
+
+    .daily-day-box.current .daily-day-num {
+      color: #FFE89E;
+    }
+
+    .daily-day-min {
+      font-weight: 900;
+      font-size: 11.5px;
+      color: #FFFFFF;
+    }
   </style>
 </head>
 <body>
@@ -2027,6 +2669,11 @@
         </button>
       </div>
     </header>
+
+    <!-- ALWAYS-VISIBLE SMALL NEXT GOAL BAR -->
+    <div id="next-goal-bar" role="status" aria-live="polite">
+      <span id="next-goal-text">🎯 Next Goal: Hatch your first Basic Egg!</span>
+    </div>
 
     <!-- 2, 3, 4. MIDDLE ARENA: STRETCHING PERSPECTIVE RAID ARENA + VAULT CRYSTAL + GLASS 4x3 GRID -->
     <section class="arena" aria-label="Meme Vault">
@@ -2075,7 +2722,20 @@
           </div>
 
           <div id="raid-hud-pill">🛡️ Hatch an egg to start raids</div>
+          <div id="boss-top-bar" aria-live="polite">
+            <div class="boss-top-header">
+              <span id="boss-top-title">🐻 BIG BANDIT</span>
+              <span class="boss-top-meta">
+                <span id="boss-top-hp-text">40/40</span>
+                <span id="boss-top-timer">⏱️ 25.0s</span>
+              </span>
+            </div>
+            <div class="boss-top-track">
+              <div id="boss-top-hp-fill"></div>
+            </div>
+          </div>
           <div id="raid-combo-badge" aria-live="polite"></div>
+          <div id="raid-summary-popup" aria-live="polite"></div>
           <div id="laser-beam" class="laser-beam"></div>
           <div id="guard-dog-badge">🐕 <span id="guard-dog-timer">Ready</span></div>
           <div id="guard-dog-actor" aria-hidden="true">
@@ -2155,11 +2815,30 @@
           <span id="defense-sub-label" class="btn-sub-label">Upgrades</span>
         </button>
 
-        <button id="book-btn" class="btn-3d disabled" type="button">
-          <span class="btn-main-label">🔒 Book</span>
+        <button id="book-btn" class="btn-3d btn-cyan" type="button">
+          <span id="book-new-dot" class="new-dot-badge" style="display: none;">NEW</span>
+          <span class="btn-main-label">📖 Book</span>
           <span id="book-sub-label" class="btn-sub-label">0/12</span>
         </button>
       </nav>
+    </div>
+
+    <!-- FLOATING GOLDEN COIN (Crosses screen ~once/min, gives 30s income, 1 at a time) -->
+    <button id="floating-gold-coin" type="button" aria-label="Tap Floating Golden Coin for 30s Income">
+      <span>🪙</span>
+      <span class="gold-coin-tag">+30s</span>
+    </button>
+
+    <!-- CREATURE SPEECH BUBBLE (Every ~20s, max 1 at a time) -->
+    <div id="creature-speech-bubble" aria-hidden="true">yum</div>
+
+    <!-- FIRST-MINUTE TUTORIAL OVERLAY WITH PULSING HAND & SKIP BUTTON -->
+    <div id="tutorial-overlay" aria-live="polite">
+      <div id="tutorial-bar">
+        <div id="tutorial-step-text">👆 Step 1/3: Tap the Vault Crystal to earn coins!</div>
+        <button id="tutorial-skip-btn" class="btn-3d btn-purple" type="button">Skip</button>
+      </div>
+      <div id="tutorial-hand" aria-hidden="true">👆</div>
     </div>
   </main>
 
@@ -2214,16 +2893,28 @@
     </div>
   </div>
 
-  <!-- SETTINGS & RESET PROGRESS POPUP -->
+  <!-- SETTINGS, PRESTIGE & RESET PROGRESS POPUP -->
   <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
     <div class="modal-card">
       <button id="settings-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
       <div id="settings-modal-title" class="modal-title">⚙️ Settings</div>
-      <div class="modal-rarity" style="color: #C4B5FD;">Save Version 2 · Autosave Active</div>
+      <div class="modal-rarity" style="color: #C4B5FD;">Save Version 3 · Autosave Active</div>
       <div class="modal-stats-box">
         <div class="modal-stat-row">
+          <span>Run Coins Earned</span>
+          <strong id="settings-run-earned">100</strong>
+        </div>
+        <div class="modal-stat-row">
           <span>Total Coins Earned</span>
-          <strong id="settings-total-earned">120</strong>
+          <strong id="settings-total-earned">100</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Meme Gems</span>
+          <strong id="settings-meme-gems" style="color: #35E0FF;">💎 0 (+0% income)</strong>
+        </div>
+        <div class="modal-stat-row">
+          <span>Prestiges</span>
+          <strong id="settings-prestige-count">0</strong>
         </div>
         <div class="modal-stat-row">
           <span>Eggs Hatched</span>
@@ -2232,6 +2923,32 @@
         <div class="modal-stat-row">
           <span>Creatures Discovered</span>
           <strong id="settings-discovered">0 / 12</strong>
+        </div>
+      </div>
+
+      <!-- Prestige Trigger (Hidden until runEarned >= 1,000,000) -->
+      <div id="prestige-initial-box" style="display: none; margin-bottom: 8px;">
+        <button id="prestige-trigger-btn" class="btn-3d btn-purple affordable" style="width: 100%;" type="button">
+          💎 Prestige (+3 Meme Gems)
+        </button>
+      </div>
+
+      <!-- Prestige 2-Step Confirmation -->
+      <div id="prestige-confirm-box" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 8px; background: rgba(24, 12, 54, 0.85); border: 1.5px solid #B15CFF; border-radius: 14px; padding: 10px;">
+        <div id="prestige-confirm-summary" style="font-size: 13px; color: #FFE89E; font-weight: 800; line-height: 1.35;">
+          Earn 💎 +3 Meme Gems (+75% passive income)!
+        </div>
+        <div style="font-size: 12px; color: #E2D9FF; text-align: left; line-height: 1.35;">
+          <strong style="color: #FF8FA8;">Resets:</strong> Coins, creatures &amp; levels, vault slots, egg hatch counts, defense levels, and run-earned total.<br>
+          <strong style="color: #5CFF9D;">Kept:</strong> Meme Gems (+25% income each), prestige count, Creature Book, and settings.
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 2px;">
+          <button id="prestige-confirm-yes" class="btn-3d btn-gold affordable" style="flex: 1;" type="button">
+            💎 Confirm Prestige
+          </button>
+          <button id="prestige-confirm-cancel" class="btn-3d btn-cyan" style="flex: 1;" type="button">
+            Cancel
+          </button>
         </div>
       </div>
 
@@ -2245,7 +2962,7 @@
       <!-- Confirmation Step -->
       <div id="reset-confirm-box" style="display: none; flex-direction: column; gap: 8px;">
         <div style="font-size: 13px; color: #FFB3C6; margin-bottom: 4px;">
-          Are you sure? This will wipe your vault and start fresh with 120 coins!
+          Are you sure? This will wipe your vault and start fresh with 100 coins!
         </div>
         <div style="display: flex; gap: 8px;">
           <button id="reset-confirm-yes" class="btn-3d btn-danger" style="flex: 1;" type="button">
@@ -2306,6 +3023,40 @@
       </p>
       <button id="offline-collect-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
         Collect
+      </button>
+    </div>
+  </div>
+
+  <!-- COLLECTION BOOK & 12 ACHIEVEMENTS POPUP -->
+  <div id="book-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="book-modal-title">
+    <div class="modal-card book-modal-card">
+      <button id="book-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
+      <div id="book-modal-title" class="modal-title">📖 Creature Book</div>
+      <div class="modal-rarity" style="color: #5CFF9D; margin-bottom: 6px;">Complete both creatures in a tier for +10% permanent income!</div>
+      <div class="book-summary-banner">
+        <span id="book-discovered-summary">Discovered: 0 / 12</span>
+        <span id="book-bonus-summary" style="color: #5CFF9D;">Tier Bonus: +0% Income</span>
+      </div>
+      <div id="book-tiers-container" class="book-tiers-wrap"></div>
+      <div style="font-size: 13px; font-weight: 900; color: #FFD34D; text-align: left; margin: 6px 0 4px;">
+        🏆 Achievements (<span id="book-ach-count">0/12</span>)
+      </div>
+      <div id="book-achievements-grid" class="achievements-grid"></div>
+    </div>
+  </div>
+
+  <!-- 7-DAY DAILY GIFT STREAK POPUP -->
+  <div id="daily-gift-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="daily-gift-title">
+    <div class="modal-card">
+      <button id="daily-gift-close" class="modal-close" type="button" aria-label="Close">✕</button>
+      <div id="daily-gift-title" class="modal-title">🎁 Daily Gift Streak</div>
+      <div id="daily-gift-subtitle" class="modal-rarity" style="color: #FFD34D; margin-bottom: 4px;">Day 1 Streak · Come back daily!</div>
+      <div id="daily-streak-grid" class="daily-streak-grid"></div>
+      <div id="daily-gift-reward-box" class="hatch-outcome-note" style="margin-bottom: 10px;">
+        Today's Gift: 🪙 +600 Coins (5 mins of income)
+      </div>
+      <button id="daily-gift-claim-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
+        🎁 Claim Daily Gift
       </button>
     </div>
   </div>
@@ -2388,17 +3139,28 @@
         }
       },
 
-      // Vault Tap & Offline Earnings
+      // Vault Tap, Offline Earnings & Prestige
       VAULT_TAP_FLAT: 1,
       VAULT_TAP_INCOME_PERCENT: 0.03,
       OFFLINE_INCOME_FACTOR: 0.25, // 25% of normal passive income when tab is away/hidden/closed
       MAX_OFFLINE_SECONDS: 3600, // Capped at exactly 1 hour (3600s)
       MIN_OFFLINE_SECONDS: 5,
+      PRESTIGE_UNLOCK_RUN_COINS: 1000000, // Unlocks once current run coins reach 1,000,000
+      PRESTIGE_DIVISOR: 100000, // Meme Gems = floor(sqrt(runEarned / 100,000))
+      MEME_GEM_INCOME_BONUS: 0.25, // +25% permanent passive income per Meme Gem
 
       // System & Loop Constants
       AUTOSAVE_INTERVAL_MS: 10000, // Every 10 seconds
       MAX_DELTA_MS: 100, // Cap frame delta at 100 ms
-      MAX_PARTICLES: 12, // Strict mobile performance cap: at most 12 active particles on screen
+      MAX_PARTICLES: 12, // Strict mobile performance cap: at most 12 active particles of all types at once
+      RARE_HATCH_MAX_PARTICLES: 24, // Legendary/Mythic hatch confetti may reach up to 24 for 1 second only
+      RARE_HATCH_CONFETTI_DURATION_SEC: 1.0, // 1 second temporary cap window for Legendary/Mythic hatch confetti
+      MAX_FLYING_COINS_PER_BURST: 4,
+      MAX_SPARKLES_PER_BURST: 4,
+      MAX_HIT_STARS_PER_BURST: 3,
+      MAX_CONFETTI_PER_BURST: 6,
+      RARE_HATCH_CONFETTI_BURST: 18,
+      NEXT_GOAL_UPDATE_INTERVAL_SEC: 0.5, // Next Goal bar text updates at most twice per second (every 500ms)
       STAR_COUNT: 16, // Lightweight background drifting stars
       COIN_ROLL_SPEED: 14,
       HATCH_SHAKE_MS: 650,
@@ -2419,15 +3181,24 @@
       NEXT_RAID_MAX_SEC: 140,
       RAID_WARNING_SEC: 10,
       RAID_DURATION_SEC: 15,
+      BOSS_RAID_DURATION_SEC: 25,
       RAID_MIN_RAIDERS: 3,
-      RAID_MAX_RAIDERS: 6,
+      RAID_MAX_RAIDERS: 8,
+      RAID_MAX_CONCURRENT: 5,
       BOSS_EVERY_N_RAIDS: 5,
-      RAIDER_BASE_CROSS_SEC: 7.2,
+      BOSS_BASE_HP: 40, // 40 hits on first boss raid
+      BOSS_HP_STEP: 3,  // +3 hits per subsequent boss raid
+      BOSS_MAX_HP: 50,  // Capped at 50 hits
+      BOSS_BASE_CROSS_SEC: 21.5, // Slow center-lane march (~21.5s base, ~24.8s with Lv.3 defenses)
+      BOSS_ENRAGE_SPEED_MULT: 1.18, // +18% faster at <= 50% HP
+      BOSS_WIN_BONUS_MULT: 3, // Triple the usual raid bonus on boss victory
+      RAIDER_BASE_CROSS_SEC: 5.8,
       RAIDER_HIT_COIN_RATIO: 0.08, // Reduced tap rewards per raider hit
       RAID_WIN_INCOME_SECONDS: 10, // Victory reward is ~10s of income (before combo mult, capped at 2x)
       RAID_STEAL_COIN_PENALTY_RATIO: 0.05, // 5% coin loss when a creature is successfully stolen
       KIDNAP_DURATION_SEC: 90,
-      RESCUE_INCOME_SECONDS: 60,
+      RESCUE_INCOME_SECONDS: 120,
+      RAID_SUMMARY_POPUP_SEC: 3,
       LANE_START_X_PCT: [20, 50, 80],
       LANE_END_X_PCT: [38, 50, 62],
 
@@ -2440,8 +3211,8 @@
           id: 'guardDog',
           name: 'Guard Dog',
           emoji: '🐕',
-          lv1IntervalSec: 4.0,
-          lv10IntervalSec: 1.2, // Hits every 4.0s at Lv 1, down to 1.2s at Lv 10
+          lv1IntervalSec: 3.6,
+          lv10IntervalSec: 0.9, // Hits every 3.6s at Lv 1, down to 0.9s at Lv 10 (-0.3s per level)
           desc: 'Hits the nearest raider automatically'
         },
         laserFence: {
@@ -2463,7 +3234,7 @@
       // Raider Types
       RAIDERS: {
         raccoon: { type: 'raccoon', name: 'Sneaky Raccoon', emoji: '🦝', baseHp: 2, speedMult: 1.0, isBoss: false },
-        fox:     { type: 'fox',     name: 'Speedy Fox',     emoji: '🦊', baseHp: 1, speedMult: 1.45, isBoss: false },
+        fox:     { type: 'fox',     name: 'Speedy Fox',     emoji: '🦊', baseHp: 1, speedMult: 1.35, isBoss: false },
         bear:    { type: 'bear',    name: 'Big Bandit',     emoji: '🐻', baseHp: 8, speedMult: 0.62, isBoss: true }
       },
 
@@ -2489,6 +3260,38 @@
         { id: 'thunder_taco', name: 'Thunder Taco', emoji: '🌮', rarity: 'Legendary', baseIncome: 700.0 },
         { id: 'galaxy_jelly', name: 'Galaxy Jelly', emoji: '🪼', rarity: 'Mythic',    baseIncome: 2500.0 },
         { id: 'king_pickle',  name: 'King Pickle',  emoji: '🥒', rarity: 'Mythic',    baseIncome: 5000.0 }
+      ],
+      BOOK_TIER_BONUS_PER_TIER: 0.10, // +10% permanent income per completed 2-creature rarity tier
+      DAILY_STREAK_MINUTES: [5, 10, 15, 20, 30, 45, 30], // Days 1..6 = 5,10,15,20,30,45m; Day 7 capped at 30m
+      GOLDEN_COIN_MIN_SEC: 52,
+      GOLDEN_COIN_MAX_SEC: 68,
+      GOLDEN_COIN_CROSS_SEC: 9.0,
+      GOLDEN_COIN_INCOME_SEC: 30,
+      SPEECH_BUBBLE_MIN_SEC: 18,
+      SPEECH_BUBBLE_MAX_SEC: 22,
+      SPEECH_BUBBLE_SHOW_SEC: 3.2,
+      SPEECH_PHRASES: [
+        'yum',
+        'bruh',
+        'more coins pls',
+        'stonks 📈',
+        'vibes ✨',
+        'so shiny!',
+        'cozy vault'
+      ],
+      ACHIEVEMENTS: [
+        { id: 'first_hatch',     name: 'First Hatch',     desc: 'Hatch your first egg',          minReward: 60 },
+        { id: 'five_creatures',  name: 'Squad of 5',      desc: 'Own 5 creatures in the Vault',  minReward: 250 },
+        { id: 'first_raid_won',  name: 'Vault Defender',  desc: 'Win your first raid',           minReward: 200 },
+        { id: 'first_boss_won',  name: 'Boss Slayer',     desc: 'Defeat your first Boss raid',   minReward: 1000 },
+        { id: 'level_10_unit',   name: 'Star Power',      desc: 'Reach Level 10 on a creature',  minReward: 350 },
+        { id: 'first_legendary', name: 'Legendary Luck',  desc: 'Discover a Legendary creature', minReward: 2500 },
+        { id: 'hundred_hatches', name: 'Egg Master',      desc: 'Hatch 100 eggs in a run',       minReward: 5000 },
+        { id: 'ten_raids_won',   name: 'Raid Veteran',    desc: 'Win 10 raids',                  minReward: 1500 },
+        { id: 'first_prestige',  name: 'Meme Reborn',     desc: 'Prestige for the first time',   minReward: 5000 },
+        { id: 'first_defense',   name: 'Fortified Vault', desc: 'Unlock any Defense upgrade',    minReward: 250 },
+        { id: 'eight_species',   name: 'Meme Collector',  desc: 'Discover 8 unique creatures',   minReward: 1800 },
+        { id: 'all_species',     name: 'Full Meme Book',  desc: 'Discover all 12 creatures',     minReward: 10000 }
       ],
       NUMBER_SUFFIXES: ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc']
     };
@@ -4397,13 +5200,52 @@
       return Math.floor(lvl / 10);
     }
 
-    // Creature Income grows ~1.08x per level: baseIncome * 1.08^(level - 1)
+    function getPrestigeIncomeMultiplier() {
+      const gems = Math.max(0, Math.floor(safeNumber(state && state.memeGems, 0)));
+      return 1 + gems * (CONFIG.MEME_GEM_INCOME_BONUS || 0.25);
+    }
+
+    function getCompletedBookTiersCount() {
+      if (!state || !Array.isArray(state.discoveredCreatures)) return 0;
+      const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'];
+      let completed = 0;
+      for (let r = 0; r < rarities.length; r++) {
+        const tierKey = rarities[r];
+        let tierCount = 0;
+        let discoveredInTier = 0;
+        for (let i = 0; i < CONFIG.CREATURES.length; i++) {
+          const c = CONFIG.CREATURES[i];
+          if (c.rarity === tierKey) {
+            tierCount += 1;
+            if (state.discoveredCreatures.includes(c.id)) {
+              discoveredInTier += 1;
+            }
+          }
+        }
+        if (tierCount > 0 && discoveredInTier >= tierCount) {
+          completed += 1;
+        }
+      }
+      return completed;
+    }
+
+    function getBookTierIncomeMultiplier() {
+      return 1 + getCompletedBookTiersCount() * (CONFIG.BOOK_TIER_BONUS_PER_TIER || 0.10);
+    }
+
+    function getPendingPrestigeGems() {
+      const runCoins = safeNumber(state && state.runEarned, 0);
+      if (runCoins < CONFIG.PRESTIGE_UNLOCK_RUN_COINS) return 0;
+      return Math.max(0, Math.floor(Math.sqrt(runCoins / CONFIG.PRESTIGE_DIVISOR)));
+    }
+
+    // Creature Income grows ~1.08x per level, boosted by +25% per Meme Gem and +10% per completed Book tier
     function getCreatureIncome(creatureId, level) {
       const def = CREATURE_MAP[creatureId];
       if (!def) return 0;
       const lvl = Math.max(1, Math.min(CONFIG.MAX_CREATURE_LEVEL, Math.floor(safeNumber(level, 1))));
       const growthRate = CONFIG.INCOME_GROWTH_PER_LEVEL || 1.08;
-      return def.baseIncome * Math.pow(growthRate, lvl - 1);
+      return def.baseIncome * Math.pow(growthRate, lvl - 1) * getPrestigeIncomeMultiplier() * getBookTierIncomeMultiplier();
     }
 
     // Upgrade Cost grows ~1.12x per level for the first 20 levels, then smoothly compounds at ~1.18x after level 20
@@ -4428,7 +5270,7 @@
     function isEggUnlocked(eggTypeKey) {
       const eggCfg = CONFIG.EGG_TYPES[eggTypeKey];
       if (!eggCfg) return false;
-      return state.totalCoinsEarned >= eggCfg.unlockTotalCoins;
+      return safeNumber(state.runEarned, state.totalCoinsEarned) >= eggCfg.unlockTotalCoins;
     }
 
     // Egg Cost scales with both hatch count for this egg type and total creatures currently owned
@@ -4498,6 +5340,9 @@
       coins: CONFIG.STARTING_COINS,
       displayedCoins: CONFIG.STARTING_COINS,
       totalCoinsEarned: CONFIG.STARTING_COINS,
+      runEarned: CONFIG.STARTING_COINS,
+      memeGems: 0,
+      prestigeCount: 0,
       hatchCount: 0,
       eggHatches: {
         basic: 0,
@@ -4508,6 +5353,15 @@
       slotsUnlocked: CONFIG.INITIAL_SLOTS,
       ownedCreatures: [], // Array of { id, level, kidnappedRemainingSec }
       discoveredCreatures: [], // Array of creature id strings
+      unseenPlateCreatures: [], // Creature IDs showing NEW on slot plate until tapped once
+      hasNewBookEntry: false, // Shows NEW badge on Book button until Book is opened
+      tutorialDone: false,
+      tutorialStep: 0, // 0 = tap crystal, 1 = hatch basic egg, 2 = watch creature earn, 3 = done
+      dailyStreak: 0,
+      lastDailyClaimDate: '',
+      unlockedAchievements: [],
+      raidsWon: 0,
+      bossesDefeated: 0,
       defenseUpgrades: {
         guardDog: 0,
         laserFence: 0,
@@ -4554,9 +5408,14 @@
       phase: 'idle',
       warningPlayed: false,
       raidNumber: 0,
+      isBossRaid: false,
+      bossRemainingSec: 0,
       elapsedSec: 0,
       spawnSchedule: [],
       activeRaiders: [],
+      totalRaidersInRaid: 0,
+      raidersDefeated: 0,
+      summaryEndMs: 0,
       guardDogCooldownSec: 0,
       combo: 0,
       bestCombo: 1,
@@ -4567,8 +5426,15 @@
 
     function resetStateToFresh() {
       clearActiveRaiderNodes();
+      hideRaidSummaryPopup();
+      hideBossTopBar();
       raidRuntime.phase = 'idle';
       raidRuntime.warningPlayed = false;
+      raidRuntime.isBossRaid = false;
+      raidRuntime.bossRemainingSec = 0;
+      raidRuntime.totalRaidersInRaid = 0;
+      raidRuntime.raidersDefeated = 0;
+      raidRuntime.summaryEndMs = 0;
       raidRuntime.combo = 0;
       raidRuntime.bestCombo = 1;
       raidRuntime.lastHitTimeMs = 0;
@@ -4579,12 +5445,24 @@
       state.coins = CONFIG.STARTING_COINS;
       state.displayedCoins = CONFIG.STARTING_COINS;
       state.totalCoinsEarned = CONFIG.STARTING_COINS;
+      state.runEarned = CONFIG.STARTING_COINS;
+      state.memeGems = 0;
+      state.prestigeCount = 0;
       state.hatchCount = 0;
       state.eggHatches = { basic: 0, golden: 0, cosmic: 0 };
       state.selectedEgg = 'basic';
       state.slotsUnlocked = CONFIG.INITIAL_SLOTS;
       state.ownedCreatures = [];
       state.discoveredCreatures = [];
+      state.unseenPlateCreatures = [];
+      state.hasNewBookEntry = false;
+      state.tutorialDone = false;
+      state.tutorialStep = 0;
+      state.dailyStreak = 0;
+      state.lastDailyClaimDate = '';
+      state.unlockedAchievements = [];
+      state.raidsWon = 0;
+      state.bossesDefeated = 0;
       state.defenseUpgrades = { guardDog: 0, laserFence: 0, vaultDoor: 0 };
       state.raidNumber = 0;
       state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
@@ -4593,11 +5471,64 @@
       selectedSlotIndex = -1;
     }
 
+    function executePrestige() {
+      try {
+        const earnedGems = getPendingPrestigeGems();
+        if (earnedGems <= 0) return false;
+
+        clearActiveRaiderNodes();
+        hideRaidSummaryPopup();
+        hideBossTopBar();
+        raidRuntime.phase = 'idle';
+        raidRuntime.warningPlayed = false;
+        raidRuntime.isBossRaid = false;
+        raidRuntime.bossRemainingSec = 0;
+        raidRuntime.totalRaidersInRaid = 0;
+        raidRuntime.raidersDefeated = 0;
+        raidRuntime.summaryEndMs = 0;
+        raidRuntime.combo = 0;
+        raidRuntime.bestCombo = 1;
+        raidRuntime.lastHitTimeMs = 0;
+        raidRuntime.rewardGranted = false;
+        setRaidDangerVisuals(false);
+
+        // Kept: Meme Gems, prestige count, discoveredCreatures (Book), achievements, daily streak, tutorialDone, muted
+        state.memeGems = Math.max(0, Math.floor(safeNumber(state.memeGems, 0))) + earnedGems;
+        state.prestigeCount = Math.max(0, Math.floor(safeNumber(state.prestigeCount, 0))) + 1;
+
+        // Resets: coins, creatures & levels, vault slots, egg hatch counts, defense levels, runEarned
+        state.coins = CONFIG.STARTING_COINS;
+        state.displayedCoins = CONFIG.STARTING_COINS;
+        state.runEarned = CONFIG.STARTING_COINS;
+        state.hatchCount = 0;
+        state.eggHatches = { basic: 0, golden: 0, cosmic: 0 };
+        state.selectedEgg = 'basic';
+        state.slotsUnlocked = CONFIG.INITIAL_SLOTS;
+        state.ownedCreatures = [];
+        state.unseenPlateCreatures = [];
+        state.defenseUpgrades = { guardDog: 0, laserFence: 0, vaultDoor: 0 };
+        state.raidNumber = 0;
+        state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
+        state.lastSavedAt = Date.now();
+        pendingOfflineCoins = 0;
+        selectedSlotIndex = -1;
+
+        checkAchievements();
+        saveGame();
+        updateHUD(false);
+        return earnedGems;
+      } catch (err) {
+        console.warn('Non-fatal prestige error:', err);
+        return false;
+      }
+    }
+
     function addCoins(amount) {
       const gain = safeNumber(amount, 0);
       if (gain <= 0) return;
       state.coins = safeNumber(state.coins + gain, state.coins);
       state.totalCoinsEarned = safeNumber(state.totalCoinsEarned + gain, state.coins);
+      state.runEarned = safeNumber(state.runEarned + gain, state.coins);
     }
 
     function getTotalIncomePerSecond() {
@@ -4629,8 +5560,16 @@
 
     function recordDiscovery(creatureId) {
       if (CREATURE_MAP[creatureId] && !state.discoveredCreatures.includes(creatureId)) {
+        const prevTiers = getCompletedBookTiersCount();
         state.discoveredCreatures.push(creatureId);
+        const nextTiers = getCompletedBookTiersCount();
+        if (nextTiers > prevTiers) {
+          const def = CREATURE_MAP[creatureId];
+          showBanner(`📖 ${def.rarity} Tier Complete! +10% Permanent Income!`, true, false);
+        }
+        return true;
       }
+      return false;
     }
 
     function saveGame() {
@@ -4640,6 +5579,9 @@
           saveVersion: CONFIG.SAVE_VERSION,
           coins: safeNumber(state.coins, CONFIG.STARTING_COINS),
           totalCoinsEarned: Math.max(safeNumber(state.totalCoinsEarned, 0), safeNumber(state.coins, 0)),
+          runEarned: Math.max(safeNumber(state.runEarned, 0), safeNumber(state.coins, 0)),
+          memeGems: Math.max(0, Math.floor(safeNumber(state.memeGems, 0))),
+          prestigeCount: Math.max(0, Math.floor(safeNumber(state.prestigeCount, 0))),
           hatchCount: Math.max(0, Math.floor(safeNumber(state.hatchCount, 0))),
           eggHatches: {
             basic: Math.max(0, Math.floor(safeNumber(state.eggHatches.basic, 0))),
@@ -4654,6 +5596,15 @@
             kidnappedRemainingSec: safeNumber(c.kidnappedRemainingSec, 0)
           })),
           discoveredCreatures: state.discoveredCreatures,
+          unseenPlateCreatures: Array.isArray(state.unseenPlateCreatures) ? state.unseenPlateCreatures : [],
+          hasNewBookEntry: Boolean(state.hasNewBookEntry),
+          tutorialDone: Boolean(state.tutorialDone),
+          tutorialStep: Math.max(0, Math.floor(safeNumber(state.tutorialStep, 0))),
+          dailyStreak: Math.max(0, Math.min(7, Math.floor(safeNumber(state.dailyStreak, 0)))),
+          lastDailyClaimDate: typeof state.lastDailyClaimDate === 'string' ? state.lastDailyClaimDate : '',
+          unlockedAchievements: Array.isArray(state.unlockedAchievements) ? state.unlockedAchievements : [],
+          raidsWon: Math.max(0, Math.floor(safeNumber(state.raidsWon, 0))),
+          bossesDefeated: Math.max(0, Math.floor(safeNumber(state.bossesDefeated, 0))),
           defenseUpgrades: {
             guardDog: Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(state.defenseUpgrades.guardDog, 0)))),
             laserFence: Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(state.defenseUpgrades.laserFence, 0)))),
@@ -4677,7 +5628,7 @@
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return;
 
-        // If an older save is found (saveVersion !== 2), start a fresh game (120 coins)
+        // If an older save is found (saveVersion !== CONFIG.SAVE_VERSION), start a fresh game
         if (parsed.saveVersion !== CONFIG.SAVE_VERSION) {
           resetStateToFresh();
           saveGame();
@@ -4687,6 +5638,10 @@
         state.coins = safeNumber(parsed.coins, CONFIG.STARTING_COINS);
         state.displayedCoins = state.coins;
         state.totalCoinsEarned = Math.max(state.coins, safeNumber(parsed.totalCoinsEarned, state.coins));
+        const fallbackRunEarned = (parsed.runEarned !== undefined) ? state.coins : state.totalCoinsEarned;
+        state.runEarned = Math.max(state.coins, safeNumber(parsed.runEarned, fallbackRunEarned));
+        state.memeGems = Math.max(0, Math.floor(safeNumber(parsed.memeGems, 0)));
+        state.prestigeCount = Math.max(0, Math.floor(safeNumber(parsed.prestigeCount, 0)));
 
         if (parsed.eggHatches && typeof parsed.eggHatches === 'object') {
           state.eggHatches.basic = Math.max(0, Math.floor(safeNumber(parsed.eggHatches.basic, 0)));
@@ -4761,6 +5716,27 @@
         }
         state.discoveredCreatures = validDiscovered;
 
+        // Safe defaults for new fields; mark tutorial as already done for any existing save
+        if (parsed.tutorialDone === undefined) {
+          state.tutorialDone = true;
+          state.tutorialStep = 3;
+        } else {
+          state.tutorialDone = Boolean(parsed.tutorialDone) || state.hatchCount > 0 || state.prestigeCount > 0;
+          state.tutorialStep = state.tutorialDone ? 3 : Math.max(0, Math.floor(safeNumber(parsed.tutorialStep, 0)));
+        }
+
+        state.unseenPlateCreatures = Array.isArray(parsed.unseenPlateCreatures)
+          ? parsed.unseenPlateCreatures.filter((id) => typeof id === 'string' && CREATURE_MAP[id])
+          : [];
+        state.hasNewBookEntry = Boolean(parsed.hasNewBookEntry);
+        state.dailyStreak = Math.max(0, Math.min(7, Math.floor(safeNumber(parsed.dailyStreak, 0))));
+        state.lastDailyClaimDate = typeof parsed.lastDailyClaimDate === 'string' ? parsed.lastDailyClaimDate : '';
+        state.unlockedAchievements = Array.isArray(parsed.unlockedAchievements)
+          ? parsed.unlockedAchievements.filter((id) => typeof id === 'string')
+          : [];
+        state.raidsWon = Math.max(0, Math.floor(safeNumber(parsed.raidsWon, 0)));
+        state.bossesDefeated = Math.max(0, Math.floor(safeNumber(parsed.bossesDefeated, 0)));
+
         // Offline earnings: 25% of passive income x time away (capped at 1 hour)
         const incomePerSec = getTotalIncomePerSecond();
         if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
@@ -4777,21 +5753,29 @@
     }
 
     /* ==========================================================================
-       4. WEBAUDIO SOUND GENERATOR
+       4. WEBAUDIO SOUND GENERATOR (Pop, Coin, Banner, Siren, Hit, Kidnap, Hatch)
+       - Starts only after first user tap (audioUnlocked)
+       - Respects Mute toggle
+       - All audio calls wrapped in try/catch so sound errors never break gameplay
        ========================================================================== */
     let audioCtx = null;
+    let audioUnlocked = false;
 
     function unlockAudio() {
-      if (audioCtx) {
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume().catch(() => {});
-        }
-        return;
-      }
       try {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (Ctx) {
-          audioCtx = new Ctx();
+        audioUnlocked = true;
+        if (audioCtx) {
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+          }
+        } else {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (Ctx) {
+            audioCtx = new Ctx();
+            if (audioCtx.state === 'suspended') {
+              audioCtx.resume().catch(() => {});
+            }
+          }
         }
       } catch (e) {
         audioCtx = null;
@@ -4799,15 +5783,15 @@
     }
 
     function playTone(freq, endFreq, durationSec, type = 'sine', gainLevel = 0.14, delaySec = 0) {
-      if (state.muted || !audioCtx) return;
+      if (state.muted || !audioUnlocked || !audioCtx) return;
       try {
         const now = audioCtx.currentTime + delaySec;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = type;
-        osc.frequency.setValueAtTime(Math.max(40, freq), now);
+        osc.frequency.setValueAtTime(Math.max(35, freq), now);
         if (endFreq && endFreq !== freq) {
-          osc.frequency.exponentialRampToValueAtTime(Math.max(40, endFreq), now + durationSec);
+          osc.frequency.exponentialRampToValueAtTime(Math.max(35, endFreq), now + durationSec);
         }
         gain.gain.setValueAtTime(0.0001, now);
         gain.gain.linearRampToValueAtTime(gainLevel, now + 0.015);
@@ -4820,57 +5804,82 @@
     }
 
     function sfxPop() {
-      playTone(320, 620, 0.08, 'sine', 0.14, 0);
+      try {
+        playTone(320, 620, 0.08, 'sine', 0.14, 0);
+      } catch (e) {}
     }
 
     function sfxCoin() {
-      playTone(987.77, 987.77, 0.07, 'triangle', 0.12, 0);
-      playTone(1318.5, 1318.5, 0.14, 'sine', 0.14, 0.055);
+      try {
+        playTone(987.77, 987.77, 0.07, 'triangle', 0.12, 0);
+        playTone(1318.5, 1318.5, 0.14, 'sine', 0.14, 0.055);
+      } catch (e) {}
     }
 
     function sfxBanner() {
-      playTone(587.33, 880, 0.09, 'triangle', 0.15, 0);
-      playTone(1174.66, 1174.66, 0.14, 'sine', 0.15, 0.065);
+      try {
+        playTone(587.33, 880, 0.09, 'triangle', 0.15, 0);
+        playTone(1174.66, 1174.66, 0.14, 'sine', 0.15, 0.065);
+      } catch (e) {}
     }
 
     function sfxSiren() {
-      playTone(420, 780, 0.26, 'sawtooth', 0.13, 0);
-      playTone(780, 420, 0.26, 'sawtooth', 0.13, 0.26);
-      playTone(420, 820, 0.28, 'sawtooth', 0.14, 0.54);
-      playTone(820, 420, 0.28, 'sawtooth', 0.14, 0.82);
+      try {
+        playTone(420, 780, 0.26, 'sawtooth', 0.13, 0);
+        playTone(780, 420, 0.26, 'sawtooth', 0.13, 0.26);
+        playTone(420, 820, 0.28, 'sawtooth', 0.14, 0.54);
+        playTone(820, 420, 0.28, 'sawtooth', 0.14, 0.82);
+      } catch (e) {}
     }
 
     function sfxHitRaider() {
-      playTone(260, 520, 0.07, 'square', 0.13, 0);
-      playTone(1046.5, 1318.5, 0.08, 'triangle', 0.11, 0.03);
+      try {
+        playTone(260, 520, 0.07, 'square', 0.13, 0);
+        playTone(1046.5, 1318.5, 0.08, 'triangle', 0.11, 0.03);
+      } catch (e) {}
     }
 
     function sfxKidnap() {
-      playTone(440, 180, 0.32, 'sawtooth', 0.15, 0);
-      playTone(310, 130, 0.35, 'sawtooth', 0.15, 0.18);
+      try {
+        playTone(440, 180, 0.32, 'sawtooth', 0.15, 0);
+        playTone(310, 130, 0.35, 'sawtooth', 0.15, 0.18);
+      } catch (e) {}
+    }
+
+    function sfxBossRoar() {
+      try {
+        playTone(145, 78, 0.26, 'sawtooth', 0.16, 0);
+        playTone(118, 62, 0.28, 'triangle', 0.15, 0.12);
+      } catch (e) {}
     }
 
     function sfxEggShake() {
-      playTone(180, 120, 0.06, 'triangle', 0.10, 0);
+      try {
+        playTone(180, 120, 0.06, 'triangle', 0.10, 0);
+      } catch (e) {}
     }
 
     function sfxUpgrade() {
-      playTone(440, 440, 0.08, 'triangle', 0.13, 0);
-      playTone(554.37, 554.37, 0.08, 'triangle', 0.13, 0.07);
-      playTone(659.25, 880, 0.18, 'sine', 0.15, 0.14);
+      try {
+        playTone(440, 440, 0.08, 'triangle', 0.13, 0);
+        playTone(554.37, 554.37, 0.08, 'triangle', 0.13, 0.07);
+        playTone(659.25, 880, 0.18, 'sine', 0.15, 0.14);
+      } catch (e) {}
     }
 
     function sfxHatchFanfare(rarityName) {
-      const rarity = CONFIG.RARITIES[rarityName] || CONFIG.RARITIES.Common;
-      const base = rarity.pitch || 400;
-      playTone(base, base, 0.1, 'triangle', 0.15, 0);
-      playTone(base * 1.25, base * 1.25, 0.1, 'triangle', 0.15, 0.09);
-      playTone(base * 1.5, base * 1.5, 0.12, 'triangle', 0.16, 0.18);
-      playTone(base * 2, base * 2.05, 0.28, 'sine', 0.18, 0.28);
+      try {
+        const rarity = CONFIG.RARITIES[rarityName] || CONFIG.RARITIES.Common;
+        const base = rarity.pitch || 400;
+        playTone(base, base, 0.1, 'triangle', 0.15, 0);
+        playTone(base * 1.25, base * 1.25, 0.1, 'triangle', 0.15, 0.09);
+        playTone(base * 1.5, base * 1.5, 0.12, 'triangle', 0.16, 0.18);
+        playTone(base * 2, base * 2.05, 0.28, 'sine', 0.18, 0.28);
+      } catch (e) {}
     }
 
     /* ==========================================================================
-       5. PARTICLE & STARFIELD ENGINE (Capped strictly at 150 total particles)
+       5. PARTICLE & STARFIELD ENGINE (Capped at 12 total particles; 24 for 1s on Legendary/Mythic hatch)
        ========================================================================== */
     const starCanvas = document.getElementById('star-canvas');
     const starCtx = starCanvas.getContext('2d');
@@ -4885,6 +5894,20 @@
 
     const stars = [];
     const particles = [];
+    let rareHatchConfettiRemainingSec = 0;
+
+    function getActiveParticleCap() {
+      return rareHatchConfettiRemainingSec > 0
+        ? (CONFIG.RARE_HATCH_MAX_PARTICLES || 24)
+        : (CONFIG.MAX_PARTICLES || 12);
+    }
+
+    function enforceParticleCap() {
+      const cap = getActiveParticleCap();
+      while (particles.length > cap) {
+        particles.shift();
+      }
+    }
 
     function triggerScreenShake() {
       appEl.classList.remove('shake');
@@ -4928,11 +5951,12 @@
     }
 
     function canSpawnParticle() {
-      return particles.length < CONFIG.MAX_PARTICLES;
+      return particles.length < getActiveParticleCap();
     }
 
     function spawnFloatingText(x, y, text, color = '#FFD34D') {
-      while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+      const cap = getActiveParticleCap();
+      while (particles.length >= cap) particles.shift();
       particles.push({
         type: 'text',
         x,
@@ -4946,9 +5970,10 @@
     }
 
     function spawnFlyingCoin(startX, startY, count = 1) {
-      const maxToSpawn = Math.min(count, 4);
+      const maxToSpawn = Math.min(count, CONFIG.MAX_FLYING_COINS_PER_BURST || 4);
+      const cap = getActiveParticleCap();
       for (let i = 0; i < maxToSpawn; i++) {
-        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        while (particles.length >= cap) particles.shift();
         const spreadX = (Math.random() - 0.5) * 44;
         const spreadY = (Math.random() - 0.5) * 28;
         particles.push({
@@ -4966,9 +5991,10 @@
     }
 
     function spawnBurstSparkles(x, y, color = '#35E0FF', count = 4) {
-      const clampedCount = Math.min(count, 4);
+      const clampedCount = Math.min(count, CONFIG.MAX_SPARKLES_PER_BURST || 4);
+      const cap = getActiveParticleCap();
       for (let i = 0; i < clampedCount; i++) {
-        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        while (particles.length >= cap) particles.shift();
         const angle = (Math.PI * 2 * i) / clampedCount + Math.random() * 0.4;
         const speed = 40 + Math.random() * 65;
         particles.push({
@@ -4987,9 +6013,10 @@
 
     function spawnHitStars(x, y, count = 3) {
       const colors = ['#FFD34D', '#35E0FF', '#FF4FA3', '#5CFF9D'];
-      const clampedCount = Math.min(count, 3);
+      const clampedCount = Math.min(count, CONFIG.MAX_HIT_STARS_PER_BURST || 3);
+      const cap = getActiveParticleCap();
       for (let i = 0; i < clampedCount; i++) {
-        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        while (particles.length >= cap) particles.shift();
         const angle = (Math.PI * 2 * i) / clampedCount + (Math.random() - 0.5) * 0.4;
         const speed = 45 + Math.random() * 70;
         particles.push({
@@ -5008,11 +6035,18 @@
       }
     }
 
-    function spawnConfettiBurst(x, y, count = 6) {
+    function spawnConfettiBurst(x, y, count = 6, isRareHatch = false) {
       const colors = ['#FFD34D', '#FF4FA3', '#35E0FF', '#5CFF9D', '#B15CFF'];
-      const clampedCount = Math.min(count, 6);
+      if (isRareHatch) {
+        rareHatchConfettiRemainingSec = CONFIG.RARE_HATCH_CONFETTI_DURATION_SEC || 1.0;
+      }
+      const maxBurst = isRareHatch
+        ? (CONFIG.RARE_HATCH_CONFETTI_BURST || 18)
+        : (CONFIG.MAX_CONFETTI_PER_BURST || 6);
+      const clampedCount = Math.min(count, maxBurst);
+      const cap = getActiveParticleCap();
       for (let i = 0; i < clampedCount; i++) {
-        while (particles.length >= CONFIG.MAX_PARTICLES) particles.shift();
+        while (particles.length >= cap) particles.shift();
         const angle = -Math.PI / 2 + (Math.random() - 0.5) * 2.0;
         const speed = 80 + Math.random() * 140;
         particles.push({
@@ -5027,7 +6061,7 @@
           rot: Math.random() * Math.PI * 2,
           vRot: (Math.random() - 0.5) * 8,
           age: 0,
-          life: 0.85 + Math.random() * 0.35
+          life: isRareHatch ? (0.75 + Math.random() * 0.25) : (0.85 + Math.random() * 0.35)
         });
       }
     }
@@ -5046,6 +6080,14 @@
     }
 
     function updateAndDrawParticles(dtSec) {
+      if (rareHatchConfettiRemainingSec > 0) {
+        rareHatchConfettiRemainingSec = Math.max(0, rareHatchConfettiRemainingSec - dtSec);
+        if (rareHatchConfettiRemainingSec <= 0) {
+          enforceParticleCap();
+        }
+      }
+      enforceParticleCap();
+
       // 1. Update & Draw Drifting Stars
       starCtx.clearRect(0, 0, viewportW, viewportH);
       for (let i = 0; i < stars.length; i++) {
@@ -5192,13 +6234,28 @@
     const defenseSubLabelEl = document.getElementById('defense-sub-label');
     const bookBtnEl = document.getElementById('book-btn');
     const bookSubLabelEl = document.getElementById('book-sub-label');
+    const bookNewDotEl = document.getElementById('book-new-dot');
     const statusBannerEl = document.getElementById('status-banner');
+    const nextGoalBarEl = document.getElementById('next-goal-bar');
+    const nextGoalTextEl = document.getElementById('next-goal-text');
+    const floatingGoldCoinEl = document.getElementById('floating-gold-coin');
+    const creatureSpeechBubbleEl = document.getElementById('creature-speech-bubble');
+    const tutorialOverlayEl = document.getElementById('tutorial-overlay');
+    const tutorialStepTextEl = document.getElementById('tutorial-step-text');
+    const tutorialSkipBtnEl = document.getElementById('tutorial-skip-btn');
+    const tutorialHandEl = document.getElementById('tutorial-hand');
 
     // Raid DOM elements
     const raidAreaEl = document.getElementById('raid-area');
     const raidersLayerEl = document.getElementById('raiders-layer');
     const raidHudPillEl = document.getElementById('raid-hud-pill');
+    const bossTopBarEl = document.getElementById('boss-top-bar');
+    const bossTopTitleEl = document.getElementById('boss-top-title');
+    const bossTopHpTextEl = document.getElementById('boss-top-hp-text');
+    const bossTopTimerEl = document.getElementById('boss-top-timer');
+    const bossTopHpFillEl = document.getElementById('boss-top-hp-fill');
     const raidComboBadgeEl = document.getElementById('raid-combo-badge');
+    const raidSummaryPopupEl = document.getElementById('raid-summary-popup');
     const laserBeamEl = document.getElementById('laser-beam');
     const guardDogBadgeEl = document.getElementById('guard-dog-badge');
     const guardDogTimerEl = document.getElementById('guard-dog-timer');
@@ -5229,9 +6286,18 @@
 
     const settingsModalEl = document.getElementById('settings-modal');
     const settingsModalCloseEl = document.getElementById('settings-modal-close');
+    const settingsRunEarnedEl = document.getElementById('settings-run-earned');
     const settingsTotalEarnedEl = document.getElementById('settings-total-earned');
+    const settingsMemeGemsEl = document.getElementById('settings-meme-gems');
+    const settingsPrestigeCountEl = document.getElementById('settings-prestige-count');
     const settingsHatchesEl = document.getElementById('settings-hatches');
     const settingsDiscoveredEl = document.getElementById('settings-discovered');
+    const prestigeInitialBoxEl = document.getElementById('prestige-initial-box');
+    const prestigeTriggerBtnEl = document.getElementById('prestige-trigger-btn');
+    const prestigeConfirmBoxEl = document.getElementById('prestige-confirm-box');
+    const prestigeConfirmSummaryEl = document.getElementById('prestige-confirm-summary');
+    const prestigeConfirmYesEl = document.getElementById('prestige-confirm-yes');
+    const prestigeConfirmCancelEl = document.getElementById('prestige-confirm-cancel');
     const resetInitialBoxEl = document.getElementById('reset-initial-box');
     const resetProgressBtnEl = document.getElementById('reset-progress-btn');
     const resetConfirmBoxEl = document.getElementById('reset-confirm-box');
@@ -5255,6 +6321,21 @@
     const offlineModalEl = document.getElementById('offline-modal');
     const offlineModalTextEl = document.getElementById('offline-modal-text');
     const offlineCollectBtnEl = document.getElementById('offline-collect-btn');
+
+    const bookModalEl = document.getElementById('book-modal');
+    const bookModalCloseEl = document.getElementById('book-modal-close');
+    const bookDiscoveredSummaryEl = document.getElementById('book-discovered-summary');
+    const bookBonusSummaryEl = document.getElementById('book-bonus-summary');
+    const bookTiersContainerEl = document.getElementById('book-tiers-container');
+    const bookAchCountEl = document.getElementById('book-ach-count');
+    const bookAchievementsGridEl = document.getElementById('book-achievements-grid');
+
+    const dailyGiftModalEl = document.getElementById('daily-gift-modal');
+    const dailyGiftCloseEl = document.getElementById('daily-gift-close');
+    const dailyGiftSubtitleEl = document.getElementById('daily-gift-subtitle');
+    const dailyStreakGridEl = document.getElementById('daily-streak-grid');
+    const dailyGiftRewardBoxEl = document.getElementById('daily-gift-reward-box');
+    const dailyGiftClaimBtnEl = document.getElementById('daily-gift-claim-btn');
 
     // Sequential 3-second Banner Queue
     const bannerQueue = [];
@@ -5328,6 +6409,11 @@
         badge.className = 'slot-level-badge';
         badge.style.display = 'none';
 
+        const newBadge = document.createElement('div');
+        newBadge.className = 'slot-new-badge';
+        newBadge.textContent = 'NEW';
+        newBadge.style.display = 'none';
+
         const content = document.createElement('div');
         content.style.display = 'flex';
         content.style.flexDirection = 'column';
@@ -5348,6 +6434,7 @@
 
         plate.appendChild(starBadge);
         plate.appendChild(badge);
+        plate.appendChild(newBadge);
         plate.appendChild(content);
         cell.appendChild(plate);
         cell.appendChild(caption);
@@ -5359,11 +6446,12 @@
         });
 
         slotsGridEl.appendChild(cell);
-        slotDomNodes.push({ cell, plate, starBadge, badge, content, nameEl, incomeEl, lastSig: '' });
+        slotDomNodes.push({ cell, plate, starBadge, badge, newBadge, content, nameEl, incomeEl, lastSig: '' });
       }
     }
 
     function renderSlotsGrid() {
+      const bookTierBonus = getCompletedBookTiersCount();
       for (let i = 0; i < CONFIG.MAX_SLOTS; i++) {
         const node = slotDomNodes[i];
         const owned = i < state.ownedCreatures.length ? state.ownedCreatures[i] : null;
@@ -5372,9 +6460,10 @@
         const nextSlotCost = isNextBuySlot ? getNextSlotCost(state.slotsUnlocked) : 0;
         const canAffordSlot = isNextBuySlot && state.coins >= nextSlotCost;
         const kidnapSec = owned ? Math.ceil(safeNumber(owned.kidnappedRemainingSec, 0)) : 0;
+        const isNewOnPlate = Boolean(owned && Array.isArray(state.unseenPlateCreatures) && state.unseenPlateCreatures.includes(owned.id));
 
         const sig = owned
-          ? `owned:${owned.id}:${owned.level}:k${kidnapSec}`
+          ? `owned:${owned.id}:${owned.level}:k${kidnapSec}:g${state.memeGems}:b${bookTierBonus}:n${isNewOnPlate ? 1 : 0}`
           : isUnlocked
           ? 'empty'
           : isNextBuySlot
@@ -5390,6 +6479,7 @@
         node.plate.style.removeProperty('box-shadow');
         node.badge.style.display = 'none';
         node.starBadge.style.display = 'none';
+        if (node.newBadge) node.newBadge.style.display = 'none';
 
         if (owned) {
           const def = CREATURE_MAP[owned.id];
@@ -5408,6 +6498,10 @@
           if (milestoneStars > 0) {
             node.starBadge.style.display = 'block';
             node.starBadge.textContent = `★${milestoneStars}`;
+          }
+
+          if (isNewOnPlate && node.newBadge) {
+            node.newBadge.style.display = 'block';
           }
 
           node.badge.style.display = 'block';
@@ -5569,6 +6663,7 @@
       state.defenseUpgrades[key] = lvl + 1;
       sfxUpgrade();
       showBanner(`${cfg.emoji} ${cfg.name} upgraded to Lv.${state.defenseUpgrades[key]}!`, false);
+      checkAchievements();
       saveGame();
       renderDefenseModalContent();
       updateHUD();
@@ -5606,10 +6701,22 @@
       // Top Bar
       coinDisplayEl.textContent = formatNumber(state.displayedCoins);
       const incomePerSec = getTotalIncomePerSecond();
-      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec${debugSpeed10x ? ' (×10)' : ''}`;
+      const gems = Math.max(0, Math.floor(safeNumber(state.memeGems, 0)));
+      const gemBonusPct = Math.round(gems * (CONFIG.MEME_GEM_INCOME_BONUS || 0.25) * 100);
+      const gemSuffix = gems > 0 ? ` · 💎${formatNumber(gems)} (+${gemBonusPct}%)` : '';
+      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec${gemSuffix}${debugSpeed10x ? ' (×10)' : ''}`;
       discoveredCountEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
       totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
       muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
+
+      const pendingGems = getPendingPrestigeGems();
+      if (settingsBtnEl) {
+        if (pendingGems > 0) {
+          settingsBtnEl.classList.add('prestige-ready');
+        } else {
+          settingsBtnEl.classList.remove('prestige-ready');
+        }
+      }
 
       // Laser Fence Beam, Guard Dog Dasher & Vault Door Shield visuals
       try {
@@ -5704,8 +6811,15 @@
         defenseSubLabelEl.textContent = totalDefLvls > 0 ? `Lv.${totalDefLvls}/${maxTotalDefLvls}` : 'Upgrades';
       }
 
-      // Book count label
-      bookSubLabelEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
+      // Book count label & NEW dot
+      const completedTiers = getCompletedBookTiersCount();
+      const tierBonusPct = Math.round(completedTiers * (CONFIG.BOOK_TIER_BONUS_PER_TIER || 0.10) * 100);
+      bookSubLabelEl.textContent = tierBonusPct > 0
+        ? `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length} (+${tierBonusPct}%)`
+        : `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
+      if (bookNewDotEl) {
+        bookNewDotEl.style.display = state.hasNewBookEntry ? 'inline-block' : 'none';
+      }
 
       // Update open Creature Upgrade Modal if visible
       if (selectedSlotIndex >= 0 && upgradeModalEl.classList.contains('active')) {
@@ -5719,9 +6833,34 @@
 
       // Update open Settings Modal if visible
       if (settingsModalEl.classList.contains('active')) {
+        if (settingsRunEarnedEl) settingsRunEarnedEl.textContent = formatNumber(state.runEarned);
         settingsTotalEarnedEl.textContent = formatNumber(state.totalCoinsEarned);
+        if (settingsMemeGemsEl) {
+          settingsMemeGemsEl.textContent = `💎 ${formatNumber(gems)} (+${gemBonusPct}% income)`;
+        }
+        if (settingsPrestigeCountEl) {
+          settingsPrestigeCountEl.textContent = formatNumber(state.prestigeCount);
+        }
         settingsHatchesEl.textContent = formatNumber(state.hatchCount);
         settingsDiscoveredEl.textContent = `${state.discoveredCreatures.length} / ${CONFIG.CREATURES.length}`;
+
+        // Hide Prestige button until player is eligible (runEarned >= 1,000,000)
+        if (prestigeInitialBoxEl && prestigeConfirmBoxEl && prestigeTriggerBtnEl) {
+          if (pendingGems > 0) {
+            const isConfirmOpen = prestigeConfirmBoxEl.style.display === 'flex';
+            prestigeInitialBoxEl.style.display = isConfirmOpen ? 'none' : 'block';
+            const addPct = Math.round(pendingGems * (CONFIG.MEME_GEM_INCOME_BONUS || 0.25) * 100);
+            prestigeTriggerBtnEl.textContent = `💎 Prestige (+${formatNumber(pendingGems)} Meme Gems · +${addPct}%)`;
+            if (prestigeConfirmSummaryEl) {
+              const newTotalGems = gems + pendingGems;
+              const newTotalPct = Math.round(newTotalGems * (CONFIG.MEME_GEM_INCOME_BONUS || 0.25) * 100);
+              prestigeConfirmSummaryEl.textContent = `Prestige now for 💎 +${formatNumber(pendingGems)} Meme Gems (+${addPct}% permanent income -> +${newTotalPct}% total)!`;
+            }
+          } else {
+            prestigeInitialBoxEl.style.display = 'none';
+            prestigeConfirmBoxEl.style.display = 'none';
+          }
+        }
       }
 
       if (!skipGrid) {
@@ -5801,31 +6940,144 @@
       }
     }
 
+    function hideBossTopBar() {
+      try {
+        if (!bossTopBarEl) return;
+        bossTopBarEl.classList.remove('active', 'enraged');
+      } catch (err) {
+        console.warn('Non-fatal boss top bar hide error:', err);
+      }
+    }
+
+    function updateBossTopBar(bossRaider, remainingSec) {
+      try {
+        if (!bossTopBarEl) return;
+        if (!bossRaider || bossRaider.hp <= 0) {
+          bossTopBarEl.classList.remove('active', 'enraged');
+          return;
+        }
+        bossTopBarEl.classList.add('active');
+        bossTopBarEl.classList.toggle('enraged', Boolean(bossRaider.enraged));
+        if (bossTopTitleEl) {
+          bossTopTitleEl.textContent = bossRaider.enraged ? '🐻 BIG BANDIT · ROAR!' : '🐻 BIG BANDIT';
+        }
+        if (bossTopHpTextEl) {
+          bossTopHpTextEl.textContent = `HP ${bossRaider.hp}/${bossRaider.maxHp}`;
+        }
+        if (bossTopTimerEl) {
+          const sec = Math.max(0, safeNumber(remainingSec, 0));
+          bossTopTimerEl.textContent = `⏱️ ${sec.toFixed(1)}s`;
+        }
+        if (bossTopHpFillEl) {
+          const ratio = Math.max(0, Math.min(1, bossRaider.hp / Math.max(1, bossRaider.maxHp)));
+          bossTopHpFillEl.style.transform = `scaleX(${ratio.toFixed(3)})`;
+        }
+      } catch (err) {
+        console.warn('Non-fatal boss top bar update error:', err);
+      }
+    }
+
+    function hideRaidSummaryPopup() {
+      try {
+        if (!raidSummaryPopupEl) return;
+        raidSummaryPopupEl.classList.remove('active', 'danger');
+      } catch (err) {
+        console.warn('Non-fatal raid summary popup hide error:', err);
+      }
+    }
+
+    function showRaidSummaryPopup(titleText, detailText, isDanger) {
+      try {
+        if (!raidSummaryPopupEl) return;
+        raidSummaryPopupEl.innerHTML = `
+          <div class="raid-summary-title">${titleText}</div>
+          <div class="raid-summary-sub">${detailText}</div>
+        `;
+        raidSummaryPopupEl.classList.toggle('danger', Boolean(isDanger));
+        raidSummaryPopupEl.classList.add('active');
+      } catch (err) {
+        console.warn('Non-fatal raid summary popup show error:', err);
+      }
+    }
+
+    function freezeActiveRaidersOnScreen() {
+      try {
+        for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
+          const r = raidRuntime.activeRaiders[i];
+          if (r && r.el) {
+            r.el.classList.add('raider-stopped');
+          }
+        }
+      } catch (err) {
+        console.warn('Non-fatal freeze raiders error:', err);
+      }
+    }
+
+    function getBossFixedHp(raidNum) {
+      const safeRaidNum = Math.max(1, Math.floor(safeNumber(raidNum, 1)));
+      const bossIndex = Math.max(1, Math.floor(safeRaidNum / CONFIG.BOSS_EVERY_N_RAIDS));
+      return Math.min(
+        CONFIG.BOSS_MAX_HP,
+        CONFIG.BOSS_BASE_HP + (bossIndex - 1) * CONFIG.BOSS_HP_STEP
+      );
+    }
+
     function buildRaidSchedule(raidNum) {
-      const isFirstRaid = raidNum === 1;
-      const isBossRaid = !isFirstRaid && (raidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
-      const income = getFullPotentialIncomePerSecond();
+      const safeRaidNum = Math.max(1, Math.floor(safeNumber(raidNum, 1)));
+      const isFirstRaid = safeRaidNum === 1;
+      const isBossRaid = !isFirstRaid && (safeRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
 
-      const incomeTier = Math.floor(Math.log10(Math.max(1, income)));
-      const count = isFirstRaid
-        ? CONFIG.RAID_MIN_RAIDERS
-        : Math.min(CONFIG.RAID_MAX_RAIDERS, CONFIG.RAID_MIN_RAIDERS + Math.floor((raidNum - 1) / 3) + Math.floor(incomeTier / 3));
+      // Raider health for non-boss raiders: ceil(baseHits * (1 + 0.4 * log2(1 + incomePerSec / 50)))
+      const incomePerSec = Math.max(0, getFullPotentialIncomePerSecond());
+      const hpScale = 1 + 0.4 * Math.log2(1 + incomePerSec / 50);
 
-      const bonusHp = isFirstRaid ? 0 : Math.max(0, Math.floor(Math.log10(Math.max(1, income)) * 0.55));
+      if (isBossRaid) {
+        const bossIndex = Math.max(1, Math.floor(safeRaidNum / CONFIG.BOSS_EVERY_N_RAIDS));
+        const bossHp = getBossFixedHp(safeRaidNum);
+        // 2 to 4 small raiders arrive in waves alongside the Boss (max 5 on screen at once)
+        const smallCount = Math.min(4, 2 + Math.floor((bossIndex - 1) / 2));
+        const schedule = [
+          {
+            timeSec: 0,
+            typeKey: 'bear',
+            lane: 1, // Boss marches slowly down the middle lane
+            maxHp: bossHp
+          }
+        ];
+
+        for (let i = 0; i < smallCount; i++) {
+          const typeKey = (i % 2 === 0) ? 'fox' : 'raccoon';
+          const baseCfg = CONFIG.RAIDERS[typeKey] || CONFIG.RAIDERS.raccoon;
+          const escortHp = Math.min(4, Math.max(1, Math.ceil(baseCfg.baseHp * hpScale)));
+          schedule.push({
+            timeSec: 3.5 + i * 4.2,
+            typeKey,
+            lane: (i % 2 === 0) ? 0 : 2, // Side lanes alongside the center Boss
+            maxHp: escortHp
+          });
+        }
+        return schedule;
+      }
+
+      // Normal raid count: min(8, 3 + floor(raidNumber / 4))
+      const count = Math.min(
+        CONFIG.RAID_MAX_RAIDERS,
+        CONFIG.RAID_MIN_RAIDERS + Math.floor(safeRaidNum / 4)
+      );
 
       const schedule = [];
       for (let i = 0; i < count; i++) {
-        const timeSec = i * (6.2 / Math.max(1, count));
+        // First wave (up to 5 on screen) spawns every 1.15s; extra raiders (6..8) arrive in staggered wave 2
+        const timeSec = i < CONFIG.RAID_MAX_CONCURRENT
+          ? i * 1.15
+          : 6.20 + (i - CONFIG.RAID_MAX_CONCURRENT) * 1.15;
         const lane = i % 3;
-        let typeKey = Math.random() < 0.45 ? 'fox' : 'raccoon';
-        if (isFirstRaid) {
-          typeKey = 'fox';
-        } else if (isBossRaid && i === count - 1) {
-          typeKey = 'bear';
-        }
+        const typeKey = isFirstRaid ? 'fox' : ((i % 2 === 1) ? 'fox' : 'raccoon');
+        const baseCfg = CONFIG.RAIDERS[typeKey] || CONFIG.RAIDERS.raccoon;
+        const maxHp = isFirstRaid
+          ? 1
+          : Math.max(1, Math.ceil(baseCfg.baseHp * hpScale));
 
-        const baseCfg = CONFIG.RAIDERS[typeKey];
-        const maxHp = isFirstRaid ? 1 : baseCfg.baseHp + (baseCfg.isBoss ? bonusHp * 2 : bonusHp);
         schedule.push({
           timeSec,
           typeKey,
@@ -5857,20 +7109,34 @@
     }
 
     function startRaidWarning() {
+      hideRaidSummaryPopup();
+      hideBossTopBar();
+      clearActiveRaiderNodes();
       raidRuntime.phase = 'warning';
       raidRuntime.warningPlayed = true;
       setRaidDangerVisuals(true);
       sfxSiren();
       triggerScreenShake();
-      showBanner('🚨 RAID INCOMING!', false, true);
+      const nextRaidNum = state.raidNumber + 1;
+      const nextIsBoss = nextRaidNum > 1 && (nextRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+      showBanner(nextIsBoss ? `🚨 BOSS RAID #${nextRaidNum} INCOMING!` : '🚨 RAID INCOMING!', false, true);
     }
 
     function startActiveRaid() {
+      hideRaidSummaryPopup();
+      hideBossTopBar();
+      clearActiveRaiderNodes();
       state.raidNumber += 1;
+      const isBossRaid = state.raidNumber > 1 && (state.raidNumber % CONFIG.BOSS_EVERY_N_RAIDS === 0);
       raidRuntime.phase = 'active';
       raidRuntime.raidNumber = state.raidNumber;
+      raidRuntime.isBossRaid = isBossRaid;
+      raidRuntime.bossRemainingSec = isBossRaid ? CONFIG.BOSS_RAID_DURATION_SEC : CONFIG.RAID_DURATION_SEC;
       raidRuntime.elapsedSec = 0;
       raidRuntime.spawnSchedule = buildRaidSchedule(state.raidNumber);
+      raidRuntime.totalRaidersInRaid = raidRuntime.spawnSchedule.length;
+      raidRuntime.raidersDefeated = 0;
+      raidRuntime.summaryEndMs = 0;
       raidRuntime.activeRaiders = [];
       raidRuntime.guardDogCooldownSec = 0.8;
       raidRuntime.combo = 0;
@@ -5881,6 +7147,12 @@
       setRaidDangerVisuals(true);
       triggerScreenShake();
       sfxSiren();
+      showBanner(
+        isBossRaid ? `🐻 BOSS RAID #${state.raidNumber}! BIG BANDIT!` : `⚔️ RAID #${state.raidNumber}!`,
+        false,
+        true
+      );
+      saveGame();
     }
 
     function clearActiveRaiderNodes() {
@@ -5899,7 +7171,7 @@
 
     function positionRaiderAlongLane(raiderObj) {
       const areaHeight = Math.max(82, raidAreaEl.clientHeight);
-      const startY = 34;
+      const startY = raiderObj.cfg && raiderObj.cfg.isBoss ? 48 : 34;
       const endY = Math.max(startY + 22, areaHeight - 44);
       const sx = CONFIG.LANE_START_X_PCT[raiderObj.lane] ?? 50;
       const ex = CONFIG.LANE_END_X_PCT[raiderObj.lane] ?? 50;
@@ -5908,6 +7180,15 @@
 
       raiderObj.el.style.left = `${xPct.toFixed(2)}%`;
       raiderObj.el.style.top = `${yPx}px`;
+    }
+
+    function getActiveBossRaider() {
+      for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
+        if (raidRuntime.activeRaiders[i].cfg && raidRuntime.activeRaiders[i].cfg.isBoss) {
+          return raidRuntime.activeRaiders[i];
+        }
+      }
+      return null;
     }
 
     function spawnRaiderEntity(spec) {
@@ -5936,6 +7217,7 @@
         lane: spec.lane,
         hp: spec.maxHp,
         maxHp: spec.maxHp,
+        enraged: false,
         progress: 0,
         doorPrySec: 0,
         el,
@@ -5959,6 +7241,10 @@
 
       raidersLayerEl.appendChild(el);
       raidRuntime.activeRaiders.push(raiderObj);
+
+      if (cfg.isBoss) {
+        updateBossTopBar(raiderObj, raidRuntime.bossRemainingSec);
+      }
     }
 
     function damageRaider(raider, clientX, clientY) {
@@ -5976,11 +7262,26 @@
 
       sfxPop();
       sfxHitRaider();
-      triggerScreenShake();
 
       const rect = raider.el.getBoundingClientRect();
       const cx = clientX || (rect.left + rect.width / 2);
       const cy = clientY || (rect.top + rect.height / 2);
+
+      // At 50% health, Boss gets a little faster and shows a short roar effect (gentle screen shake, no rapid flash)
+      if (raider.cfg && raider.cfg.isBoss) {
+        if (!raider.enraged && raider.hp > 0 && raider.hp <= raider.maxHp * 0.5) {
+          raider.enraged = true;
+          raider.el.classList.remove('boss-roar');
+          void raider.el.offsetWidth;
+          raider.el.classList.add('boss-roar');
+          sfxBossRoar();
+          triggerScreenShake();
+          spawnFloatingText(cx, cy - 38, '🐻 ROAR!', '#FFB020');
+        }
+        updateBossTopBar(raider, raidRuntime.bossRemainingSec);
+      } else {
+        triggerScreenShake();
+      }
 
       const dropCoins = Math.max(1, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAIDER_HIT_COIN_RATIO));
       addCoins(dropCoins);
@@ -5990,6 +7291,7 @@
       spawnFloatingText(cx + 14, cy - 6, `+${formatNumber(dropCoins)}`, '#FFD34D');
 
       if (raider.hp <= 0) {
+        raidRuntime.raidersDefeated += 1;
         const idx = raidRuntime.activeRaiders.indexOf(raider);
         if (idx !== -1) raidRuntime.activeRaiders.splice(idx, 1);
 
@@ -5999,6 +7301,14 @@
         if (dyingEl && dyingEl.parentNode) {
           // Remove defeated raiders from the DOM immediately for maximum mobile performance
           dyingEl.parentNode.removeChild(dyingEl);
+        }
+
+        // If the Boss is defeated, clear any remaining small escort waves and award Boss Victory immediately
+        if (raider.cfg && raider.cfg.isBoss) {
+          raidRuntime.spawnSchedule = [];
+          clearActiveRaiderNodes();
+          finishRaidWin();
+          return;
         }
 
         if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
@@ -6015,43 +7325,80 @@
       if (raidRuntime.rewardGranted) return;
       raidRuntime.rewardGranted = true;
 
+      const isBossRaid = Boolean(raidRuntime.isBossRaid);
       const bestCombo = raidRuntime.bestCombo || 1;
       const comboMult = getComboWinMultiplier(bestCombo);
+      const totalRaiders = Math.max(1, raidRuntime.totalRaidersInRaid || raidRuntime.raidersDefeated || CONFIG.RAID_MIN_RAIDERS);
+      raidRuntime.raidersDefeated = totalRaiders;
 
-      clearActiveRaiderNodes();
-      raidRuntime.phase = 'idle';
+      state.raidsWon = Math.max(0, Math.floor(safeNumber(state.raidsWon, 0))) + 1;
+      if (isBossRaid) {
+        state.bossesDefeated = Math.max(0, Math.floor(safeNumber(state.bossesDefeated, 0))) + 1;
+      }
+
+      hideBossTopBar();
+      freezeActiveRaidersOnScreen();
+      raidRuntime.phase = 'summary';
+      raidRuntime.summaryEndMs = performance.now() + (CONFIG.RAID_SUMMARY_POPUP_SEC * 1000);
       raidRuntime.warningPlayed = false;
       raidRuntime.combo = 0;
       state.raidTimerSec = randomRaidIntervalSec();
       setRaidDangerVisuals(false);
 
       const baseWinBonus = Math.max(30, Math.round(getFullPotentialIncomePerSecond() * CONFIG.RAID_WIN_INCOME_SECONDS));
-      const winBonus = Math.round(baseWinBonus * comboMult);
+      const bossMult = isBossRaid ? (CONFIG.BOSS_WIN_BONUS_MULT || 3) : 1;
+      const winBonus = Math.round(baseWinBonus * comboMult * bossMult);
       addCoins(winBonus);
-      sfxHatchFanfare('Legendary');
+      sfxHatchFanfare(isBossRaid ? 'Mythic' : 'Legendary');
 
       const vRect = vaultBtnEl.getBoundingClientRect();
       const vx = vRect.width > 0 ? (vRect.left + vRect.width / 2) : (viewportW / 2);
       const vy = vRect.height > 0 ? (vRect.top + vRect.height / 2) : (viewportH * 0.45);
       spawnConfettiBurst(vx, vy - 16, 30);
       spawnHitStars(vx, vy, 12);
-      spawnFlyingCoin(vx, vy, 8);
+      spawnFlyingCoin(vx, vy, isBossRaid ? 12 : 8);
       spawnFloatingText(vx, vy - 24, `+${formatNumber(winBonus)}`, '#5CFF9D');
 
       const comboNote = bestCombo >= 2 ? ` · x${bestCombo} Combo (${comboMult.toFixed(1)}x)` : '';
-      showBanner(`🛡️ VAULT SAFE! (+${formatNumber(winBonus)} coins${comboNote})`, true, false);
+      if (isBossRaid) {
+        showRaidSummaryPopup(
+          `🏆 BOSS DEFEATED!`,
+          `Stopped: ${totalRaiders}/${totalRaiders} · Best Combo: x${bestCombo} · +${formatNumber(winBonus)} 🪙 (3× Boss Bonus!)`,
+          false
+        );
+        showBanner(`🏆 BOSS DEFEATED! (+${formatNumber(winBonus)} coins${comboNote})`, true, false);
+      } else {
+        showRaidSummaryPopup(
+          `🛡️ RAID #${raidRuntime.raidNumber} CLEARED!`,
+          `Stopped: ${totalRaiders}/${totalRaiders} · Best Combo: x${bestCombo} · +${formatNumber(winBonus)} 🪙`,
+          false
+        );
+        showBanner(`🛡️ VAULT SAFE! (+${formatNumber(winBonus)} coins${comboNote})`, true, false);
+      }
+      checkAchievements();
       saveGame();
       updateHUD(false);
     }
 
     function finishRaidLose(raiderCfg) {
+      // Raid 1 cannot be lost
       if (raidRuntime.raidNumber <= 1) {
         finishRaidWin();
         return;
       }
 
-      clearActiveRaiderNodes();
-      raidRuntime.phase = 'idle';
+      if (raidRuntime.rewardGranted) return;
+      raidRuntime.rewardGranted = true;
+
+      const isBossRaid = Boolean(raidRuntime.isBossRaid || (raiderCfg && raiderCfg.isBoss));
+      const bestCombo = raidRuntime.bestCombo || 1;
+      const stoppedCount = Math.max(0, raidRuntime.raidersDefeated || 0);
+      const totalRaiders = Math.max(stoppedCount + 1, raidRuntime.totalRaidersInRaid || CONFIG.RAID_MIN_RAIDERS);
+
+      hideBossTopBar();
+      freezeActiveRaidersOnScreen();
+      raidRuntime.phase = 'summary';
+      raidRuntime.summaryEndMs = performance.now() + (CONFIG.RAID_SUMMARY_POPUP_SEC * 1000);
       raidRuntime.warningPlayed = false;
       raidRuntime.combo = 0;
       state.raidTimerSec = randomRaidIntervalSec();
@@ -6082,9 +7429,37 @@
         const victim = state.ownedCreatures[chosenIdx];
         victim.kidnappedRemainingSec = CONFIG.KIDNAP_DURATION_SEC;
         const victimDef = CREATURE_MAP[victim.id];
-        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} kidnapped ${victimDef.name} for 90s!${penaltyNote}`, true, true);
+        if (isBossRaid) {
+          showRaidSummaryPopup(
+            `🚨 BOSS STOLE ${victimDef.name.toUpperCase()}!`,
+            `Stopped: ${stoppedCount}/${totalRaiders} · Combo: x${bestCombo} · Kidnapped 90s${penaltyNote}`,
+            true
+          );
+          showBanner(`🐻 BOSS STOLE ${victimDef.name} for 90s!${penaltyNote}`, true, true);
+        } else {
+          showRaidSummaryPopup(
+            `🚨 RAID #${raidRuntime.raidNumber} BREACHED!`,
+            `Stopped: ${stoppedCount}/${totalRaiders} · Combo: x${bestCombo} · Kidnapped: ${victimDef.name} (90s)`,
+            true
+          );
+          showBanner(`${raiderCfg.emoji} ${raiderCfg.name} kidnapped ${victimDef.name} for 90s!${penaltyNote}`, true, true);
+        }
       } else {
-        showBanner(`${raiderCfg.emoji} ${raiderCfg.name} breached the Vault!${penaltyNote}`, true, true);
+        if (isBossRaid) {
+          showRaidSummaryPopup(
+            `🚨 BOSS STOLE FROM VAULT!`,
+            `Stopped: ${stoppedCount}/${totalRaiders} · Best Combo: x${bestCombo}${penaltyNote}`,
+            true
+          );
+          showBanner(`🐻 BOSS STOLE FROM THE VAULT!${penaltyNote}`, true, true);
+        } else {
+          showRaidSummaryPopup(
+            `🚨 RAID #${raidRuntime.raidNumber} BREACHED!`,
+            `Stopped: ${stoppedCount}/${totalRaiders} · Best Combo: x${bestCombo}${penaltyNote}`,
+            true
+          );
+          showBanner(`${raiderCfg.emoji} ${raiderCfg.name} breached the Vault!${penaltyNote}`, true, true);
+        }
       }
 
       saveGame();
@@ -6119,6 +7494,22 @@
         return;
       }
 
+      // 3-second post-raid summary state with raiders stopped on screen
+      if (raidRuntime.phase === 'summary') {
+        state.raidTimerSec = Math.max(0, state.raidTimerSec - dtSec);
+        const remCeil = Math.ceil(state.raidTimerSec);
+        raidHudPillEl.textContent = `🛡️ Next Raid in ${remCeil}s`;
+
+        if (performance.now() >= raidRuntime.summaryEndMs || state.raidTimerSec <= CONFIG.RAID_WARNING_SEC) {
+          hideRaidSummaryPopup();
+          hideBossTopBar();
+          clearActiveRaiderNodes();
+          raidRuntime.phase = 'idle';
+        } else {
+          return;
+        }
+      }
+
       if (raidRuntime.phase === 'idle' || raidRuntime.phase === 'warning') {
         state.raidTimerSec = Math.max(0, state.raidTimerSec - dtSec);
         const remCeil = Math.ceil(state.raidTimerSec);
@@ -6128,7 +7519,11 @@
         }
 
         if (raidRuntime.phase === 'warning') {
-          raidHudPillEl.textContent = `🚨 RAID INCOMING IN ${remCeil}s! TAP RAIDERS!`;
+          const nextRaidNum = state.raidNumber + 1;
+          const nextIsBoss = nextRaidNum > 1 && (nextRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+          raidHudPillEl.textContent = nextIsBoss
+            ? `🚨 BOSS RAID #${nextRaidNum} IN ${remCeil}s! GET READY!`
+            : `🚨 RAID INCOMING IN ${remCeil}s! TAP RAIDERS!`;
         } else {
           raidHudPillEl.textContent = `🛡️ Next Raid in ${remCeil}s`;
         }
@@ -6150,34 +7545,52 @@
 
         while (
           raidRuntime.spawnSchedule.length > 0 &&
-          raidRuntime.activeRaiders.length < 5 &&
+          raidRuntime.activeRaiders.length < CONFIG.RAID_MAX_CONCURRENT &&
           raidRuntime.elapsedSec >= raidRuntime.spawnSchedule[0].timeSec
         ) {
           const spec = raidRuntime.spawnSchedule.shift();
           spawnRaiderEntity(spec);
         }
 
-        const remainingRaiders = raidRuntime.spawnSchedule.length + raidRuntime.activeRaiders.length;
-        raidHudPillEl.textContent = `⚔️ RAID #${raidRuntime.raidNumber} · Tap Raiders! (${remainingRaiders} left)`;
+        const activeBoss = getActiveBossRaider();
+        if (raidRuntime.isBossRaid) {
+          raidRuntime.bossRemainingSec = Math.max(0, CONFIG.BOSS_RAID_DURATION_SEC - raidRuntime.elapsedSec);
+          const bossSecCeil = Math.ceil(raidRuntime.bossRemainingSec);
+          raidHudPillEl.textContent = `🐻 BOSS RAID #${raidRuntime.raidNumber} · ⏱️ ${bossSecCeil}s left`;
+          if (activeBoss) {
+            updateBossTopBar(activeBoss, raidRuntime.bossRemainingSec);
+          }
+          if (raidRuntime.bossRemainingSec <= 0) {
+            finishRaidLose(CONFIG.RAIDERS.bear);
+            return;
+          }
+        } else {
+          const remainingRaiders = raidRuntime.spawnSchedule.length + raidRuntime.activeRaiders.length;
+          raidHudPillEl.textContent = `⚔️ RAID #${raidRuntime.raidNumber} · Tap Raiders! (${remainingRaiders} left)`;
+        }
 
         const dogLvl = state.defenseUpgrades.guardDog || 0;
         if (dogLvl > 0 && raidRuntime.activeRaiders.length > 0) {
           raidRuntime.guardDogCooldownSec -= dtSec;
           if (raidRuntime.guardDogCooldownSec <= 0) {
             raidRuntime.guardDogCooldownSec = getGuardDogIntervalSec(dogLvl);
-            let nearest = raidRuntime.activeRaiders[0];
+            let target = raidRuntime.activeRaiders[0];
             for (let i = 1; i < raidRuntime.activeRaiders.length; i++) {
-              if (raidRuntime.activeRaiders[i].progress > nearest.progress) {
-                nearest = raidRuntime.activeRaiders[i];
+              if (raidRuntime.activeRaiders[i].progress > target.progress) {
+                target = raidRuntime.activeRaiders[i];
               }
             }
-            if (nearest) {
-              triggerGuardDogDash(nearest);
-              const rect = nearest.el.getBoundingClientRect();
+            // In a Boss Raid, Guard Dog focuses the Boss unless a side-lane raider is close to the vault (>= 68%)
+            if (activeBoss && (!target || target.progress < 0.68)) {
+              target = activeBoss;
+            }
+            if (target) {
+              triggerGuardDogDash(target);
+              const rect = target.el.getBoundingClientRect();
               const cx = rect.left + rect.width / 2;
               const cy = rect.top + rect.height / 2;
               spawnFloatingText(cx, cy - 28, '🐕 BARK!', '#5CFF9D');
-              damageRaider(nearest, cx, cy);
+              damageRaider(target, cx, cy);
               if (raidRuntime.phase !== 'active') return;
             }
           }
@@ -6185,13 +7598,22 @@
 
         const laserSlowMult = getLaserSlowMultiplier(state.defenseUpgrades.laserFence);
         const doorExtraSec = getVaultDoorExtraSec(state.defenseUpgrades.vaultDoor);
-        const firstRaidSpeedFactor = raidRuntime.raidNumber === 1 ? 0.58 : 1.0;
+        // Raid 1: 0.55x speed (cannot be lost); Raids 2-3: 0.72x speed (easy); Raid 4+: 1.0x speed
+        const raidSpeedFactor = raidRuntime.raidNumber === 1
+          ? 0.55
+          : (raidRuntime.raidNumber <= 3 ? 0.72 : 1.0);
 
         let anyRaiderCloseToVault = false;
 
         for (let i = raidRuntime.activeRaiders.length - 1; i >= 0; i--) {
           const r = raidRuntime.activeRaiders[i];
-          const baseCrossSec = CONFIG.RAIDER_BASE_CROSS_SEC / (r.cfg.speedMult * laserSlowMult * firstRaidSpeedFactor);
+          let baseCrossSec;
+          if (r.cfg && r.cfg.isBoss) {
+            const enrageMult = r.enraged ? (CONFIG.BOSS_ENRAGE_SPEED_MULT || 1.18) : 1.0;
+            baseCrossSec = (CONFIG.BOSS_BASE_CROSS_SEC || 21.5) / (laserSlowMult * enrageMult);
+          } else {
+            baseCrossSec = CONFIG.RAIDER_BASE_CROSS_SEC / (r.cfg.speedMult * laserSlowMult * raidSpeedFactor);
+          }
 
           if (r.progress < 1) {
             r.progress = Math.min(1, r.progress + dtSec / baseCrossSec);
@@ -6240,6 +7662,7 @@
 
       spawnFloatingText(x, y - 14, `+${formatNumber(reward, true)}`, '#35E0FF');
       spawnFlyingCoin(x, y, 2);
+      advanceTutorialOnVaultTap();
       updateHUD();
     }
 
@@ -6266,10 +7689,22 @@
 
     function handleSlotTap(slotIndex, cellEl) {
       if (slotIndex < state.ownedCreatures.length) {
+        const owned = state.ownedCreatures[slotIndex];
+        if (owned && Array.isArray(state.unseenPlateCreatures)) {
+          const unseenIdx = state.unseenPlateCreatures.indexOf(owned.id);
+          if (unseenIdx !== -1) {
+            state.unseenPlateCreatures.splice(unseenIdx, 1);
+            saveGame();
+          }
+        }
+        if (!state.tutorialDone && state.tutorialStep === 2) {
+          completeTutorial();
+        }
         const node = slotDomNodes[slotIndex];
         triggerSquash(node.plate);
         sfxPop();
         openUpgradeModal(slotIndex);
+        renderSlotsGrid();
       } else if (slotIndex === state.slotsUnlocked && state.slotsUnlocked < CONFIG.MAX_SLOTS) {
         handleBuySlot(cellEl);
       } else if (slotIndex < state.slotsUnlocked) {
@@ -6288,7 +7723,22 @@
         (hatchModalEl && hatchModalEl.classList.contains('active')) ||
         (settingsModalEl && settingsModalEl.classList.contains('active')) ||
         (debugModalEl && debugModalEl.classList.contains('active')) ||
-        (offlineModalEl && offlineModalEl.classList.contains('active'))
+        (offlineModalEl && offlineModalEl.classList.contains('active')) ||
+        (bookModalEl && bookModalEl.classList.contains('active')) ||
+        (dailyGiftModalEl && dailyGiftModalEl.classList.contains('active'))
+      );
+    }
+
+    // Passive income keeps running while Book or Settings modal is open;
+    // only non-Book/non-Settings modals pause passive income.
+    function isIncomeBlockingModalOpen() {
+      return (
+        (upgradeModalEl && upgradeModalEl.classList.contains('active')) ||
+        (defenseModalEl && defenseModalEl.classList.contains('active')) ||
+        (hatchModalEl && hatchModalEl.classList.contains('active')) ||
+        (debugModalEl && debugModalEl.classList.contains('active')) ||
+        (offlineModalEl && offlineModalEl.classList.contains('active')) ||
+        (dailyGiftModalEl && dailyGiftModalEl.classList.contains('active'))
       );
     }
 
@@ -6452,6 +7902,7 @@
         spawnFloatingText(cx, cy - 16, label, isMilestone ? '#FFD34D' : '#5CFF9D');
       }
 
+      checkAchievements();
       saveGame();
       updateHUD();
       return true;
@@ -6466,7 +7917,7 @@
       if (!isEggUnlocked(eggTypeKey)) {
         sfxPop();
         showBanner(
-          `🔒 ${eggCfg.name} unlocks after ${formatNumber(eggCfg.unlockTotalCoins)} total coins earned! (${formatNumber(state.totalCoinsEarned)}/${formatNumber(eggCfg.unlockTotalCoins)})`,
+          `🔒 ${eggCfg.name} unlocks after ${formatNumber(eggCfg.unlockTotalCoins)} run coins earned! (${formatNumber(state.runEarned)}/${formatNumber(eggCfg.unlockTotalCoins)})`,
           false
         );
         return;
@@ -6500,7 +7951,14 @@
     }
 
     function resolveHatchedCreature(creatureDef) {
-      recordDiscovery(creatureDef.id);
+      const isFirstDiscovery = recordDiscovery(creatureDef.id);
+      if (isFirstDiscovery) {
+        if (!Array.isArray(state.unseenPlateCreatures)) state.unseenPlateCreatures = [];
+        if (!state.unseenPlateCreatures.includes(creatureDef.id)) {
+          state.unseenPlateCreatures.push(creatureDef.id);
+        }
+        state.hasNewBookEntry = true;
+      }
 
       // a) If the player already owns it: level it up by 1 (if already Level 100, convert to coins instead)
       const existingIndex = state.ownedCreatures.findIndex((c) => c.id === creatureDef.id);
@@ -6509,13 +7967,13 @@
         if (existing.level < CONFIG.MAX_CREATURE_LEVEL) {
           existing.level += 1;
           const msg = `Duplicate! ${creatureDef.name} leveled up to Lv.${existing.level}!`;
-          return { type: 'levelup', slotIndex: existingIndex, message: msg };
+          return { type: 'levelup', slotIndex: existingIndex, message: msg, isNewDiscovery: isFirstDiscovery };
         } else {
           const convertedCoins = getConversionCoins(creatureDef.id, existing.level);
           addCoins(convertedCoins);
           const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
           showBanner(msg, true);
-          return { type: 'converted', coins: convertedCoins, message: msg };
+          return { type: 'converted', coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery };
         }
       }
 
@@ -6524,7 +7982,7 @@
         state.ownedCreatures.push({ id: creatureDef.id, level: 1, kidnappedRemainingSec: 0 });
         const newSlotIndex = state.ownedCreatures.length - 1;
         const msg = `New ${creatureDef.name} joined Slot ${newSlotIndex + 1}!`;
-        return { type: 'placed', slotIndex: newSlotIndex, message: msg };
+        return { type: 'placed', slotIndex: newSlotIndex, message: msg, isNewDiscovery: isFirstDiscovery };
       }
 
       // c) Else (vault full): compare new Lv.1 income against lowest current income/sec owned creature
@@ -6550,13 +8008,13 @@
 
         const msg = `${creatureDef.name} replaced ${replacedDef.name} (+${formatNumber(convertedCoins)} coins)`;
         showBanner(msg, true);
-        return { type: 'replaced', slotIndex: lowestIndex, coins: convertedCoins, message: msg };
+        return { type: 'replaced', slotIndex: lowestIndex, coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery };
       } else {
         const convertedCoins = getConversionCoins(creatureDef.id, 1);
         addCoins(convertedCoins);
         const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
         showBanner(msg, true);
-        return { type: 'converted', coins: convertedCoins, message: msg };
+        return { type: 'converted', coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery };
       }
     }
 
@@ -6612,14 +8070,17 @@
 
         sfxHatchFanfare(hatched.rarity);
 
-        hatchModalTitleEl.textContent = `${hatched.name}!`;
-        hatchModalRarityEl.textContent = `${rarity.name} · +${formatNumber(hatched.baseIncome)}/sec`;
+        const newTagHtml = outcome.isNewDiscovery ? `<span class="new-tag-badge">NEW!</span>` : '';
+        hatchModalTitleEl.innerHTML = `${hatched.name}!${newTagHtml}`;
+        hatchModalRarityEl.textContent = `${rarity.name} · +${formatNumber(getCreatureIncome(hatched.id, 1), true)}/sec`;
         hatchModalRarityEl.style.color = rarity.color;
 
         const rarityPlateFx = rarity.rainbow ? ' mythic-ring' : hatched.rarity === 'Legendary' ? ' legendary-plate' : '';
         const ringClass = `slot-plate modal-plate${rarityPlateFx} hatched-pop`;
+        const plateNewBadge = outcome.isNewDiscovery ? `<span class="slot-new-badge" style="display:block;">NEW</span>` : '';
         hatchStageEl.innerHTML = `
           <div class="${ringClass}" style="--ring-color: ${rarity.color}; --ring-glow: ${rarity.glow}; margin: 0;">
+            ${plateNewBadge}
             ${getCreatureVisualHTML(hatched.id, { delaySec: 0, paused: false })}
           </div>
         `;
@@ -6631,19 +8092,592 @@
         const stageRect = hatchStageEl.getBoundingClientRect();
         const cx = stageRect.left + stageRect.width / 2;
         const cy = stageRect.top + stageRect.height / 2;
-        spawnBurstSparkles(cx, cy, rarity.color, 12);
+        const isRareHatch = hatched.rarity === 'Legendary' || hatched.rarity === 'Mythic';
+        if (isRareHatch) {
+          spawnConfettiBurst(cx, cy, CONFIG.RARE_HATCH_CONFETTI_BURST || 18, true);
+        }
+        spawnBurstSparkles(cx, cy, rarity.color, 4);
         if (outcome.coins && outcome.coins > 0) {
-          spawnFlyingCoin(cx, cy, 5);
+          spawnFlyingCoin(cx, cy, 4);
         }
 
         if (typeof outcome.slotIndex === 'number' && slotDomNodes[outcome.slotIndex]) {
           triggerSquash(slotDomNodes[outcome.slotIndex].plate);
         }
 
+        advanceTutorialOnFirstHatch();
+        checkAchievements();
         isHatching = false;
         saveGame();
         updateHUD();
+        updateNextGoalBar(true);
       }, CONFIG.HATCH_SHAKE_MS + CONFIG.HATCH_CRACK_MS);
+    }
+
+    /* ==========================================================================
+       10B. TUTORIAL, NEXT GOAL, BOOK, DAILY GIFT, ACHIEVEMENTS, GOLD COIN & BUBBLES
+       ========================================================================== */
+    let tutorialWatchRemainingSec = 0;
+
+    function completeTutorial() {
+      try {
+        state.tutorialDone = true;
+        state.tutorialStep = 3;
+        tutorialWatchRemainingSec = 0;
+        if (tutorialOverlayEl) {
+          tutorialOverlayEl.classList.remove('active');
+        }
+        saveGame();
+      } catch (err) {
+        console.warn('Non-fatal tutorial complete error:', err);
+      }
+    }
+
+    function advanceTutorialOnVaultTap() {
+      try {
+        if (state.tutorialDone || state.tutorialStep !== 0) return;
+        const basicCost = getEggCost('basic');
+        if (state.coins < basicCost) {
+          addCoins(basicCost - state.coins + 10);
+        }
+        state.tutorialStep = 1;
+        saveGame();
+        updateTutorialOverlay(0);
+      } catch (err) {
+        console.warn('Non-fatal tutorial vault tap error:', err);
+      }
+    }
+
+    function advanceTutorialOnFirstHatch() {
+      try {
+        if (state.tutorialDone) return;
+        if (state.tutorialStep <= 1) {
+          state.tutorialStep = 2;
+          tutorialWatchRemainingSec = 5.0;
+          saveGame();
+        }
+      } catch (err) {
+        console.warn('Non-fatal tutorial hatch advance error:', err);
+      }
+    }
+
+    function updateTutorialOverlay(dtSec) {
+      try {
+        if (!tutorialOverlayEl || !tutorialHandEl || !tutorialStepTextEl) return;
+        if (state.tutorialDone || state.tutorialStep >= 3) {
+          tutorialOverlayEl.classList.remove('active');
+          return;
+        }
+
+        if (isAnyModalOpen()) {
+          tutorialOverlayEl.classList.remove('active');
+          return;
+        }
+
+        tutorialOverlayEl.classList.add('active');
+
+        let targetEl = null;
+        if (state.tutorialStep === 0) {
+          tutorialStepTextEl.textContent = '👆 Step 1/3: Tap the Vault Crystal to earn coins!';
+          targetEl = vaultBtnEl;
+        } else if (state.tutorialStep === 1) {
+          const basicCost = getEggCost('basic');
+          if (state.coins < basicCost) {
+            addCoins(basicCost - state.coins);
+          }
+          tutorialStepTextEl.textContent = '🥚 Step 2/3: Tap Hatch to get your first creature!';
+          targetEl = hatchBtnEl;
+        } else if (state.tutorialStep === 2) {
+          tutorialWatchRemainingSec = Math.max(0, (tutorialWatchRemainingSec || 5.0) - dtSec);
+          tutorialStepTextEl.textContent = `✨ Step 3/3: Watch your creature earn coins! (${Math.ceil(tutorialWatchRemainingSec)}s)`;
+          targetEl = (slotDomNodes[0] && slotDomNodes[0].plate) ? slotDomNodes[0].plate : vaultBtnEl;
+          if (tutorialWatchRemainingSec <= 0) {
+            completeTutorial();
+            return;
+          }
+        }
+
+        if (targetEl) {
+          const rect = targetEl.getBoundingClientRect();
+          if (rect.width > 0) {
+            const tx = Math.round(rect.left + rect.width * 0.5 - 16);
+            const ty = Math.round(rect.top + rect.height * 0.55);
+            tutorialHandEl.style.setProperty('--tx', `${tx}px`);
+            tutorialHandEl.style.setProperty('--ty', `${ty}px`);
+          }
+        }
+      } catch (err) {
+        console.warn('Non-fatal tutorial update error:', err);
+      }
+    }
+
+    let lastNextGoalUpdateMs = 0;
+
+    // Updates ONLY #next-goal-text at most twice per second (every 500ms); never touches the creature grid.
+    function updateNextGoalBar(force = false) {
+      try {
+        if (!nextGoalTextEl) return;
+        const nowMs = performance.now();
+        const minIntervalMs = (CONFIG.NEXT_GOAL_UPDATE_INTERVAL_SEC || 0.5) * 1000;
+        if (!force && lastNextGoalUpdateMs > 0 && (nowMs - lastNextGoalUpdateMs) < minIntervalMs) {
+          return;
+        }
+        lastNextGoalUpdateMs = nowMs;
+
+        const coins = Math.floor(safeNumber(state.coins, 0));
+        const runEarned = Math.floor(safeNumber(state.runEarned, coins));
+        const pendingGems = getPendingPrestigeGems();
+
+        let goalText = '';
+        if (state.hatchCount === 0) {
+          const basicCost = getEggCost('basic');
+          const need = Math.max(0, Math.ceil(basicCost - coins));
+          goalText = need > 0
+            ? `🎯 Next Goal: Hatch your first Basic Egg (earn ${formatNumber(need)} more coins)`
+            : '🎯 Next Goal: Hatch your first Basic Egg (Ready now!)';
+        } else if (pendingGems > 0) {
+          const nextGemTarget = Math.pow(pendingGems + 1, 2) * CONFIG.PRESTIGE_DIVISOR;
+          const needForNextGem = Math.max(1, Math.ceil(nextGemTarget - runEarned));
+          goalText = `🎯 Next Goal: Prestige ready in ⚙️ (+${pendingGems} Gems) · or earn ${formatNumber(needForNextGem)} more for +${pendingGems + 1} Gems`;
+        } else if (!isEggUnlocked('golden')) {
+          const unlockTarget = CONFIG.EGG_TYPES.golden.unlockTotalCoins;
+          const needUnlock = Math.max(1, Math.ceil(unlockTarget - runEarned));
+          if (state.ownedCreatures.length < 3) {
+            const basicCost = getEggCost('basic');
+            const needBasic = Math.max(0, Math.ceil(basicCost - coins));
+            goalText = needBasic > 0
+              ? `🎯 Next Goal: Hatch Creature #${state.ownedCreatures.length + 1}: need ${formatNumber(needBasic)} more coins`
+              : `🎯 Next Goal: Hatch Creature #${state.ownedCreatures.length + 1}: Ready to hatch!`;
+          } else {
+            goalText = `🎯 Next Goal: Unlock the Golden Egg: earn ${formatNumber(needUnlock)} more coins`;
+          }
+        } else if ((state.defenseUpgrades.guardDog || 0) === 0) {
+          const dogCost = getDefenseUpgradeCost('guardDog', 0);
+          const needDog = Math.max(0, Math.ceil(dogCost - coins));
+          goalText = needDog > 0
+            ? `🎯 Next Goal: Unlock Guard Dog Defense: need ${formatNumber(needDog)} more coins`
+            : '🎯 Next Goal: Unlock Guard Dog Defense (Ready in 🛡️ Defense!)';
+        } else if (!isEggUnlocked('cosmic')) {
+          const cosmicTarget = CONFIG.EGG_TYPES.cosmic.unlockTotalCoins;
+          const needCosmic = Math.max(1, Math.ceil(cosmicTarget - runEarned));
+          if (state.eggHatches.golden === 0) {
+            const goldenCost = getEggCost('golden');
+            const needGolden = Math.max(0, Math.ceil(goldenCost - coins));
+            goalText = needGolden > 0
+              ? `🎯 Next Goal: Hatch your first Golden Egg: need ${formatNumber(needGolden)} more coins`
+              : '🎯 Next Goal: Hatch your first Golden Egg (Ready now!)';
+          } else {
+            goalText = `🎯 Next Goal: Unlock the Cosmic Egg: earn ${formatNumber(needCosmic)} more coins`;
+          }
+        } else {
+          const prestigeTarget = CONFIG.PRESTIGE_UNLOCK_RUN_COINS;
+          const needPrestige = Math.max(1, Math.ceil(prestigeTarget - runEarned));
+          goalText = `🎯 Next Goal: Unlock Prestige: earn ${formatNumber(needPrestige)} more coins`;
+        }
+
+        if (nextGoalTextEl.textContent !== goalText) {
+          nextGoalTextEl.textContent = goalText;
+        }
+      } catch (err) {
+        console.warn('Non-fatal next goal update error:', err);
+      }
+    }
+
+    function isAchievementMet(achId) {
+      try {
+        if (achId === 'first_hatch') return state.hatchCount >= 1;
+        if (achId === 'five_creatures') return state.ownedCreatures.length >= 5;
+        if (achId === 'first_raid_won') return state.raidsWon >= 1;
+        if (achId === 'first_boss_won') return state.bossesDefeated >= 1;
+        if (achId === 'level_10_unit') {
+          for (let i = 0; i < state.ownedCreatures.length; i++) {
+            if (state.ownedCreatures[i].level >= 10) return true;
+          }
+          return false;
+        }
+        if (achId === 'first_legendary') {
+          for (let i = 0; i < state.discoveredCreatures.length; i++) {
+            const def = CREATURE_MAP[state.discoveredCreatures[i]];
+            if (def && (def.rarity === 'Legendary' || def.rarity === 'Mythic')) return true;
+          }
+          return false;
+        }
+        if (achId === 'hundred_hatches') return state.hatchCount >= 100;
+        if (achId === 'ten_raids_won') return state.raidsWon >= 10;
+        if (achId === 'first_prestige') return state.prestigeCount >= 1;
+        if (achId === 'first_defense') {
+          const totalDef = (state.defenseUpgrades.guardDog || 0) + (state.defenseUpgrades.laserFence || 0) + (state.defenseUpgrades.vaultDoor || 0);
+          return totalDef >= 1;
+        }
+        if (achId === 'eight_species') return state.discoveredCreatures.length >= 8;
+        if (achId === 'all_species') return state.discoveredCreatures.length >= CONFIG.CREATURES.length;
+        return false;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function checkAchievements() {
+      try {
+        if (!Array.isArray(state.unlockedAchievements)) {
+          state.unlockedAchievements = [];
+        }
+        let anyUnlocked = false;
+        for (let i = 0; i < CONFIG.ACHIEVEMENTS.length; i++) {
+          const ach = CONFIG.ACHIEVEMENTS[i];
+          if (!state.unlockedAchievements.includes(ach.id) && isAchievementMet(ach.id)) {
+            state.unlockedAchievements.push(ach.id);
+            const reward = Math.max(ach.minReward, Math.round(getFullPotentialIncomePerSecond() * 12));
+            addCoins(reward);
+            showBanner(`🏆 Achievement: ${ach.name}! (+${formatNumber(reward)} 🪙)`, true, false);
+            anyUnlocked = true;
+          }
+        }
+        if (anyUnlocked) {
+          saveGame();
+        }
+      } catch (err) {
+        console.warn('Non-fatal achievement check error:', err);
+      }
+    }
+
+    function renderBookModalContent() {
+      try {
+        if (!bookTiersContainerEl || !bookAchievementsGridEl) return;
+        const completedTiers = getCompletedBookTiersCount();
+        const bonusPct = Math.round(completedTiers * (CONFIG.BOOK_TIER_BONUS_PER_TIER || 0.10) * 100);
+        if (bookDiscoveredSummaryEl) {
+          bookDiscoveredSummaryEl.textContent = `Discovered: ${state.discoveredCreatures.length} / ${CONFIG.CREATURES.length}`;
+        }
+        if (bookBonusSummaryEl) {
+          bookBonusSummaryEl.textContent = `Tier Bonus: +${bonusPct}% Income (${completedTiers}/6)`;
+        }
+
+        const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'];
+        bookTiersContainerEl.innerHTML = '';
+
+        for (let r = 0; r < rarities.length; r++) {
+          const rarityKey = rarities[r];
+          const rarityCfg = CONFIG.RARITIES[rarityKey] || CONFIG.RARITIES.Common;
+          const tierCreatures = CONFIG.CREATURES.filter((c) => c.rarity === rarityKey);
+          const bothDiscovered = tierCreatures.every((c) => state.discoveredCreatures.includes(c.id));
+
+          const tierBox = document.createElement('div');
+          tierBox.className = `book-tier-box${bothDiscovered ? ' tier-complete' : ''}`;
+
+          let cardsHtml = '';
+          for (let i = 0; i < tierCreatures.length; i++) {
+            const c = tierCreatures[i];
+            const isDisc = state.discoveredCreatures.includes(c.id);
+            const artUrl = CREATURE_ART_CACHE[c.id] ? CREATURE_ART_CACHE[c.id].openUrl : '';
+            if (isDisc) {
+              cardsHtml += `
+                <div class="book-creature-card discovered" style="--ring-color: ${rarityCfg.color};">
+                  <div class="book-thumb-wrap" style="--ring-color: ${rarityCfg.color};">
+                    <img src="${artUrl}" alt="${c.name}" />
+                  </div>
+                  <div class="book-card-info">
+                    <div class="book-card-name">${c.name}</div>
+                    <div class="book-card-sub">+${formatNumber(c.baseIncome, true)}/s base</div>
+                  </div>
+                </div>
+              `;
+            } else {
+              cardsHtml += `
+                <div class="book-creature-card">
+                  <div class="book-thumb-wrap undiscovered">
+                    <img src="${artUrl}" alt="Undiscovered" />
+                    <span class="book-silhouette-q">?</span>
+                  </div>
+                  <div class="book-card-info">
+                    <div class="book-card-name" style="color: #9CA3AF;">???</div>
+                    <div class="book-card-sub" style="color: #7C749B;">Undiscovered</div>
+                  </div>
+                </div>
+              `;
+            }
+          }
+
+          tierBox.innerHTML = `
+            <div class="book-tier-header">
+              <span style="color: ${rarityCfg.color};">${rarityCfg.name} Tier</span>
+              <span class="book-tier-bonus">${bothDiscovered ? '✅ +10% Income Active' : '🔒 Discover both for +10%'}</span>
+            </div>
+            <div class="book-tier-grid">${cardsHtml}</div>
+          `;
+          bookTiersContainerEl.appendChild(tierBox);
+        }
+
+        // Render 12 Achievements
+        const unlockedList = Array.isArray(state.unlockedAchievements) ? state.unlockedAchievements : [];
+        if (bookAchCountEl) {
+          bookAchCountEl.textContent = `${unlockedList.length}/${CONFIG.ACHIEVEMENTS.length}`;
+        }
+        bookAchievementsGridEl.innerHTML = '';
+        for (let i = 0; i < CONFIG.ACHIEVEMENTS.length; i++) {
+          const ach = CONFIG.ACHIEVEMENTS[i];
+          const isUnlocked = unlockedList.includes(ach.id);
+          const item = document.createElement('div');
+          item.className = `ach-item${isUnlocked ? ' unlocked' : ''}`;
+          item.innerHTML = `
+            <div class="ach-title">
+              <span>${isUnlocked ? '🏆' : '🔒'} ${ach.name}</span>
+            </div>
+            <div class="ach-desc">${ach.desc}</div>
+          `;
+          bookAchievementsGridEl.appendChild(item);
+        }
+      } catch (err) {
+        console.warn('Non-fatal book modal render error:', err);
+      }
+    }
+
+    // Local Date & 7-Day Daily Gift Streak Helpers
+    function getLocalDateKey(d = new Date()) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getLocalDayDiff(prevKey, currKey) {
+      try {
+        if (!prevKey || !currKey) return 999;
+        const pParts = prevKey.split('-').map(Number);
+        const cParts = currKey.split('-').map(Number);
+        if (pParts.length !== 3 || cParts.length !== 3) return 999;
+        const prevDate = new Date(pParts[0], pParts[1] - 1, pParts[2]);
+        const currDate = new Date(cParts[0], cParts[1] - 1, cParts[2]);
+        return Math.round((currDate.getTime() - prevDate.getTime()) / 86400000);
+      } catch (err) {
+        return 999;
+      }
+    }
+
+    let pendingDailyStreakDay = 1;
+    let pendingDailyGiftCoins = 0;
+
+    function computeDailyGiftState() {
+      const todayKey = getLocalDateKey();
+      if (state.lastDailyClaimDate === todayKey) {
+        return { canClaim: false, dayNum: Math.max(1, state.dailyStreak || 1), coins: 0 };
+      }
+
+      let nextDay = 1;
+      if (state.lastDailyClaimDate) {
+        const diff = getLocalDayDiff(state.lastDailyClaimDate, todayKey);
+        if (diff === 1) {
+          // Consecutive day: advance up to Day 7 and cap there
+          nextDay = Math.min(7, (state.dailyStreak || 0) + 1);
+        } else {
+          // Missed a day: reset streak to Day 1
+          nextDay = 1;
+        }
+      }
+
+      const minutesArr = CONFIG.DAILY_STREAK_MINUTES || [5, 10, 15, 20, 30, 45, 30];
+      const mins = minutesArr[Math.max(0, Math.min(6, nextDay - 1))] || 5;
+      const currentIncome = Math.max(2, getTotalIncomePerSecond(), getFullPotentialIncomePerSecond());
+      const giftCoins = Math.max(150, Math.round(currentIncome * mins * 60));
+
+      return { canClaim: true, dayNum: nextDay, mins, coins: giftCoins };
+    }
+
+    function checkAndShowDailyGiftModal() {
+      try {
+        const info = computeDailyGiftState();
+        if (!info.canClaim) return;
+
+        pendingDailyStreakDay = info.dayNum;
+        pendingDailyGiftCoins = info.coins;
+
+        if (dailyGiftSubtitleEl) {
+          dailyGiftSubtitleEl.textContent = `Day ${info.dayNum} Streak · Missing a day resets the streak!`;
+        }
+        if (dailyGiftRewardBoxEl) {
+          dailyGiftRewardBoxEl.textContent = `Today's Gift: 🪙 +${formatNumber(info.coins)} Coins (${info.mins} mins of income)`;
+        }
+        if (dailyStreakGridEl) {
+          const minutesArr = CONFIG.DAILY_STREAK_MINUTES || [5, 10, 15, 20, 30, 45, 30];
+          dailyStreakGridEl.innerHTML = '';
+          for (let d = 1; d <= 7; d++) {
+            const mins = minutesArr[d - 1];
+            const isClaimed = d < info.dayNum;
+            const isCurrent = d === info.dayNum;
+            const box = document.createElement('div');
+            box.className = `daily-day-box${d === 7 ? ' day-7' : ''}${isClaimed ? ' claimed' : ''}${isCurrent ? ' current' : ''}`;
+            box.innerHTML = `
+              <span class="daily-day-num">Day ${d}${d === 7 ? ' (Cap)' : ''}</span>
+              <span class="daily-day-min">${isClaimed ? '✅' : '🪙'} ${mins}m income</span>
+            `;
+            dailyStreakGridEl.appendChild(box);
+          }
+        }
+
+        openModal(dailyGiftModalEl);
+      } catch (err) {
+        console.warn('Non-fatal daily gift modal error:', err);
+      }
+    }
+
+    function claimDailyGift() {
+      try {
+        const info = computeDailyGiftState();
+        if (!info.canClaim) {
+          closeModal(dailyGiftModalEl);
+          return;
+        }
+        state.dailyStreak = info.dayNum;
+        state.lastDailyClaimDate = getLocalDateKey();
+        addCoins(info.coins);
+        sfxHatchFanfare('Epic');
+
+        const rect = dailyGiftClaimBtnEl.getBoundingClientRect();
+        const cx = rect.width > 0 ? rect.left + rect.width / 2 : viewportW / 2;
+        const cy = rect.height > 0 ? rect.top + rect.height / 2 : viewportH / 2;
+        spawnFlyingCoin(cx, cy, 8);
+        spawnFloatingText(cx, cy - 20, `+${formatNumber(info.coins)}`, '#FFD34D');
+
+        closeModal(dailyGiftModalEl);
+        showBanner(`🎁 Claimed Day ${info.dayNum} Daily Gift: +${formatNumber(info.coins)} coins!`, true, false);
+        saveGame();
+        updateHUD();
+      } catch (err) {
+        console.warn('Non-fatal claim daily gift error:', err);
+      }
+    }
+
+    // Floating Golden Coin Runtime (Crosses screen ~once/min, 30s of income, max 1 at a time)
+    const goldenCoinRuntime = {
+      active: false,
+      cooldownSec: 45,
+      elapsedSec: 0,
+      durationSec: 9.0,
+      startX: -60,
+      endX: 400,
+      baseY: 200
+    };
+
+    function updateGoldenCoin(dtSec) {
+      try {
+        if (!floatingGoldCoinEl) return;
+        if (!goldenCoinRuntime.active) {
+          goldenCoinRuntime.cooldownSec -= dtSec;
+          if (goldenCoinRuntime.cooldownSec <= 0 && state.hatchCount >= 1) {
+            goldenCoinRuntime.active = true;
+            goldenCoinRuntime.elapsedSec = 0;
+            goldenCoinRuntime.durationSec = CONFIG.GOLDEN_COIN_CROSS_SEC || 9.0;
+            const fromLeft = Math.random() < 0.5;
+            goldenCoinRuntime.startX = fromLeft ? -56 : viewportW + 56;
+            goldenCoinRuntime.endX = fromLeft ? viewportW + 56 : -56;
+            goldenCoinRuntime.baseY = Math.round(viewportH * (0.24 + Math.random() * 0.34));
+            floatingGoldCoinEl.classList.add('active');
+          }
+          return;
+        }
+
+        goldenCoinRuntime.elapsedSec += dtSec;
+        const t = goldenCoinRuntime.elapsedSec / goldenCoinRuntime.durationSec;
+        if (t >= 1) {
+          goldenCoinRuntime.active = false;
+          goldenCoinRuntime.cooldownSec = CONFIG.GOLDEN_COIN_MIN_SEC + Math.random() * (CONFIG.GOLDEN_COIN_MAX_SEC - CONFIG.GOLDEN_COIN_MIN_SEC);
+          floatingGoldCoinEl.classList.remove('active');
+          return;
+        }
+
+        const x = goldenCoinRuntime.startX + (goldenCoinRuntime.endX - goldenCoinRuntime.startX) * t;
+        const y = goldenCoinRuntime.baseY + Math.sin(goldenCoinRuntime.elapsedSec * 3.2) * 14;
+        floatingGoldCoinEl.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(1)`;
+      } catch (err) {
+        console.warn('Non-fatal golden coin update error:', err);
+      }
+    }
+
+    function handleGoldenCoinTap(clientX, clientY) {
+      try {
+        if (!goldenCoinRuntime.active) return;
+        goldenCoinRuntime.active = false;
+        goldenCoinRuntime.cooldownSec = CONFIG.GOLDEN_COIN_MIN_SEC + Math.random() * (CONFIG.GOLDEN_COIN_MAX_SEC - CONFIG.GOLDEN_COIN_MIN_SEC);
+        if (floatingGoldCoinEl) {
+          floatingGoldCoinEl.classList.remove('active');
+        }
+
+        const inc = Math.max(2, getTotalIncomePerSecond(), getFullPotentialIncomePerSecond());
+        const reward = Math.max(30, Math.round(inc * (CONFIG.GOLDEN_COIN_INCOME_SEC || 30)));
+        addCoins(reward);
+        sfxCoin();
+        sfxUpgrade();
+
+        const cx = clientX || viewportW / 2;
+        const cy = clientY || viewportH * 0.35;
+        spawnFlyingCoin(cx, cy, 4);
+        spawnBurstSparkles(cx, cy, '#FFD34D', 4);
+        spawnFloatingText(cx, cy - 18, `+${formatNumber(reward)} 🪙`, '#FFD34D');
+        showBanner(`🪙 Golden Coin! +${formatNumber(reward)} coins (30s income)!`, true, false);
+        saveGame();
+        // Update only coin display & button states without re-rendering the creature grid
+        coinDisplayEl.textContent = formatNumber(state.coins);
+        updateHUD(true);
+      } catch (err) {
+        console.warn('Non-fatal golden coin tap error:', err);
+      }
+    }
+
+    // Creature Speech Bubbles (Every ~20s, never more than 1 at a time; updates only its own element)
+    const speechBubbleRuntime = {
+      active: false,
+      cooldownSec: 16,
+      remainingShowSec: 0,
+      slotIndex: -1
+    };
+
+    function updateSpeechBubbles(dtSec) {
+      try {
+        if (!creatureSpeechBubbleEl) return;
+        if (speechBubbleRuntime.active) {
+          speechBubbleRuntime.remainingShowSec -= dtSec;
+          if (speechBubbleRuntime.remainingShowSec <= 0 || speechBubbleRuntime.slotIndex >= state.ownedCreatures.length) {
+            speechBubbleRuntime.active = false;
+            creatureSpeechBubbleEl.classList.remove('active');
+            speechBubbleRuntime.cooldownSec = CONFIG.SPEECH_BUBBLE_MIN_SEC + Math.random() * (CONFIG.SPEECH_BUBBLE_MAX_SEC - CONFIG.SPEECH_BUBBLE_MIN_SEC);
+          }
+          return;
+        }
+
+        speechBubbleRuntime.cooldownSec -= dtSec;
+        if (speechBubbleRuntime.cooldownSec <= 0 && state.ownedCreatures.length > 0) {
+          const validSlots = [];
+          for (let i = 0; i < state.ownedCreatures.length; i++) {
+            if (safeNumber(state.ownedCreatures[i].kidnappedRemainingSec, 0) <= 0) {
+              validSlots.push(i);
+            }
+          }
+          if (validSlots.length === 0) {
+            speechBubbleRuntime.cooldownSec = 8;
+            return;
+          }
+          const chosenSlot = validSlots[Math.floor(Math.random() * validSlots.length)];
+          const phrases = CONFIG.SPEECH_PHRASES || ['yum', 'bruh', 'more coins pls'];
+          const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+
+          speechBubbleRuntime.slotIndex = chosenSlot;
+          speechBubbleRuntime.active = true;
+          speechBubbleRuntime.remainingShowSec = CONFIG.SPEECH_BUBBLE_SHOW_SEC || 3.2;
+          creatureSpeechBubbleEl.textContent = phrase;
+
+          const node = slotDomNodes[chosenSlot];
+          if (node && node.plate) {
+            const rect = node.plate.getBoundingClientRect();
+            const bubbleHalfW = (creatureSpeechBubbleEl.offsetWidth || 80) * 0.5;
+            const bx = Math.round(rect.left + rect.width * 0.5 - bubbleHalfW);
+            const by = Math.round(rect.top - 26);
+            creatureSpeechBubbleEl.style.transform = `translate3d(${bx}px, ${by}px, 0) scale(1)`;
+          }
+          creatureSpeechBubbleEl.classList.add('active');
+        }
+      } catch (err) {
+        console.warn('Non-fatal speech bubble update error:', err);
+      }
     }
 
     /* ==========================================================================
@@ -6651,6 +8685,9 @@
        ========================================================================== */
     function setupEvents() {
       window.addEventListener('contextmenu', (e) => e.preventDefault());
+      window.addEventListener('pointerdown', () => {
+        unlockAudio();
+      }, { passive: true });
       window.addEventListener('resize', () => {
         updateCanvasSizes();
         initCreatureArtCache();
@@ -6724,15 +8761,19 @@
         updateHUD();
       });
 
-      // Settings Gear & Reset Progress Confirmation
+      // Settings Gear, Prestige & Reset Progress Confirmation
       settingsBtnEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
         sfxPop();
         resetInitialBoxEl.style.display = 'block';
         resetConfirmBoxEl.style.display = 'none';
-        updateHUD();
+        if (prestigeConfirmBoxEl) prestigeConfirmBoxEl.style.display = 'none';
+        if (prestigeInitialBoxEl) {
+          prestigeInitialBoxEl.style.display = getPendingPrestigeGems() > 0 ? 'block' : 'none';
+        }
         openModal(settingsModalEl);
+        updateHUD();
       });
 
       settingsModalCloseEl.addEventListener('pointerdown', (e) => {
@@ -6749,6 +8790,49 @@
           closeModal(settingsModalEl);
         }
       });
+
+      if (prestigeTriggerBtnEl) {
+        prestigeTriggerBtnEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          if (getPendingPrestigeGems() <= 0) return;
+          sfxPop();
+          prestigeInitialBoxEl.style.display = 'none';
+          prestigeConfirmBoxEl.style.display = 'flex';
+          updateHUD();
+        });
+      }
+
+      if (prestigeConfirmCancelEl) {
+        prestigeConfirmCancelEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          sfxPop();
+          prestigeConfirmBoxEl.style.display = 'none';
+          prestigeInitialBoxEl.style.display = getPendingPrestigeGems() > 0 ? 'block' : 'none';
+        });
+      }
+
+      if (prestigeConfirmYesEl) {
+        prestigeConfirmYesEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          const gainedGems = executePrestige();
+          if (gainedGems && gainedGems > 0) {
+            sfxHatchFanfare('Mythic');
+            prestigeConfirmBoxEl.style.display = 'none';
+            prestigeInitialBoxEl.style.display = 'none';
+            closeModal(settingsModalEl);
+            const totalBonusPct = Math.round(state.memeGems * (CONFIG.MEME_GEM_INCOME_BONUS || 0.25) * 100);
+            const vRect = vaultBtnEl.getBoundingClientRect();
+            const vx = vRect.width > 0 ? (vRect.left + vRect.width / 2) : (viewportW / 2);
+            const vy = vRect.height > 0 ? (vRect.top + vRect.height / 2) : (viewportH * 0.45);
+            spawnConfettiBurst(vx, vy - 16, 12);
+            spawnFloatingText(vx, vy - 24, `💎 +${formatNumber(gainedGems)} Meme Gems!`, '#35E0FF');
+            showBanner(`💎 Prestiged! +${formatNumber(gainedGems)} Meme Gems (+${totalBonusPct}% permanent income)!`, true);
+          }
+        });
+      }
 
       resetProgressBtnEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
@@ -6773,7 +8857,7 @@
         resetStateToFresh();
         saveGame();
         closeModal(settingsModalEl);
-        showBanner('Progress reset! Started fresh with 120 coins.', false);
+        showBanner('Progress reset! Started fresh with 100 coins.', false);
         updateHUD();
       });
 
@@ -6864,14 +8948,76 @@
         }
       });
 
-      // Locked Book Button
+      // Collection Book Button (Opens Creature Book & Achievements Modal)
       bookBtnEl.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         unlockAudio();
         sfxPop();
         triggerSquash(bookBtnEl);
-        showBanner(`Creature Book locked · Discovered ${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`, false);
+        state.hasNewBookEntry = false;
+        saveGame();
+        renderBookModalContent();
+        openModal(bookModalEl);
+        updateHUD(true);
       });
+
+      if (bookModalCloseEl) {
+        bookModalCloseEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          sfxPop();
+          closeModal(bookModalEl);
+        });
+      }
+
+      if (bookModalEl) {
+        bookModalEl.addEventListener('pointerdown', (e) => {
+          if (e.target === bookModalEl) {
+            unlockAudio();
+            sfxPop();
+            closeModal(bookModalEl);
+          }
+        });
+      }
+
+      // Daily Gift Modal Controls
+      if (dailyGiftClaimBtnEl) {
+        dailyGiftClaimBtnEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          claimDailyGift();
+        });
+      }
+
+      if (dailyGiftCloseEl) {
+        dailyGiftCloseEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          unlockAudio();
+          sfxPop();
+          closeModal(dailyGiftModalEl);
+        });
+      }
+
+      // Tutorial Skip Button
+      if (tutorialSkipBtnEl) {
+        tutorialSkipBtnEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          unlockAudio();
+          sfxPop();
+          completeTutorial();
+        });
+      }
+
+      // Floating Golden Coin Tap
+      if (floatingGoldCoinEl) {
+        floatingGoldCoinEl.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          unlockAudio();
+          handleGoldenCoinTap(e.clientX, e.clientY);
+        });
+      }
 
       // Creature Upgrade & Rescue Modal Controls
       upgradeModalCloseEl.addEventListener('pointerdown', (e) => {
@@ -6986,6 +9132,7 @@
        ========================================================================== */
     let lastFrameTime = performance.now();
     let hudRefreshAccumulator = 0;
+    let nextGoalRefreshAccumulator = 0;
 
     function gameLoop(now) {
       requestAnimationFrame(gameLoop);
@@ -6999,16 +9146,27 @@
       lastFrameTime = now;
       const clampedDeltaMs = Math.min(rawDeltaMs, CONFIG.MAX_DELTA_MS);
       const baseDtSec = clampedDeltaMs / 1000;
-      const gameDtSec = debugSpeed10x ? baseDtSec * CONFIG.DEBUG_SPEED_MULT : baseDtSec;
+      const modalOpen = isAnyModalOpen();
+      const incomeBlocked = isIncomeBlockingModalOpen();
+      const gameDtSec = modalOpen ? 0 : (debugSpeed10x ? baseDtSec * CONFIG.DEBUG_SPEED_MULT : baseDtSec);
+      const incomeDtSec = incomeBlocked ? 0 : (debugSpeed10x ? baseDtSec * CONFIG.DEBUG_SPEED_MULT : baseDtSec);
 
-      // 1. Add passive income per second
+      // 1. Add passive income per second (keeps running while Book or Settings modal is open)
       const incomePerSec = getTotalIncomePerSecond();
-      if (incomePerSec > 0 && gameDtSec > 0) {
-        addCoins(incomePerSec * gameDtSec);
+      if (incomePerSec > 0 && incomeDtSec > 0) {
+        addCoins(incomePerSec * incomeDtSec);
       }
 
-      // 2. Update Raid timers, active raiders, Guard Dog, and kidnap timers
-      updateRaidSystem(gameDtSec);
+      // 2. Update Raid timers, Golden Coin, Speech Bubbles, and Tutorial (paused while any modal is open)
+      if (!modalOpen) {
+        updateRaidSystem(gameDtSec);
+        updateGoldenCoin(baseDtSec);
+        updateSpeechBubbles(baseDtSec);
+        updateTutorialOverlay(baseDtSec);
+        updateCreatureBlinks(now);
+      } else if (tutorialOverlayEl) {
+        tutorialOverlayEl.classList.remove('active');
+      }
 
       // 3. Smoothly roll displayedCoins toward actual state.coins
       const diff = state.coins - state.displayedCoins;
@@ -7018,19 +9176,25 @@
         state.displayedCoins += diff * Math.min(1, baseDtSec * CONFIG.COIN_ROLL_SPEED);
       }
 
-      // 4. Batch coin counter display & button affordability states to 10x/sec (100ms)
+      // 4. Batch coin counter display & button affordability states to 10x/sec (100ms) without re-rendering creature grid
       hudRefreshAccumulator += baseDtSec;
       if (hudRefreshAccumulator >= 0.1) {
         hudRefreshAccumulator = 0;
         coinDisplayEl.textContent = formatNumber(state.displayedCoins);
-        updateHUD();
+        updateHUD(true);
       }
 
-      // 5. Update & draw stars, particles, and 3-5s creature blinks (paused if modal open)
-      if (!isAnyModalOpen()) {
-        updateCreatureBlinks(now);
+      // 5. Update Next Goal bar text at most twice per second (every 500ms), updating only its own element
+      nextGoalRefreshAccumulator += baseDtSec;
+      if (nextGoalRefreshAccumulator >= (CONFIG.NEXT_GOAL_UPDATE_INTERVAL_SEC || 0.5)) {
+        nextGoalRefreshAccumulator = 0;
+        updateNextGoalBar();
       }
-      updateAndDrawParticles(baseDtSec);
+
+      // 6. Update & draw particles (paused while modal open, except during 1s Legendary/Mythic hatch confetti burst)
+      if (!modalOpen || rareHatchConfettiRemainingSec > 0) {
+        updateAndDrawParticles(baseDtSec);
+      }
     }
 
     /* ==========================================================================
@@ -7054,12 +9218,16 @@
       }
       initSlotsGrid();
       loadGame();
+      checkAchievements();
       setupEvents();
-      updateHUD();
+      updateHUD(false);
+      updateNextGoalBar(true);
 
       if (pendingOfflineCoins > 0) {
         showOfflineEarningsModal(pendingOfflineCoins, pendingOfflineDurationSec);
       }
+      // Show 7-day Daily Gift streak popup on opening the game if unclaimed today
+      checkAndShowDailyGiftModal();
 
       setInterval(() => {
         if (!document.hidden) {
