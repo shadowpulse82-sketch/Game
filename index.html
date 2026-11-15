@@ -1496,30 +1496,50 @@
       line-height: 1;
     }
 
-    /* Custom Guard Dog defender actor sitting & wagging near the vault, dashing during raids */
-    @keyframes guardDogIdleBob {
-      0%, 100% { transform: translateY(0px) rotate(-2.5deg) scale(1.02, 0.98); }
-      25%      { transform: translateY(-2.5px) rotate(2.5deg) scale(0.99, 1.02); }
-      50%      { transform: translateY(0px) rotate(-3deg) scale(1.03, 0.97); }
-      75%      { transform: translateY(-3px) rotate(3deg) scale(0.98, 1.03); }
+    /* Custom Guard Dog defender actor patrolling in a gentle arc near the vault, dashing during raids */
+    @keyframes guardDogTrotBob {
+      0%, 100% {
+        transform: translate3d(0, 0px, 0) scale(calc(var(--dog-dir, 1) * 1.02), 0.98) rotate(calc(var(--dog-dir, 1) * -3deg));
+      }
+      25% {
+        transform: translate3d(0, -4.5px, 0) scale(calc(var(--dog-dir, 1) * 0.98), 1.04) rotate(calc(var(--dog-dir, 1) * 2deg));
+      }
+      50% {
+        transform: translate3d(0, 0px, 0) scale(calc(var(--dog-dir, 1) * 1.02), 0.98) rotate(calc(var(--dog-dir, 1) * 3deg));
+      }
+      75% {
+        transform: translate3d(0, -4.5px, 0) scale(calc(var(--dog-dir, 1) * 0.98), 1.04) rotate(calc(var(--dog-dir, 1) * -2deg));
+      }
+    }
+
+    @keyframes guardDogSitWag {
+      0%, 100% {
+        transform: translate3d(0, 1.5px, 0) scale(calc(var(--dog-dir, 1) * 1.05), 0.95) rotate(calc(var(--dog-dir, 1) * -3.5deg));
+      }
+      50% {
+        transform: translate3d(0, -1.5px, 0) scale(calc(var(--dog-dir, 1) * 1.01), 0.99) rotate(calc(var(--dog-dir, 1) * 3.5deg));
+      }
     }
 
     #guard-dog-actor {
       position: absolute;
-      bottom: 6px;
-      left: calc(50% - 58px);
-      width: 52px;
-      height: 52px;
-      margin-left: -26px;
+      top: 0;
+      left: 0;
+      width: clamp(50px, 14vw, 62px);
+      height: clamp(50px, 14vw, 62px);
+      margin-left: 0;
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       pointer-events: none;
-      z-index: 24;
-      transform: translate3d(0, 0, 0) scale(1);
-      transition: transform 0.17s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
+      z-index: 32;
+      transform: translate3d(-50%, -50%, 0) scale(1);
       will-change: transform, opacity;
+    }
+
+    #guard-dog-actor.dashing {
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
     }
 
     #guard-dog-actor.visible {
@@ -1527,19 +1547,24 @@
     }
 
     #guard-dog-img {
-      width: 48px;
-      height: 48px;
+      --dog-dir: 1;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       display: block;
       transform-origin: 50% 85%;
-      animation: guardDogIdleBob 1.15s ease-in-out infinite;
+      animation: guardDogTrotBob 0.68s ease-in-out infinite;
       will-change: transform;
+    }
+
+    #guard-dog-actor.patrol-sit #guard-dog-img {
+      animation: guardDogSitWag 0.48s ease-in-out infinite;
     }
 
     /* Larger, easier-to-read Guard Dog level badge */
     #guard-dog-lvl-tag {
       position: absolute;
-      bottom: -5px;
+      bottom: -4px;
       background: linear-gradient(180deg, #1E5E48 0%, #0E2E24 100%);
       border: 2px solid var(--outline-dark);
       box-shadow: 0 2px 0 var(--outline-dark), inset 0 0 0 1px #5CFF9D;
@@ -2803,7 +2828,6 @@
       }
 
       #raid-summary-popup {
-        top: 26px;
         padding: 8px 12px;
       }
 
@@ -4160,10 +4184,6 @@
           <div id="raid-summary-popup" aria-live="polite"></div>
           <div id="laser-beam" class="laser-beam"></div>
           <div id="guard-dog-badge">🐕 <span id="guard-dog-timer">Ready</span></div>
-          <div id="guard-dog-actor" aria-hidden="true">
-            <img id="guard-dog-img" alt="Guard Dog" />
-            <span id="guard-dog-lvl-tag">Lv.1</span>
-          </div>
 
           <!-- Up to 6 Highest-Income Owned Creature Defenders Idling on the Lanes -->
           <div id="arena-defenders-layer" aria-hidden="true"></div>
@@ -4210,6 +4230,12 @@
               <span id="buy-slot-price" class="buy-badge-price">🪙250</span>
             </button>
           </div>
+        </div>
+
+        <!-- Guard Dog Actor rendered above the Vault Crystal (higher z-index in .raid-vault-stage) -->
+        <div id="guard-dog-actor" aria-hidden="true">
+          <img id="guard-dog-img" alt="Guard Dog" />
+          <span id="guard-dog-lvl-tag">Lv.1</span>
         </div>
       </div>
 
@@ -4436,7 +4462,7 @@
         Welcome back! You earned <strong style="color: #FFD34D;">0</strong>
       </p>
       <button id="offline-collect-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
-        Collect
+        Continue
       </button>
     </div>
   </div>
@@ -4584,6 +4610,7 @@
       BANNER_GAP_MS: 0,
 
       // Raid & Defense Balance Numbers
+      PROTECTED_RAIDS: 3, // Raids 1 to 3 cannot be lost (Guard Dog saves the vault)
       FIRST_RAID_DELAY_SEC: 90,
       NEXT_RAID_MIN_SEC: 100,
       NEXT_RAID_MAX_SEC: 140,
@@ -6969,8 +6996,150 @@
       bestCombo: 1,
       lastHitTimeMs: 0,
       rewardGranted: false,
+      protectedSaveUsed: false,
       nextId: 1
     };
+
+    const guardDogPatrol = {
+      u: -0.45,
+      dir: 1,
+      mode: 'trot',
+      modeTimerSec: 3.2,
+      isDashing: false,
+      tempRescueVisible: false,
+      currentX: 140,
+      currentY: 90
+    };
+
+    function clampDogPointOutsideCrystal(xPx, yPx) {
+      const cx = safeNumber(layoutCache.crystalStageX, 180);
+      const cy = safeNumber(layoutCache.crystalStageY, 175);
+      const minDist = Math.max(76, safeNumber(layoutCache.dogMinClearance, 88));
+      const minX = Math.max(30, safeNumber(layoutCache.dogMinX, 34));
+      const maxX = Math.max(minX + 20, safeNumber(layoutCache.dogMaxX, 326));
+      const minY = Math.max(30, safeNumber(layoutCache.dogMinY, 44));
+      const maxY = Math.max(minY + 12, safeNumber(layoutCache.dogMaxY, cy - 52));
+
+      let x = Math.max(minX, Math.min(maxX, safeNumber(xPx, cx)));
+      let y = Math.max(minY, Math.min(maxY, safeNumber(yPx, cy - minDist)));
+
+      let dx = x - cx;
+      let dy = y - cy;
+      // Always stay in the upper hemisphere above the crystal center
+      if (dy > -12) {
+        dy = -12;
+        y = cy + dy;
+      }
+      const distSq = dx * dx + dy * dy;
+      if (distSq < minDist * minDist) {
+        const dist = Math.sqrt(distSq);
+        if (dist < 0.001) {
+          x = cx;
+          y = cy - minDist;
+        } else {
+          const scale = (minDist + 1) / dist;
+          x = cx + dx * scale;
+          y = cy + dy * scale;
+        }
+      }
+      x = Math.max(minX, Math.min(maxX, x));
+      y = Math.min(maxY, y);
+      // Re-verify vertical clearance from crystal center after X/Y clamping
+      const finalDx = x - cx;
+      const reqDySq = (minDist * minDist) - (finalDx * finalDx);
+      if (reqDySq > 0) {
+        const maxAllowedYForCrystal = cy - Math.sqrt(reqDySq);
+        if (y > maxAllowedYForCrystal) {
+          y = maxAllowedYForCrystal;
+        }
+      }
+      return { x, y };
+    }
+
+    function getGuardDogPatrolOffsets(uVal) {
+      const clampedU = Math.max(-1, Math.min(1, safeNumber(uVal, 0)));
+      const cx = safeNumber(layoutCache.crystalStageX, 180);
+      const cy = safeNumber(layoutCache.crystalStageY, 175);
+      const ry = Math.max(78, safeNumber(layoutCache.dogArcRy, 92));
+      const rx = Math.max(ry, safeNumber(layoutCache.dogArcRx, 102));
+      const maxTheta = safeNumber(layoutCache.dogArcMaxTheta, 0.72);
+      const theta = clampedU * maxTheta;
+
+      // Upper arc above and to the sides of the vault crystal, never through it
+      const rawX = cx + Math.sin(theta) * rx;
+      const rawY = cy - Math.cos(theta) * ry;
+      return clampDogPointOutsideCrystal(rawX, rawY);
+    }
+
+    function applyGuardDogPatrolTransform() {
+      try {
+        if (!guardDogActorEl || guardDogPatrol.isDashing) return;
+        const pos = getGuardDogPatrolOffsets(guardDogPatrol.u);
+        guardDogPatrol.currentX = pos.x;
+        guardDogPatrol.currentY = pos.y;
+        guardDogActorEl.style.transform = `translate3d(calc(${pos.x.toFixed(1)}px - 50%), calc(${pos.y.toFixed(1)}px - 50%), 0) scale(1)`;
+        if (guardDogImgEl) {
+          // Drawn Guard Dog faces left by default; flip horizontally (-1) when moving right (+1)
+          const flipVal = guardDogPatrol.dir > 0 ? '-1' : '1';
+          guardDogImgEl.style.setProperty('--dog-dir', flipVal);
+        }
+        layoutCache.guardDogHomeX = layoutCache.stageLeft + pos.x;
+        layoutCache.guardDogHomeY = layoutCache.stageTop + pos.y;
+      } catch (err) {}
+    }
+
+    function updateGuardDogPatrol(dtSec) {
+      try {
+        const dogLvl = (state && state.defenseUpgrades && state.defenseUpgrades.guardDog) || 0;
+        if (dogLvl <= 0 && !guardDogPatrol.tempRescueVisible) return;
+        if (!guardDogActorEl || guardDogPatrol.isDashing) return;
+
+        if (isReducedMotionPreferred()) {
+          guardDogPatrol.u = -0.55;
+          guardDogPatrol.mode = 'sit';
+          guardDogActorEl.classList.add('patrol-sit');
+          applyGuardDogPatrolTransform();
+          return;
+        }
+
+        guardDogPatrol.modeTimerSec -= dtSec;
+        if (guardDogPatrol.mode === 'trot') {
+          guardDogActorEl.classList.remove('patrol-sit');
+          guardDogPatrol.u += guardDogPatrol.dir * 0.36 * dtSec;
+
+          if (guardDogPatrol.u >= 1) {
+            guardDogPatrol.u = 1;
+            guardDogPatrol.dir = -1;
+            guardDogPatrol.mode = 'sit';
+            guardDogPatrol.modeTimerSec = 1.4 + Math.random() * 1.1;
+            guardDogActorEl.classList.add('patrol-sit');
+          } else if (guardDogPatrol.u <= -1) {
+            guardDogPatrol.u = -1;
+            guardDogPatrol.dir = 1;
+            guardDogPatrol.mode = 'sit';
+            guardDogPatrol.modeTimerSec = 1.4 + Math.random() * 1.1;
+            guardDogActorEl.classList.add('patrol-sit');
+          } else if (guardDogPatrol.modeTimerSec <= 0) {
+            guardDogPatrol.mode = 'sit';
+            guardDogPatrol.modeTimerSec = 1.3 + Math.random() * 1.1;
+            guardDogActorEl.classList.add('patrol-sit');
+          }
+        } else {
+          // Sit and wag tail at the current point on the patrol arc
+          guardDogActorEl.classList.add('patrol-sit');
+          if (guardDogPatrol.modeTimerSec <= 0) {
+            guardDogPatrol.mode = 'trot';
+            guardDogPatrol.modeTimerSec = 2.6 + Math.random() * 2.2;
+            if (Math.abs(guardDogPatrol.u) < 0.75 && Math.random() < 0.35) {
+              guardDogPatrol.dir = -guardDogPatrol.dir;
+            }
+            guardDogActorEl.classList.remove('patrol-sit');
+          }
+        }
+
+        applyGuardDogPatrolTransform();
+      } catch (err) {}
+    }
 
     function clearTransientTimersAndActors() {
       try {
@@ -6987,11 +7156,14 @@
           guardDogDashResetTimer = null;
         }
         isHatching = false;
+        guardDogPatrol.isDashing = false;
+        guardDogPatrol.tempRescueVisible = false;
         if (typeof hatchFlashEl !== 'undefined' && hatchFlashEl) {
           hatchFlashEl.classList.remove('flash', 'big-flash');
         }
         if (typeof guardDogActorEl !== 'undefined' && guardDogActorEl) {
-          guardDogActorEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
+          guardDogActorEl.classList.remove('dashing', 'patrol-sit');
+          applyGuardDogPatrolTransform();
         }
         if (typeof floatingGoldCoinEl !== 'undefined' && floatingGoldCoinEl) {
           floatingGoldCoinEl.classList.remove('active');
@@ -7364,16 +7536,21 @@
         state.bossesDefeated = Math.max(0, Math.floor(safeNumber(parsed.bossesDefeated, 0)));
 
         // Offline earnings: 25% of passive income x time away (capped at 1 hour)
+        // Added to player's coins and saved right away so closing/reloading never loses them or pays twice
         const incomePerSec = getTotalIncomePerSecond();
+        let addedOfflineOnLoad = false;
         if (clampedElapsedSec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
           const earned = Math.floor(incomePerSec * clampedElapsedSec * CONFIG.OFFLINE_INCOME_FACTOR);
           if (earned >= 1) {
+            addCoins(earned);
+            state.displayedCoins = state.coins;
             pendingOfflineCoins = earned;
             pendingOfflineDurationSec = Math.round(clampedElapsedSec);
+            addedOfflineOnLoad = true;
           }
         }
         state.lastSavedAt = now;
-        if (isMigratedFromOlderVersion) {
+        if (addedOfflineOnLoad || isMigratedFromOlderVersion) {
           flushSave();
         }
       } catch (err) {
@@ -7549,10 +7726,26 @@
       raidAreaTop: 0,
       raidAreaWidth: 320,
       raidAreaHeight: 160,
+      stageLeft: 0,
+      stageTop: 0,
+      stageWidth: 344,
+      stageHeight: 220,
       coinCounterX: 84,
       coinCounterY: 46,
       vaultX: 180,
       vaultY: 260,
+      crystalStageX: 172,
+      crystalStageY: 165,
+      crystalRadius: 52,
+      dogRadius: 28,
+      dogMinClearance: 88,
+      dogArcRx: 102,
+      dogArcRy: 92,
+      dogArcMaxTheta: 0.72,
+      dogMinX: 34,
+      dogMaxX: 310,
+      dogMinY: 44,
+      dogMaxY: 110,
       hatchBtnX: 90,
       hatchBtnY: 600,
       hatchStageX: 180,
@@ -7585,20 +7778,83 @@
             layoutCache.raidAreaTop = rRect.top;
             layoutCache.raidAreaWidth = rRect.width;
             layoutCache.raidAreaHeight = Math.max(82, rRect.height);
-            layoutCache.guardDogHomeX = rRect.left + rRect.width * 0.5 - 58;
-            layoutCache.guardDogHomeY = rRect.bottom - 26;
           }
         }
+        const stageEl = (raidAreaEl && raidAreaEl.parentElement) || null;
+        if (stageEl) {
+          const sRect = stageEl.getBoundingClientRect();
+          if (sRect.width > 0) {
+            layoutCache.stageLeft = sRect.left;
+            layoutCache.stageTop = sRect.top;
+            layoutCache.stageWidth = sRect.width;
+            layoutCache.stageHeight = sRect.height;
+          }
+        } else {
+          layoutCache.stageLeft = layoutCache.raidAreaLeft;
+          layoutCache.stageTop = layoutCache.raidAreaTop;
+          layoutCache.stageWidth = layoutCache.raidAreaWidth;
+          layoutCache.stageHeight = layoutCache.raidAreaHeight + 24;
+        }
+
+        let measuredCrystalRadius = 52;
         if (vaultBtnEl) {
           const vRect = vaultBtnEl.getBoundingClientRect();
           if (vRect.width > 0) {
             layoutCache.vaultX = vRect.left + vRect.width / 2;
             layoutCache.vaultY = vRect.top + vRect.height / 2;
+            measuredCrystalRadius = Math.max(44, Math.ceil(Math.max(vRect.width, vRect.height) * 0.5));
           } else {
             layoutCache.vaultX = viewportW * 0.5;
             layoutCache.vaultY = viewportH * 0.45;
           }
         }
+        layoutCache.crystalRadius = measuredCrystalRadius;
+        layoutCache.crystalStageX = layoutCache.vaultX - layoutCache.stageLeft;
+        layoutCache.crystalStageY = layoutCache.vaultY - layoutCache.stageTop;
+
+        const computedDogSize = Math.min(62, Math.max(50, viewportW * 0.14));
+        layoutCache.dogRadius = Math.ceil(computedDogSize * 0.5);
+        // Dog center always stays at least (crystal radius + dog radius + 8px) away from crystal center
+        layoutCache.dogMinClearance = layoutCache.crystalRadius + layoutCache.dogRadius + 8;
+
+        // Measure "Tap" and "Slots" labels once during layout cache refresh so patrol stays clear of them
+        let sideLabelsTopStageY = layoutCache.crystalStageY - 18;
+        if (vaultDeckEl) {
+          const leftPill = vaultDeckEl.querySelector('.vault-side-left .vault-pill');
+          const rightPill = vaultDeckEl.querySelector('.vault-side-right .vault-pill');
+          let minPillTop = Infinity;
+          if (leftPill) {
+            const lr = leftPill.getBoundingClientRect();
+            if (lr.height > 0) minPillTop = Math.min(minPillTop, lr.top);
+          }
+          if (rightPill) {
+            const rr = rightPill.getBoundingClientRect();
+            if (rr.height > 0) minPillTop = Math.min(minPillTop, rr.top);
+          }
+          if (Number.isFinite(minPillTop)) {
+            sideLabelsTopStageY = minPillTop - layoutCache.stageTop;
+          }
+        }
+
+        layoutCache.dogMinX = layoutCache.dogRadius + 14;
+        layoutCache.dogMaxX = Math.max(layoutCache.dogMinX + 40, layoutCache.stageWidth - layoutCache.dogRadius - 14);
+        layoutCache.dogMinY = layoutCache.dogRadius + 18;
+        layoutCache.dogMaxY = Math.max(
+          layoutCache.dogMinY + 14,
+          Math.min(
+            sideLabelsTopStageY - layoutCache.dogRadius - 8,
+            layoutCache.crystalStageY - layoutCache.dogMinClearance * 0.68
+          )
+        );
+
+        layoutCache.dogArcRy = layoutCache.dogMinClearance + 4;
+        layoutCache.dogArcRx = Math.max(
+          layoutCache.dogArcRy,
+          Math.min((layoutCache.dogMaxX - layoutCache.dogMinX) * 0.48, layoutCache.dogArcRy * 1.24)
+        );
+        const minCos = Math.max(0.66, Math.min(0.92, (layoutCache.crystalStageY - layoutCache.dogMaxY) / Math.max(1, layoutCache.dogArcRy)));
+        layoutCache.dogArcMaxTheta = Math.max(0.38, Math.min(0.78, Math.acos(minCos)));
+
         if (hatchBtnEl) {
           const hRect = hatchBtnEl.getBoundingClientRect();
           if (hRect.width > 0) {
@@ -7623,6 +7879,7 @@
             }
           }
         }
+        applyGuardDogPatrolTransform();
       } catch (err) {}
     }
 
@@ -8824,13 +9081,19 @@
           if (guardDogBadgeEl) guardDogBadgeEl.style.display = 'inline-flex';
           if (guardDogTimerEl) guardDogTimerEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
           if (guardDogActorEl) guardDogActorEl.classList.add('visible');
-          if (guardDogLvlTagEl) guardDogLvlTagEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
+          if (guardDogLvlTagEl) {
+            guardDogLvlTagEl.style.display = 'inline-block';
+            guardDogLvlTagEl.textContent = `Lv.${state.defenseUpgrades.guardDog}`;
+          }
           if (guardDogImgEl && RAIDER_ART_CACHE.guardDog && !guardDogImgEl.getAttribute('src')) {
             guardDogImgEl.src = RAIDER_ART_CACHE.guardDog.url;
           }
         } else {
           if (guardDogBadgeEl) guardDogBadgeEl.style.display = 'none';
-          if (guardDogActorEl) guardDogActorEl.classList.remove('visible');
+          if (guardDogLvlTagEl) guardDogLvlTagEl.style.display = 'none';
+          if (guardDogActorEl && !guardDogPatrol.tempRescueVisible) {
+            guardDogActorEl.classList.remove('visible');
+          }
         }
 
         if (vaultDoorShieldEl) {
@@ -8997,21 +9260,60 @@
       } catch (err) {}
     }
 
-    function triggerGuardDogDash(targetRaider) {
+    function triggerGuardDogDash(targetRaider, forceShowForProtected = false) {
       try {
         if (!guardDogActorEl || !targetRaider) return;
-        const targetCenter = getCachedRaiderCenter(targetRaider);
-        const dx = Math.round((targetCenter.x - layoutCache.guardDogHomeX) * 0.86);
-        const dy = Math.round((targetCenter.y - layoutCache.guardDogHomeY) * 0.86);
+        const dogLvl = (state && state.defenseUpgrades && state.defenseUpgrades.guardDog) || 0;
+        if (forceShowForProtected && dogLvl <= 0) {
+          guardDogPatrol.tempRescueVisible = true;
+          if (guardDogImgEl && RAIDER_ART_CACHE.guardDog && !guardDogImgEl.getAttribute('src')) {
+            guardDogImgEl.src = RAIDER_ART_CACHE.guardDog.url;
+          }
+          if (guardDogLvlTagEl) {
+            guardDogLvlTagEl.style.display = 'none';
+          }
+          guardDogActorEl.classList.add('visible');
+        }
 
-        guardDogActorEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.16)`;
+        const targetCenter = getCachedRaiderCenter(targetRaider);
+        const targetStageX = targetCenter.x - layoutCache.stageLeft;
+        const targetStageY = targetCenter.y - layoutCache.stageTop;
+        const rawDashX = guardDogPatrol.currentX + (targetStageX - guardDogPatrol.currentX) * 0.88;
+        const rawDashY = guardDogPatrol.currentY + (targetStageY - guardDogPatrol.currentY) * 0.88;
+        const dashPos = clampDogPointOutsideCrystal(rawDashX, rawDashY);
+
+        if (guardDogImgEl) {
+          const dashDir = dashPos.x >= guardDogPatrol.currentX ? '-1' : '1';
+          guardDogImgEl.style.setProperty('--dog-dir', dashDir);
+        }
+
+        // Align patrol arc parameter u with the horizontal side of the dash so the return path stays on the upper arc and never crosses the crystal
+        const cx = safeNumber(layoutCache.crystalStageX, 180);
+        const spanX = Math.max(24, safeNumber(layoutCache.dogArcRx, 102) * Math.sin(safeNumber(layoutCache.dogArcMaxTheta, 0.72)));
+        guardDogPatrol.u = Math.max(-1, Math.min(1, (dashPos.x - cx) / spanX));
+
+        guardDogPatrol.isDashing = true;
+        guardDogActorEl.classList.remove('patrol-sit');
+        guardDogActorEl.classList.add('dashing');
+        guardDogActorEl.style.transform = `translate3d(calc(${dashPos.x.toFixed(1)}px - 50%), calc(${dashPos.y.toFixed(1)}px - 50%), 0) scale(1.16)`;
+
         if (guardDogDashResetTimer) clearTimeout(guardDogDashResetTimer);
         guardDogDashResetTimer = setTimeout(() => {
           guardDogDashResetTimer = null;
+          guardDogPatrol.isDashing = false;
           if (guardDogActorEl) {
-            guardDogActorEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
+            applyGuardDogPatrolTransform();
+            setTimeout(() => {
+              if (!guardDogPatrol.isDashing && guardDogActorEl) {
+                guardDogActorEl.classList.remove('dashing');
+                if (guardDogPatrol.tempRescueVisible && ((state && state.defenseUpgrades && state.defenseUpgrades.guardDog) || 0) <= 0) {
+                  guardDogPatrol.tempRescueVisible = false;
+                  guardDogActorEl.classList.remove('visible');
+                }
+              }
+            }, 170);
           }
-        }, 185);
+        }, 190);
       } catch (err) {}
     }
 
@@ -9089,8 +9391,7 @@
 
     function buildRaidSchedule(raidNum) {
       const safeRaidNum = Math.max(1, Math.floor(safeNumber(raidNum, 1)));
-      const isFirstRaid = safeRaidNum === 1;
-      const isBossRaid = !isFirstRaid && (safeRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+      const isBossRaid = safeRaidNum > CONFIG.PROTECTED_RAIDS && (safeRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
 
       // Raider health for non-boss raiders: ceil(baseHits * (1 + 0.4 * log2(1 + incomePerSec / 50)))
       const incomePerSec = Math.max(0, getFullPotentialIncomePerSecond());
@@ -9137,9 +9438,9 @@
           ? i * 1.15
           : 6.20 + (i - CONFIG.RAID_MAX_CONCURRENT) * 1.15;
         const lane = i % 3;
-        const typeKey = isFirstRaid ? 'fox' : ((i % 2 === 1) ? 'fox' : 'raccoon');
+        const typeKey = safeRaidNum === 1 ? 'fox' : ((i % 2 === 1) ? 'fox' : 'raccoon');
         const baseCfg = CONFIG.RAIDERS[typeKey] || CONFIG.RAIDERS.raccoon;
-        const maxHp = isFirstRaid
+        const maxHp = safeRaidNum === 1
           ? 1
           : Math.max(1, Math.ceil(baseCfg.baseHp * hpScale));
 
@@ -9181,7 +9482,7 @@
       sfxSiren();
       triggerScreenShake();
       const nextRaidNum = state.raidNumber + 1;
-      const nextIsBoss = nextRaidNum > 1 && (nextRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+      const nextIsBoss = nextRaidNum > CONFIG.PROTECTED_RAIDS && (nextRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
       showBanner(nextIsBoss ? `🚨 BOSS RAID #${nextRaidNum} INCOMING!` : '🚨 RAID INCOMING!', false, true);
     }
 
@@ -9190,7 +9491,7 @@
       hideBossTopBar();
       clearActiveRaiderNodes();
       state.raidNumber += 1;
-      const isBossRaid = state.raidNumber > 1 && (state.raidNumber % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+      const isBossRaid = state.raidNumber > CONFIG.PROTECTED_RAIDS && (state.raidNumber % CONFIG.BOSS_EVERY_N_RAIDS === 0);
       raidRuntime.phase = 'active';
       raidRuntime.raidNumber = state.raidNumber;
       raidRuntime.isBossRaid = isBossRaid;
@@ -9206,6 +9507,7 @@
       raidRuntime.bestCombo = 1;
       raidRuntime.lastHitTimeMs = 0;
       raidRuntime.rewardGranted = false;
+      raidRuntime.protectedSaveUsed = false;
       hideRaidComboBadge();
       setRaidDangerVisuals(true);
       triggerScreenShake();
@@ -9421,7 +9723,15 @@
       spawnFloatingText(vx, vy - 24, `+${formatNumber(winBonus)}`, '#5CFF9D');
 
       const comboNote = bestCombo >= 2 ? ` · x${bestCombo} Combo (${comboMult.toFixed(1)}x)` : '';
-      if (isBossRaid) {
+      if (raidRuntime.protectedSaveUsed && isRaidProtectedFromLoss()) {
+        const protectedPopupLine = 'The first ' + CONFIG.PROTECTED_RAIDS + ' raids are practice. From raid ' + (CONFIG.PROTECTED_RAIDS + 1) + ', raiders can steal creatures.';
+        showRaidSummaryPopup(
+          'Raid cleared (protected)',
+          protectedPopupLine,
+          false
+        );
+        showBanner('Guard Dog saved the vault! Tap raiders to win bigger rewards.', true, false);
+      } else if (isBossRaid) {
         showRaidSummaryPopup(
           `🏆 BOSS DEFEATED!`,
           `Stopped: ${totalRaiders}/${totalRaiders} · Best Combo: x${bestCombo} · +${formatNumber(winBonus)} 🪙 (3× Boss Bonus!)`,
@@ -9441,10 +9751,48 @@
       scheduleHUDUpdate(true);
     }
 
+    function isRaidProtectedFromLoss() {
+      return raidRuntime.raidNumber <= CONFIG.PROTECTED_RAIDS;
+    }
+
+    function handleProtectedRaidSave(raider) {
+      try {
+        if (!raider || raidRuntime.phase !== 'active' || !isRaidProtectedFromLoss()) return;
+        raidRuntime.protectedSaveUsed = true;
+        triggerGuardDogDash(raider, true);
+        sfxPop();
+        sfxHitRaider();
+
+        const center = getCachedRaiderCenter(raider);
+        spawnHitStars(center.x, center.y, 3);
+        spawnFloatingText(center.x, center.y - 24, '🐕 SAVED!', '#5CFF9D');
+
+        raider.hp = 0;
+        raidRuntime.raidersDefeated += 1;
+        const idx = raidRuntime.activeRaiders.indexOf(raider);
+        if (idx !== -1) raidRuntime.activeRaiders.splice(idx, 1);
+        if (raider.el && raider.el.parentNode) {
+          raider.el.parentNode.removeChild(raider.el);
+        }
+
+        showBanner('Guard Dog saved the vault! Tap raiders to win bigger rewards.', true, false);
+
+        if (raidRuntime.spawnSchedule.length === 0 && raidRuntime.activeRaiders.length === 0) {
+          finishRaidWin();
+        }
+      } catch (err) {}
+    }
+
     function finishRaidLose(raiderCfg) {
       if (raidRuntime.rewardGranted || raidRuntime.phase !== 'active') return;
-      // Raid 1 cannot be lost
-      if (raidRuntime.raidNumber <= 1) {
+      // Protected raids (1 to CONFIG.PROTECTED_RAIDS) cannot be lost: Guard Dog saves the vault
+      if (isRaidProtectedFromLoss()) {
+        raidRuntime.protectedSaveUsed = true;
+        if (raidRuntime.activeRaiders.length > 0) {
+          triggerGuardDogDash(raidRuntime.activeRaiders[0], true);
+        }
+        raidRuntime.spawnSchedule = [];
+        clearActiveRaiderNodes();
         finishRaidWin();
         return;
       }
@@ -9596,7 +9944,7 @@
 
         if (raidRuntime.phase === 'warning') {
           const nextRaidNum = state.raidNumber + 1;
-          const nextIsBoss = nextRaidNum > 1 && (nextRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
+          const nextIsBoss = nextRaidNum > CONFIG.PROTECTED_RAIDS && (nextRaidNum % CONFIG.BOSS_EVERY_N_RAIDS === 0);
           raidHudPillEl.textContent = nextIsBoss
             ? `🚨 BOSS RAID #${nextRaidNum} IN ${remCeil}s! GET READY!`
             : `🚨 RAID INCOMING IN ${remCeil}s! TAP RAIDERS!`;
@@ -9686,10 +10034,10 @@
 
         const laserSlowMult = getLaserSlowMultiplier(state.defenseUpgrades.laserFence);
         const doorExtraSec = getVaultDoorExtraSec(state.defenseUpgrades.vaultDoor);
-        // Raid 1: 0.55x speed (cannot be lost); Raids 2-3: 0.72x speed (easy); Raid 4+: 1.0x speed
+        // Slower raider speeds in raids 1 to CONFIG.PROTECTED_RAIDS (Raid 1: 0.55x; Raids 2..PROTECTED_RAIDS: 0.72x; Raid > PROTECTED_RAIDS: 1.0x)
         const raidSpeedFactor = raidRuntime.raidNumber === 1
           ? 0.55
-          : (raidRuntime.raidNumber <= 3 ? 0.72 : 1.0);
+          : (raidRuntime.raidNumber <= CONFIG.PROTECTED_RAIDS ? 0.72 : 1.0);
 
         let anyRaiderCloseToVault = false;
 
@@ -9709,6 +10057,11 @@
           } else {
             r.doorPrySec = safeNumber(r.doorPrySec, 0) + dtSec;
             if (r.doorPrySec >= doorExtraSec) {
+              if (isRaidProtectedFromLoss()) {
+                handleProtectedRaidSave(r);
+                if (raidRuntime.phase !== 'active') return;
+                continue;
+              }
               finishRaidLose(r.cfg);
               return;
             }
@@ -11094,13 +11447,12 @@
         }
       });
 
-      // Offline Earnings Collect
+      // Offline Earnings Continue (coins were already added and saved when calculated)
       bindInstantTap(offlineCollectBtnEl, () => {
         if (pendingOfflineCoins > 0) {
           const reward = pendingOfflineCoins;
           pendingOfflineCoins = 0;
           pendingOfflineDurationSec = 0;
-          addCoins(reward);
           sfxHatchFanfare('Epic');
           const cx = viewportW * 0.5;
           const cy = viewportH * 0.62;
@@ -11108,7 +11460,6 @@
           spawnFloatingText(cx, cy - 20, `+${formatNumber(reward)}`, '#FFD34D');
         }
         closeModal(offlineModalEl);
-        saveGame();
         scheduleHUDUpdate(false);
         checkAndShowDailyGiftModal();
       });
@@ -11116,6 +11467,7 @@
       // Background / hidden tab tracking:
       // While visible, game earns 100% normal passive income.
       // When hidden/minimized/away, income drops to 25% capped at 1 hour.
+      // Offline coins are added and saved immediately on return so closing/reloading never loses them or pays twice.
       let hiddenTimestamp = 0;
       document.addEventListener('visibilitychange', () => {
         const now = Date.now();
@@ -11126,7 +11478,7 @@
         } else {
           lastFrameTime = performance.now();
           syncModalOpenClass();
-          if (hiddenTimestamp > 0 && hasGameStarted) {
+          if (hiddenTimestamp > 0) {
             const awayElapsedSec = (now - hiddenTimestamp) / 1000;
             hiddenTimestamp = 0;
             const clampedAwaySec = Math.max(0, Math.min(awayElapsedSec, CONFIG.MAX_OFFLINE_SECONDS));
@@ -11134,7 +11486,19 @@
             if (clampedAwaySec >= CONFIG.MIN_OFFLINE_SECONDS && incomePerSec > 0) {
               const earned = Math.floor(incomePerSec * clampedAwaySec * CONFIG.OFFLINE_INCOME_FACTOR);
               if (earned >= 1) {
-                showOfflineEarningsModal(earned, Math.round(clampedAwaySec));
+                addCoins(earned);
+                state.displayedCoins = state.coins;
+                state.lastSavedAt = now;
+                flushSave();
+                if (hasGameStarted) {
+                  showOfflineEarningsModal(earned, Math.round(clampedAwaySec));
+                } else {
+                  pendingOfflineCoins = safeNumber(pendingOfflineCoins + earned, earned);
+                  pendingOfflineDurationSec = Math.min(
+                    CONFIG.MAX_OFFLINE_SECONDS,
+                    safeNumber(pendingOfflineDurationSec, 0) + Math.round(clampedAwaySec)
+                  );
+                }
               }
             }
           } else {
@@ -11198,9 +11562,10 @@
       // 2. Always tick down kidnapped timers so creatures never stay stuck kidnapped while a modal is open
       updateKidnapTimers(baseDtSec);
 
-      // 3. Update Raid timers, Golden Coin, Speech Bubbles, Defender Income Pops, and Tutorial (paused while any modal is open)
+      // 3. Update Raid timers, Guard Dog Patrol, Golden Coin, Speech Bubbles, Defender Income Pops, and Tutorial (paused while any modal is open)
       if (!modalOpen) {
         updateRaidSystem(gameDtSec);
+        updateGuardDogPatrol(baseDtSec);
         updateGoldenCoin(baseDtSec);
         updateSpeechBubbles(baseDtSec);
         updateArenaIncomePops(baseDtSec);
