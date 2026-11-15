@@ -69,8 +69,7 @@
     .raider-node,
     #vault-btn,
     #floating-gold-coin,
-    #coin-cluster,
-    .modal-close-btn {
+    .modal-close {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
@@ -261,6 +260,20 @@
       45%      { transform: scale(1.09); }
     }
 
+    @keyframes coinLossFlashA {
+      0%   { opacity: 0; transform: scale(1); }
+      20%  { opacity: 1; transform: scale(1.08); }
+      65%  { opacity: 0.92; transform: scale(1.03); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
+    @keyframes coinLossFlashB {
+      0%   { opacity: 0; transform: scale(1); }
+      20%  { opacity: 1; transform: scale(1.08); }
+      65%  { opacity: 0.92; transform: scale(1.03); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
     @keyframes coinBadgeBumpA {
       0%, 100% { transform: scale(1); }
       40%      { transform: scale(1.22); }
@@ -272,12 +285,32 @@
     }
 
     .coin-cluster {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 8px;
       min-width: 0;
-      cursor: pointer;
+      cursor: default;
       will-change: transform;
+    }
+
+    .coin-cluster::after {
+      content: '';
+      position: absolute;
+      inset: -3px -8px;
+      border-radius: 14px;
+      background: radial-gradient(circle, rgba(255, 42, 85, 0.72) 0%, rgba(255, 42, 85, 0.25) 68%, rgba(255, 42, 85, 0) 100%);
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .coin-cluster.loss-flash-a::after {
+      animation: coinLossFlashA 0.4s ease-out forwards;
+    }
+
+    .coin-cluster.loss-flash-b::after {
+      animation: coinLossFlashB 0.4s ease-out forwards;
     }
 
     .coin-cluster.counter-bounce-a {
@@ -325,6 +358,8 @@
 
     /* Coin number >= 24px at 360px width */
     .coin-amount {
+      position: relative;
+      display: inline-block;
       font-size: clamp(24px, 5.5vw, 31px);
       font-weight: 900;
       color: #FFFFFF;
@@ -338,6 +373,25 @@
         0 3px 6px rgba(0, 0, 0, 0.9);
       letter-spacing: 0.01em;
       white-space: nowrap;
+    }
+
+    .coin-amount::after {
+      content: attr(data-coin-text);
+      position: absolute;
+      inset: 0;
+      color: #FF4D6D;
+      opacity: 0;
+      pointer-events: none;
+      transform-origin: left center;
+      will-change: transform, opacity;
+    }
+
+    .coin-cluster.loss-flash-a .coin-amount::after {
+      animation: coinLossFlashA 0.4s ease-out forwards;
+    }
+
+    .coin-cluster.loss-flash-b .coin-amount::after {
+      animation: coinLossFlashB 0.4s ease-out forwards;
     }
 
     /* Income per second under it in green (#5CFF9D) with dark outline */
@@ -621,9 +675,9 @@
       opacity: 0;
       width: max-content;
       max-width: calc(100vw - 16px);
-      white-space: normal;
+      white-space: pre-line;
       overflow-wrap: break-word;
-      line-height: 1.2;
+      line-height: 1.25;
       transition: opacity 0.14s ease, transform 0.14s ease;
       will-change: transform, opacity;
     }
@@ -1095,6 +1149,23 @@
     }
 
     .raid-summary-sub {
+      font-size: clamp(13px, 3.2vw, 15.5px);
+      font-weight: 900;
+      color: #FFFFFF;
+      line-height: 1.32;
+      text-shadow: var(--text-outline);
+    }
+
+    .raid-loss-coins-line {
+      font-size: clamp(15px, 3.8vw, 18.5px);
+      font-weight: 900;
+      color: #FF4D6D;
+      line-height: 1.25;
+      margin-bottom: 3px;
+      text-shadow: var(--text-outline);
+    }
+
+    .raid-loss-kidnap-line {
       font-size: clamp(13px, 3.2vw, 15.5px);
       font-weight: 900;
       color: #FFFFFF;
@@ -2714,6 +2785,112 @@
       }
     }
 
+    /* Compact height adaptation (e.g., 360x640 and 1280x720) so nothing is cut off or unreachable */
+    @media (max-height: 675px) {
+      #app {
+        padding: 3px 6px;
+        gap: 3px;
+      }
+
+      .top-bar {
+        min-height: 48px;
+        padding: 3px 8px;
+      }
+
+      #raid-area {
+        min-height: 64px;
+        margin-bottom: -14px;
+      }
+
+      #raid-summary-popup {
+        top: 26px;
+        padding: 8px 12px;
+      }
+
+      .raid-summary-title {
+        font-size: clamp(15px, 4vw, 18px);
+      }
+
+      .raid-summary-sub {
+        font-size: clamp(11.5px, 2.8vw, 13px);
+      }
+
+      #vault-btn {
+        width: 92px;
+        height: 92px;
+      }
+
+      .vault-icon {
+        font-size: 36px;
+      }
+
+      #vault-orbit-ring,
+      #vault-door-shield,
+      #vault-danger-ring {
+        width: 108px;
+        height: 108px;
+      }
+
+      .vault-platform {
+        width: 104px;
+        height: 20px;
+      }
+
+      .creature-glass-panel {
+        padding: 3px 5px;
+      }
+
+      .slots-grid {
+        gap: 2px 5px;
+      }
+
+      .slot-caption {
+        padding: 1px 3px;
+      }
+
+      .bottom-dock {
+        gap: 3px;
+      }
+
+      .bottom-bar .btn-3d {
+        min-height: 48px;
+        padding: 3px 4px 5px;
+      }
+    }
+
+    @media (min-width: 760px) and (max-height: 750px) {
+      #vault-btn {
+        width: 104px;
+        height: 104px;
+      }
+
+      #vault-orbit-ring,
+      #vault-door-shield,
+      #vault-danger-ring {
+        width: 120px;
+        height: 120px;
+      }
+
+      .vault-platform {
+        width: 118px;
+        height: 22px;
+      }
+
+      .slot-plate {
+        width: 66px;
+        height: 66px;
+      }
+
+      .creature-art-img {
+        width: 56px;
+        height: 56px;
+      }
+
+      .slots-grid {
+        gap: 3px 12px;
+      }
+    }
+
     .egg-tab-btn:active:not(.locked) {
       transform: scale(0.95);
     }
@@ -2748,6 +2925,8 @@
       max-width: 372px;
       max-height: calc(100dvh - 24px);
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 14%),
         linear-gradient(180deg, #3A1D7A 0%, #241152 55%, #160A36 100%);
@@ -3891,7 +4070,7 @@
       <div id="coin-cluster" class="coin-cluster" title="Coins">
         <div id="coin-target" class="coin-badge" aria-hidden="true">🪙</div>
         <div class="coin-stats">
-          <div id="coin-display" class="coin-amount">120</div>
+          <div id="coin-display" class="coin-amount" data-coin-text="100">100</div>
           <div id="income-display" class="income-rate">+0/sec</div>
         </div>
       </div>
@@ -3899,7 +4078,7 @@
       <div class="top-right-controls">
         <div class="stat-chip">
           <div>Discovered: <span id="discovered-count">0/12</span></div>
-          <div>Total Earned: <span id="total-earned-display">120</span></div>
+          <div>Total Earned: <span id="total-earned-display">100</span></div>
         </div>
         <button id="mute-btn" class="btn-3d btn-icon-top" type="button" aria-label="Toggle Sound">
           🔊
@@ -4028,7 +4207,7 @@
             <div class="vault-pill">Slots <strong id="slots-count-display">4/12</strong></div>
             <button id="buy-slot-btn" class="btn-3d btn-cyan" type="button" aria-label="Buy Slot">
               <span class="buy-badge-plus">+</span>
-              <span id="buy-slot-price" class="buy-badge-price">🪙500</span>
+              <span id="buy-slot-price" class="buy-badge-price">🪙250</span>
             </button>
           </div>
         </div>
@@ -4047,10 +4226,10 @@
           🥚 Basic
         </button>
         <button id="egg-tab-golden" class="egg-tab-btn locked" type="button">
-          🔒 Golden (2K)
+          🔒 Golden (6K)
         </button>
         <button id="egg-tab-cosmic" class="egg-tab-btn locked" type="button">
-          🔒 Cosmic (200K)
+          🔒 Cosmic (300K)
         </button>
       </div>
 
@@ -4231,26 +4410,6 @@
     </div>
   </div>
 
-  <!-- DEBUG TOOLS POPUP (Opened by tapping coin counter 5x quickly when DEBUG_TOOLS = true) -->
-  <div id="debug-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="debug-modal-title">
-    <div class="modal-card">
-      <button id="debug-modal-close" class="modal-close" type="button" aria-label="Close">✕</button>
-      <div id="debug-modal-title" class="modal-title">🛠️ Debug Tools</div>
-      <div class="modal-rarity" style="color: #5CFF9D;">Developer Testing Panel</div>
-      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
-        <button id="debug-add-1m-btn" class="btn-3d btn-gold affordable" style="width: 100%;" type="button">
-          🪙 +1M Coins
-        </button>
-        <button id="debug-skip-1h-btn" class="btn-3d btn-cyan affordable" style="width: 100%;" type="button">
-          ⏩ Skip 1 Hour of Income
-        </button>
-        <button id="debug-speed-btn" class="btn-3d btn-purple" style="width: 100%;" type="button">
-          ⚡ Speed ×10: OFF
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- EGG HATCH POPUP -->
   <div id="hatch-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="hatch-modal-title">
     <div class="modal-card">
@@ -4322,7 +4481,7 @@
        Every balance number, egg tier, rarity odd, creature definition, defense
        upgrade, and raid parameter lives in CONFIG.
        ========================================================================== */
-    const DEBUG_TOOLS = true;
+    const DEBUG_TOOLS = false;
 
     const CONFIG = {
       STORAGE_KEY: 'meme_vault_defense_save_v1',
@@ -4423,13 +4582,6 @@
       HATCH_RARE_REVEAL_MS: 600, // Legendary/Mythic hatch opens reveal after ~600ms
       BANNER_DURATION_MS: 1500, // 1.5 seconds visible per single-slot banner
       BANNER_GAP_MS: 0,
-
-      // Debug Tools Constants
-      DEBUG_TAP_COUNT: 5,
-      DEBUG_TAP_WINDOW_MS: 1800,
-      DEBUG_ADD_COINS: 1000000,
-      DEBUG_SKIP_SECONDS: 3600,
-      DEBUG_SPEED_MULT: 10,
 
       // Raid & Defense Balance Numbers
       FIRST_RAID_DELAY_SEC: 90,
@@ -6559,8 +6711,11 @@
        Supports K, M, B, T, Qa, Qi, Sx, Sp, Oc, No, Dc, then scientific notation.
        ========================================================================== */
     function safeNumber(val, fallback = 0) {
+      const fb = (typeof fallback === 'number' && Number.isFinite(fallback) && !Number.isNaN(fallback))
+        ? Math.max(0, fallback)
+        : 0;
       const num = Number(val);
-      if (!Number.isFinite(num) || Number.isNaN(num)) return fallback;
+      if (!Number.isFinite(num) || Number.isNaN(num)) return fb;
       return Math.max(0, num);
     }
 
@@ -6624,7 +6779,8 @@
     function getPendingPrestigeGems() {
       const runCoins = safeNumber(state && state.runEarned, 0);
       if (runCoins < CONFIG.PRESTIGE_UNLOCK_RUN_COINS) return 0;
-      return Math.max(0, Math.floor(Math.sqrt(runCoins / CONFIG.PRESTIGE_DIVISOR)));
+      const rawGems = Math.floor(Math.sqrt(runCoins / Math.max(1, CONFIG.PRESTIGE_DIVISOR)));
+      return Number.isFinite(rawGems) ? Math.max(0, rawGems) : 0;
     }
 
     // Creature Income grows ~1.08x per level, boosted by +25% per Meme Gem and +10% per completed Book tier
@@ -6765,8 +6921,6 @@
     let pendingOfflineDurationSec = 0;
     let selectedSlotIndex = -1;
     let isHatching = false;
-    let debugSpeed10x = false;
-    const debugTapTimestamps = [];
 
     function formatDuration(totalSeconds) {
       const s = Math.max(0, Math.floor(safeNumber(totalSeconds, 0)));
@@ -6783,11 +6937,17 @@
     }
 
     function showOfflineEarningsModal(earnedCoins, durationSec) {
-      if (earnedCoins <= 0) return;
-      pendingOfflineCoins = earnedCoins;
-      pendingOfflineDurationSec = durationSec;
-      const timeStr = formatDuration(durationSec);
-      offlineModalTextEl.innerHTML = `You were away for <strong>${timeStr}</strong> and earned <strong style="color: #FFD34D;">🪙 ${formatNumber(earnedCoins)}</strong> (at 25% passive rate).<br><span style="display:inline-block; margin-top: 8px; font-size: 13px; color: #B0B8C5;">⚠️ Offline earnings capped at 1 hour.</span>`;
+      const addEarned = Math.floor(safeNumber(earnedCoins, 0));
+      if (addEarned <= 0) return;
+      if (offlineModalEl && offlineModalEl.classList.contains('active')) {
+        pendingOfflineCoins = safeNumber(pendingOfflineCoins + addEarned, addEarned);
+        pendingOfflineDurationSec = Math.min(CONFIG.MAX_OFFLINE_SECONDS, safeNumber(pendingOfflineDurationSec, 0) + safeNumber(durationSec, 0));
+      } else {
+        pendingOfflineCoins = addEarned;
+        pendingOfflineDurationSec = Math.min(CONFIG.MAX_OFFLINE_SECONDS, safeNumber(durationSec, 0));
+      }
+      const timeStr = formatDuration(pendingOfflineDurationSec);
+      offlineModalTextEl.innerHTML = `You were away for <strong>${timeStr}</strong> and earned <strong style="color: #FFD34D;">🪙 ${formatNumber(pendingOfflineCoins)}</strong> (at 25% passive rate).<br><span style="display:inline-block; margin-top: 8px; font-size: 13px; color: #B0B8C5;">⚠️ Offline earnings capped at 1 hour.</span>`;
       openModal(offlineModalEl);
     }
 
@@ -6812,7 +6972,46 @@
       nextId: 1
     };
 
+    function clearTransientTimersAndActors() {
+      try {
+        if (typeof hatchRevealTimer !== 'undefined' && hatchRevealTimer) {
+          clearTimeout(hatchRevealTimer);
+          hatchRevealTimer = null;
+        }
+        if (typeof hatchFlashTimer !== 'undefined' && hatchFlashTimer) {
+          clearTimeout(hatchFlashTimer);
+          hatchFlashTimer = null;
+        }
+        if (typeof guardDogDashResetTimer !== 'undefined' && guardDogDashResetTimer) {
+          clearTimeout(guardDogDashResetTimer);
+          guardDogDashResetTimer = null;
+        }
+        isHatching = false;
+        if (typeof hatchFlashEl !== 'undefined' && hatchFlashEl) {
+          hatchFlashEl.classList.remove('flash', 'big-flash');
+        }
+        if (typeof guardDogActorEl !== 'undefined' && guardDogActorEl) {
+          guardDogActorEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
+        }
+        if (typeof floatingGoldCoinEl !== 'undefined' && floatingGoldCoinEl) {
+          floatingGoldCoinEl.classList.remove('active');
+        }
+        if (typeof goldenCoinRuntime !== 'undefined' && goldenCoinRuntime) {
+          goldenCoinRuntime.active = false;
+          goldenCoinRuntime.cooldownSec = 45;
+        }
+        if (typeof creatureSpeechBubbleEl !== 'undefined' && creatureSpeechBubbleEl) {
+          creatureSpeechBubbleEl.classList.remove('active');
+        }
+        if (typeof speechBubbleRuntime !== 'undefined' && speechBubbleRuntime) {
+          speechBubbleRuntime.active = false;
+          speechBubbleRuntime.cooldownSec = 16;
+        }
+      } catch (err) {}
+    }
+
     function resetStateToFresh() {
+      clearTransientTimersAndActors();
       clearActiveRaiderNodes();
       hideRaidSummaryPopup();
       hideBossTopBar();
@@ -6856,6 +7055,7 @@
       state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
       state.lastSavedAt = Date.now();
       pendingOfflineCoins = 0;
+      pendingOfflineDurationSec = 0;
       selectedSlotIndex = -1;
     }
 
@@ -6864,6 +7064,7 @@
         const earnedGems = getPendingPrestigeGems();
         if (earnedGems <= 0) return false;
 
+        clearTransientTimersAndActors();
         clearActiveRaiderNodes();
         hideRaidSummaryPopup();
         hideBossTopBar();
@@ -6899,14 +7100,15 @@
         state.raidTimerSec = CONFIG.FIRST_RAID_DELAY_SEC;
         state.lastSavedAt = Date.now();
         pendingOfflineCoins = 0;
+        pendingOfflineDurationSec = 0;
         selectedSlotIndex = -1;
 
         checkAchievements();
         flushSave();
         updateHUD(false);
+        updateNextGoalBar(true);
         return earnedGems;
       } catch (err) {
-        console.warn('Non-fatal prestige error:', err);
         return false;
       }
     }
@@ -6914,9 +7116,9 @@
     function addCoins(amount) {
       const gain = safeNumber(amount, 0);
       if (gain <= 0) return;
-      state.coins = safeNumber(state.coins + gain, state.coins);
-      state.totalCoinsEarned = safeNumber(state.totalCoinsEarned + gain, state.coins);
-      state.runEarned = safeNumber(state.runEarned + gain, state.coins);
+      state.coins = Math.min(1e300, safeNumber(state.coins + gain, state.coins));
+      state.totalCoinsEarned = Math.min(1e300, safeNumber(state.totalCoinsEarned + gain, state.coins));
+      state.runEarned = Math.min(1e300, safeNumber(state.runEarned + gain, state.coins));
     }
 
     function getTotalIncomePerSecond() {
@@ -6946,12 +7148,12 @@
       return CONFIG.VAULT_TAP_FLAT + CONFIG.VAULT_TAP_INCOME_PERCENT * getTotalIncomePerSecond();
     }
 
-    function recordDiscovery(creatureId) {
+    function recordDiscovery(creatureId, silentBanner = false) {
       if (CREATURE_MAP[creatureId] && !state.discoveredCreatures.includes(creatureId)) {
         const prevTiers = getCompletedBookTiersCount();
         state.discoveredCreatures.push(creatureId);
         const nextTiers = getCompletedBookTiersCount();
-        if (nextTiers > prevTiers) {
+        if (!silentBanner && nextTiers > prevTiers) {
           const def = CREATURE_MAP[creatureId];
           showBanner(`📖 ${def.rarity} Tier Complete! +10% Permanent Income!`, true, false);
         }
@@ -7046,14 +7248,10 @@
         const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
         if (!raw) return;
         const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== 'object') return;
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return;
 
-        // If an older save is found (saveVersion !== CONFIG.SAVE_VERSION), start a fresh game
-        if (parsed.saveVersion !== CONFIG.SAVE_VERSION) {
-          resetStateToFresh();
-          flushSave();
-          return;
-        }
+        const isMigratedFromOlderVersion = parsed.saveVersion !== CONFIG.SAVE_VERSION;
+        state.saveVersion = CONFIG.SAVE_VERSION;
 
         state.coins = safeNumber(parsed.coins, CONFIG.STARTING_COINS);
         state.displayedCoins = state.coins;
@@ -7063,6 +7261,7 @@
         state.memeGems = Math.max(0, Math.floor(safeNumber(parsed.memeGems, 0)));
         state.prestigeCount = Math.max(0, Math.floor(safeNumber(parsed.prestigeCount, 0)));
 
+        state.eggHatches = { basic: 0, golden: 0, cosmic: 0 };
         if (parsed.eggHatches && typeof parsed.eggHatches === 'object') {
           state.eggHatches.basic = Math.max(0, Math.floor(safeNumber(parsed.eggHatches.basic, 0)));
           state.eggHatches.golden = Math.max(0, Math.floor(safeNumber(parsed.eggHatches.golden, 0)));
@@ -7070,6 +7269,9 @@
         }
         const sumHatches = state.eggHatches.basic + state.eggHatches.golden + state.eggHatches.cosmic;
         state.hatchCount = Math.max(sumHatches, Math.floor(safeNumber(parsed.hatchCount, sumHatches)));
+        if (state.eggHatches.basic === 0 && state.eggHatches.golden === 0 && state.eggHatches.cosmic === 0 && state.hatchCount > 0) {
+          state.eggHatches.basic = state.hatchCount;
+        }
 
         if (typeof parsed.selectedEgg === 'string' && CONFIG.EGG_TYPES[parsed.selectedEgg] && isEggUnlocked(parsed.selectedEgg)) {
           state.selectedEgg = parsed.selectedEgg;
@@ -7083,6 +7285,7 @@
         );
         state.muted = Boolean(parsed.muted);
 
+        state.defenseUpgrades = { guardDog: 0, laserFence: 0, vaultDoor: 0 };
         if (parsed.defenseUpgrades && typeof parsed.defenseUpgrades === 'object') {
           state.defenseUpgrades.guardDog = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(parsed.defenseUpgrades.guardDog, 0))));
           state.defenseUpgrades.laserFence = Math.max(0, Math.min(CONFIG.DEFENSE_MAX_LEVEL, Math.floor(safeNumber(parsed.defenseUpgrades.laserFence, 0))));
@@ -7114,6 +7317,9 @@
           }
         }
         state.ownedCreatures = validOwned;
+        if (state.ownedCreatures.length > 0 && state.hatchCount < state.ownedCreatures.length) {
+          state.hatchCount = state.ownedCreatures.length;
+        }
 
         // Validate discoveredCreatures
         const validDiscovered = [];
@@ -7136,13 +7342,13 @@
         }
         state.discoveredCreatures = validDiscovered;
 
-        // Safe defaults for new fields; mark tutorial as already done for any existing save
+        // Safe defaults for new fields; mark tutorial as already done for any existing save with progress
         if (parsed.tutorialDone === undefined) {
-          state.tutorialDone = true;
-          state.tutorialStep = 3;
+          state.tutorialDone = state.hatchCount > 0 || state.prestigeCount > 0 || state.ownedCreatures.length > 0;
+          state.tutorialStep = state.tutorialDone ? 3 : 0;
         } else {
-          state.tutorialDone = Boolean(parsed.tutorialDone) || state.hatchCount > 0 || state.prestigeCount > 0;
-          state.tutorialStep = state.tutorialDone ? 3 : Math.max(0, Math.floor(safeNumber(parsed.tutorialStep, 0)));
+          state.tutorialDone = Boolean(parsed.tutorialDone) || state.hatchCount > 0 || state.prestigeCount > 0 || state.ownedCreatures.length > 0;
+          state.tutorialStep = state.tutorialDone ? 3 : Math.max(0, Math.min(3, Math.floor(safeNumber(parsed.tutorialStep, 0))));
         }
 
         state.unseenPlateCreatures = Array.isArray(parsed.unseenPlateCreatures)
@@ -7167,8 +7373,12 @@
           }
         }
         state.lastSavedAt = now;
+        if (isMigratedFromOlderVersion) {
+          flushSave();
+        }
       } catch (err) {
         // Corrupt save gracefully falls back to clean defaults
+        resetStateToFresh();
       }
     }
 
@@ -7339,6 +7549,8 @@
       raidAreaTop: 0,
       raidAreaWidth: 320,
       raidAreaHeight: 160,
+      coinCounterX: 84,
+      coinCounterY: 46,
       vaultX: 180,
       vaultY: 260,
       hatchBtnX: 90,
@@ -7357,6 +7569,13 @@
           if (rect.width > 0) {
             coinTargetPos.x = rect.left + rect.width / 2;
             coinTargetPos.y = rect.top + rect.height / 2;
+          }
+        }
+        if (coinDisplayEl) {
+          const cRect = coinDisplayEl.getBoundingClientRect();
+          if (cRect.width > 0) {
+            layoutCache.coinCounterX = Math.max(82, cRect.left + Math.min(cRect.width * 0.5, 48));
+            layoutCache.coinCounterY = cRect.bottom + 8;
           }
         }
         if (raidAreaEl) {
@@ -7759,6 +7978,39 @@
       } catch (err) {}
     }
 
+    function triggerCoinLossFlash() {
+      try {
+        if (!coinClusterEl) return;
+        if (coinDisplayEl) {
+          coinDisplayEl.setAttribute('data-coin-text', coinDisplayEl.textContent || '');
+        }
+        toggleABClass(coinClusterEl, 'loss-flash-a', 'loss-flash-b');
+      } catch (err) {}
+    }
+
+    function spawnFloatingLossNearCoinCounter(lossCoins) {
+      try {
+        const lossAmt = Math.floor(safeNumber(lossCoins, 0));
+        if (lossAmt <= 0) return;
+        const cap = getActiveParticleCap();
+        if (particles.length >= cap) {
+          particles.shift();
+        }
+        const fxX = Math.max(82, safeNumber(layoutCache.coinCounterX, 84));
+        const fxY = Math.max(54, safeNumber(layoutCache.coinCounterY, 54));
+        particles.push({
+          type: 'text',
+          x: fxX,
+          y: fxY,
+          vy: -34,
+          text: `-${formatNumber(lossAmt)} coins`,
+          color: '#FF4D6D',
+          age: 0,
+          life: 0.95
+        });
+      } catch (err) {}
+    }
+
     function initTitleScreenCreatures() {
       try {
         if (!titleCreaturesLayerEl) return;
@@ -7789,9 +8041,7 @@
           }
           titleCreaturesLayerEl.appendChild(node);
         }
-      } catch (err) {
-        console.warn('Non-fatal title creatures init error:', err);
-      }
+      } catch (err) {}
     }
 
     function startGameFromTitle() {
@@ -7807,20 +8057,17 @@
         updateHUD(false);
         updateNextGoalBar(true);
 
-        // Welcome Back and Daily Gift popups appear ONLY after PLAY is tapped
+        // Welcome Back and Daily Gift popups appear ONLY after PLAY is tapped (sequenced so they never stack)
         setTimeout(() => {
           try {
             if (pendingOfflineCoins > 0) {
               showOfflineEarningsModal(pendingOfflineCoins, pendingOfflineDurationSec);
+            } else {
+              checkAndShowDailyGiftModal();
             }
-            checkAndShowDailyGiftModal();
-          } catch (err) {
-            console.warn('Non-fatal post-play modal error:', err);
-          }
+          } catch (err) {}
         }, 210);
-      } catch (err) {
-        console.warn('Non-fatal start game error:', err);
-      }
+      } catch (err) {}
     }
     const vaultBtnEl = document.getElementById('vault-btn');
     const vaultDoorShieldEl = document.getElementById('vault-door-shield');
@@ -7917,12 +8164,6 @@
     const resetConfirmBoxEl = document.getElementById('reset-confirm-box');
     const resetConfirmYesEl = document.getElementById('reset-confirm-yes');
     const resetConfirmCancelEl = document.getElementById('reset-confirm-cancel');
-
-    const debugModalEl = document.getElementById('debug-modal');
-    const debugModalCloseEl = document.getElementById('debug-modal-close');
-    const debugAdd1mBtnEl = document.getElementById('debug-add-1m-btn');
-    const debugSkip1hBtnEl = document.getElementById('debug-skip-1h-btn');
-    const debugSpeedBtnEl = document.getElementById('debug-speed-btn');
 
     const hatchModalEl = document.getElementById('hatch-modal');
     const hatchModalTitleEl = document.getElementById('hatch-modal-title');
@@ -8299,9 +8540,7 @@
             });
           }
         }
-      } catch (err) {
-        console.warn('Non-fatal arena defenders init error:', err);
-      }
+      } catch (err) {}
     }
 
     function syncArenaDefenders(forceRefresh = false) {
@@ -8341,9 +8580,7 @@
             node.wrap.classList.remove('visible');
           }
         }
-      } catch (err) {
-        console.warn('Non-fatal syncArenaDefenders error:', err);
-      }
+      } catch (err) {}
     }
 
     function updateArenaIncomePops(dtSec) {
@@ -8393,9 +8630,7 @@
         freePop.el.style.bottom = `calc(${chosen.spot.bottom} + 38px)`;
         toggleABClass(freePop.el, 'active-a', 'active-b');
         freePop.activeRemainingSec = 1.12;
-      } catch (err) {
-        console.warn('Non-fatal updateArenaIncomePops error:', err);
-      }
+      } catch (err) {}
     }
 
     function findCheapestUpgrade() {
@@ -8554,12 +8789,14 @@
 
     function updateHUD(skipGrid = false) {
       // Top Bar
-      coinDisplayEl.textContent = formatNumber(state.displayedCoins);
+      const formattedDispCoins = formatNumber(state.displayedCoins);
+      coinDisplayEl.textContent = formattedDispCoins;
+      coinDisplayEl.setAttribute('data-coin-text', formattedDispCoins);
       const incomePerSec = getTotalIncomePerSecond();
       const gems = Math.max(0, Math.floor(safeNumber(state.memeGems, 0)));
       const gemBonusPct = Math.round(gems * (CONFIG.MEME_GEM_INCOME_BONUS || 0.25) * 100);
       const gemSuffix = gems > 0 ? ` · 💎${formatNumber(gems)} (+${gemBonusPct}%)` : '';
-      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec${gemSuffix}${debugSpeed10x ? ' (×10)' : ''}`;
+      incomeDisplayEl.textContent = `+${formatNumber(incomePerSec, true)}/sec${gemSuffix}`;
       discoveredCountEl.textContent = `${state.discoveredCreatures.length}/${CONFIG.CREATURES.length}`;
       totalEarnedDisplayEl.textContent = formatNumber(state.totalCoinsEarned);
       muteBtnEl.textContent = state.muted ? '🔇' : '🔊';
@@ -8603,9 +8840,7 @@
             vaultDoorShieldEl.classList.remove('active');
           }
         }
-      } catch (err) {
-        console.warn('Non-fatal defense visuals HUD update error:', err);
-      }
+      } catch (err) {}
 
       // Vault Core Pills ("Tap +N" and "Slots X/12") & Round "+" Buy Slot Badge
       tapPowerDisplayEl.textContent = `+${formatNumber(getVaultTapReward(), true)}`;
@@ -8737,9 +8972,7 @@
       try {
         if (!raidComboBadgeEl) return;
         raidComboBadgeEl.classList.remove('active', 'combo-pop-a', 'combo-pop-b');
-      } catch (err) {
-        console.warn('Non-fatal combo badge hide error:', err);
-      }
+      } catch (err) {}
     }
 
     function registerRaidHitCombo() {
@@ -8761,9 +8994,7 @@
           raidComboBadgeEl.classList.add('active');
           toggleABClass(raidComboBadgeEl, 'combo-pop-a', 'combo-pop-b');
         }
-      } catch (err) {
-        console.warn('Non-fatal combo update error:', err);
-      }
+      } catch (err) {}
     }
 
     function triggerGuardDogDash(targetRaider) {
@@ -8781,18 +9012,14 @@
             guardDogActorEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
           }
         }, 185);
-      } catch (err) {
-        console.warn('Non-fatal Guard Dog dash error:', err);
-      }
+      } catch (err) {}
     }
 
     function hideBossTopBar() {
       try {
         if (!bossTopBarEl) return;
         bossTopBarEl.classList.remove('active', 'enraged');
-      } catch (err) {
-        console.warn('Non-fatal boss top bar hide error:', err);
-      }
+      } catch (err) {}
     }
 
     function updateBossTopBar(bossRaider, remainingSec) {
@@ -8818,18 +9045,14 @@
           const ratio = Math.max(0, Math.min(1, bossRaider.hp / Math.max(1, bossRaider.maxHp)));
           bossTopHpFillEl.style.transform = `scaleX(${ratio.toFixed(3)})`;
         }
-      } catch (err) {
-        console.warn('Non-fatal boss top bar update error:', err);
-      }
+      } catch (err) {}
     }
 
     function hideRaidSummaryPopup() {
       try {
         if (!raidSummaryPopupEl) return;
         raidSummaryPopupEl.classList.remove('active', 'danger');
-      } catch (err) {
-        console.warn('Non-fatal raid summary popup hide error:', err);
-      }
+      } catch (err) {}
     }
 
     function showRaidSummaryPopup(titleText, detailText, isDanger) {
@@ -8841,9 +9064,7 @@
         `;
         raidSummaryPopupEl.classList.toggle('danger', Boolean(isDanger));
         raidSummaryPopupEl.classList.add('active');
-      } catch (err) {
-        console.warn('Non-fatal raid summary popup show error:', err);
-      }
+      } catch (err) {}
     }
 
     function freezeActiveRaidersOnScreen() {
@@ -8854,9 +9075,7 @@
             r.el.classList.add('raider-stopped');
           }
         }
-      } catch (err) {
-        console.warn('Non-fatal freeze raiders error:', err);
-      }
+      } catch (err) {}
     }
 
     function getBossFixedHp(raidNum) {
@@ -8949,9 +9168,7 @@
           if (vaultDangerRingEl) vaultDangerRingEl.classList.remove('active');
           hideRaidComboBadge();
         }
-      } catch (err) {
-        console.warn('Non-fatal raid danger visuals error:', err);
-      }
+      } catch (err) {}
     }
 
     function startRaidWarning() {
@@ -9161,11 +9378,13 @@
       }
 
       // Update only coin counter display without re-rendering creature grid
-      coinDisplayEl.textContent = formatNumber(state.coins);
+      const coinStr = formatNumber(state.coins);
+      coinDisplayEl.textContent = coinStr;
+      coinDisplayEl.setAttribute('data-coin-text', coinStr);
     }
 
     function finishRaidWin() {
-      if (raidRuntime.rewardGranted) return;
+      if (raidRuntime.rewardGranted || raidRuntime.phase !== 'active') return;
       raidRuntime.rewardGranted = true;
 
       const isBossRaid = Boolean(raidRuntime.isBossRaid);
@@ -9223,19 +9442,16 @@
     }
 
     function finishRaidLose(raiderCfg) {
+      if (raidRuntime.rewardGranted || raidRuntime.phase !== 'active') return;
       // Raid 1 cannot be lost
       if (raidRuntime.raidNumber <= 1) {
         finishRaidWin();
         return;
       }
 
-      if (raidRuntime.rewardGranted) return;
       raidRuntime.rewardGranted = true;
 
       const isBossRaid = Boolean(raidRuntime.isBossRaid || (raiderCfg && raiderCfg.isBoss));
-      const bestCombo = raidRuntime.bestCombo || 1;
-      const stoppedCount = Math.max(0, raidRuntime.raidersDefeated || 0);
-      const totalRaiders = Math.max(stoppedCount + 1, raidRuntime.totalRaidersInRaid || CONFIG.RAID_MIN_RAIDERS);
 
       hideBossTopBar();
       freezeActiveRaidersOnScreen();
@@ -9252,10 +9468,14 @@
       const penaltyCoins = Math.max(0, Math.floor(state.coins * CONFIG.RAID_STEAL_COIN_PENALTY_RATIO));
       if (penaltyCoins > 0) {
         state.coins = Math.max(0, state.coins - penaltyCoins);
-        const vx = layoutCache.vaultX;
-        const vy = layoutCache.vaultY;
-        spawnFloatingText(vx, vy - 20, `-5% (-${formatNumber(penaltyCoins)})`, '#FF4D6D');
+        state.displayedCoins = state.coins;
+        const updatedCoinStr = formatNumber(state.coins);
+        coinDisplayEl.textContent = updatedCoinStr;
+        coinDisplayEl.setAttribute('data-coin-text', updatedCoinStr);
+        lastDisplayedCoinText = updatedCoinStr;
+        spawnFloatingLossNearCoinCounter(penaltyCoins);
       }
+      triggerCoinLossFlash();
 
       const availableIndices = [];
       for (let i = 0; i < state.ownedCreatures.length; i++) {
@@ -9264,54 +9484,57 @@
         }
       }
 
-      const penaltyNote = penaltyCoins > 0 ? ` (-5% coins: -${formatNumber(penaltyCoins)})` : '';
+      const coinLossLine = penaltyCoins > 0 ? `-${formatNumber(penaltyCoins)} coins (5%)` : '';
       if (availableIndices.length > 0) {
         const chosenIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
         const victim = state.ownedCreatures[chosenIdx];
         victim.kidnappedRemainingSec = CONFIG.KIDNAP_DURATION_SEC;
         const victimDef = CREATURE_MAP[victim.id];
-        if (isBossRaid) {
-          showRaidSummaryPopup(
-            `🚨 BOSS STOLE ${victimDef.name.toUpperCase()}!`,
-            `Stopped: ${stoppedCount}/${totalRaiders} · Combo: x${bestCombo} · Kidnapped 90s${penaltyNote}`,
-            true
-          );
-          showBanner(`🐻 BOSS STOLE ${victimDef.name} for 90s!${penaltyNote}`, true, true);
-        } else {
-          showRaidSummaryPopup(
-            `🚨 RAID #${raidRuntime.raidNumber} BREACHED!`,
-            `Stopped: ${stoppedCount}/${totalRaiders} · Combo: x${bestCombo} · Kidnapped: ${victimDef.name} (90s)`,
-            true
-          );
-          showBanner(`${raiderCfg.emoji} ${raiderCfg.name} kidnapped ${victimDef.name} for 90s!${penaltyNote}`, true, true);
-        }
+        const rescueCost = getInstantRescueCost();
+        const kidnapLine = `${victimDef.name} kidnapped for ${CONFIG.KIDNAP_DURATION_SEC}s · Rescue: 🪙 ${formatNumber(rescueCost)}`;
+        const popupDetailHtml = penaltyCoins > 0
+          ? `<div class="raid-loss-coins-line">${coinLossLine}</div><div class="raid-loss-kidnap-line">${kidnapLine}</div>`
+          : `<div class="raid-loss-kidnap-line">${kidnapLine}</div>`;
+        const bannerText = penaltyCoins > 0
+          ? `${coinLossLine}\n${kidnapLine}`
+          : kidnapLine;
+
+        showRaidSummaryPopup(
+          isBossRaid ? `🚨 BOSS STOLE ${victimDef.name.toUpperCase()}!` : `🚨 RAID #${raidRuntime.raidNumber} LOST!`,
+          popupDetailHtml,
+          true
+        );
+        showBanner(bannerText, true, true);
       } else {
-        if (isBossRaid) {
-          showRaidSummaryPopup(
-            `🚨 BOSS STOLE FROM VAULT!`,
-            `Stopped: ${stoppedCount}/${totalRaiders} · Best Combo: x${bestCombo}${penaltyNote}`,
-            true
-          );
-          showBanner(`🐻 BOSS STOLE FROM THE VAULT!${penaltyNote}`, true, true);
-        } else {
-          showRaidSummaryPopup(
-            `🚨 RAID #${raidRuntime.raidNumber} BREACHED!`,
-            `Stopped: ${stoppedCount}/${totalRaiders} · Best Combo: x${bestCombo}${penaltyNote}`,
-            true
-          );
-          showBanner(`${raiderCfg.emoji} ${raiderCfg.name} breached the Vault!${penaltyNote}`, true, true);
-        }
+        const popupDetailHtml = penaltyCoins > 0
+          ? `<div class="raid-loss-coins-line">${coinLossLine}</div>`
+          : `<div class="raid-loss-kidnap-line">Vault breached!</div>`;
+        const bannerText = penaltyCoins > 0
+          ? coinLossLine
+          : `${raiderCfg ? raiderCfg.emoji : '🚨'} ${raiderCfg ? raiderCfg.name : 'Raider'} breached the Vault!`;
+
+        showRaidSummaryPopup(
+          isBossRaid ? `🚨 BOSS STOLE FROM VAULT!` : `🚨 RAID #${raidRuntime.raidNumber} LOST!`,
+          popupDetailHtml,
+          true
+        );
+        showBanner(bannerText, true, true);
       }
 
       saveGame();
       scheduleHUDUpdate(true);
     }
 
-    function updateRaidSystem(dtSec) {
+    function updateKidnapTimers(dtSec) {
       let kidnapChanged = false;
+      let anyReturned = false;
       for (let i = 0; i < state.ownedCreatures.length; i++) {
         const c = state.ownedCreatures[i];
-        if (c.kidnappedRemainingSec && c.kidnappedRemainingSec > 0) {
+        if (!c) continue;
+        if (!Number.isFinite(c.kidnappedRemainingSec) || c.kidnappedRemainingSec < 0) {
+          c.kidnappedRemainingSec = 0;
+        }
+        if (c.kidnappedRemainingSec > 0) {
           const prevCeil = Math.ceil(c.kidnappedRemainingSec);
           c.kidnappedRemainingSec = Math.max(0, c.kidnappedRemainingSec - dtSec);
           const nextCeil = Math.ceil(c.kidnappedRemainingSec);
@@ -9320,16 +9543,28 @@
           if (c.kidnappedRemainingSec <= 0) {
             c.kidnappedRemainingSec = 0;
             const def = CREATURE_MAP[c.id];
-            sfxUpgrade();
-            showBanner(`🎉 ${def.name} returned to the Vault!`, false, false);
+            if (def) {
+              sfxUpgrade();
+              showBanner(`🎉 ${def.name} returned to the Vault!`, false, false);
+            }
             kidnapChanged = true;
+            anyReturned = true;
           }
         }
       }
       if (kidnapChanged) {
         renderSlotsGrid();
+        if (selectedSlotIndex >= 0 && upgradeModalEl && upgradeModalEl.classList.contains('active')) {
+          renderUpgradeModalContent(selectedSlotIndex);
+        }
+        if (anyReturned) {
+          saveGame();
+          scheduleHUDUpdate(false);
+        }
       }
+    }
 
+    function updateRaidSystem(dtSec) {
       if (state.hatchCount < 1) {
         raidHudPillEl.textContent = '🛡️ Hatch your first egg to start raids';
         return;
@@ -9393,6 +9628,15 @@
           spawnRaiderEntity(spec);
         }
 
+        // Remove any stale/defeated raiders that may still be in activeRaiders
+        for (let i = raidRuntime.activeRaiders.length - 1; i >= 0; i--) {
+          const r = raidRuntime.activeRaiders[i];
+          if (!r || r.hp <= 0) {
+            if (r && r.el && r.el.parentNode) r.el.parentNode.removeChild(r.el);
+            raidRuntime.activeRaiders.splice(i, 1);
+          }
+        }
+
         const activeBoss = getActiveBossRaider();
         if (raidRuntime.isBossRaid) {
           raidRuntime.bossRemainingSec = Math.max(0, CONFIG.BOSS_RAID_DURATION_SEC - raidRuntime.elapsedSec);
@@ -9400,6 +9644,9 @@
           raidHudPillEl.textContent = `🐻 BOSS RAID #${raidRuntime.raidNumber} · ⏱️ ${bossSecCeil}s left`;
           if (activeBoss) {
             updateBossTopBar(activeBoss, raidRuntime.bossRemainingSec);
+          } else if (raidRuntime.spawnSchedule.length === 0) {
+            finishRaidWin();
+            return;
           }
           if (raidRuntime.bossRemainingSec <= 0) {
             finishRaidLose(CONFIG.RAIDERS.bear);
@@ -9455,11 +9702,12 @@
           } else {
             baseCrossSec = CONFIG.RAIDER_BASE_CROSS_SEC / (r.cfg.speedMult * laserSlowMult * raidSpeedFactor);
           }
+          baseCrossSec = Math.max(0.5, safeNumber(baseCrossSec, 5.8));
 
           if (r.progress < 1) {
-            r.progress = Math.min(1, r.progress + dtSec / baseCrossSec);
+            r.progress = Math.min(1, safeNumber(r.progress, 0) + dtSec / baseCrossSec);
           } else {
-            r.doorPrySec += dtSec;
+            r.doorPrySec = safeNumber(r.doorPrySec, 0) + dtSec;
             if (r.doorPrySec >= doorExtraSec) {
               finishRaidLose(r.cfg);
               return;
@@ -9569,7 +9817,6 @@
         (defenseModalEl && defenseModalEl.classList.contains('active')) ||
         (hatchModalEl && hatchModalEl.classList.contains('active')) ||
         (settingsModalEl && settingsModalEl.classList.contains('active')) ||
-        (debugModalEl && debugModalEl.classList.contains('active')) ||
         (offlineModalEl && offlineModalEl.classList.contains('active')) ||
         (bookModalEl && bookModalEl.classList.contains('active')) ||
         (dailyGiftModalEl && dailyGiftModalEl.classList.contains('active'))
@@ -9583,7 +9830,6 @@
         (upgradeModalEl && upgradeModalEl.classList.contains('active')) ||
         (defenseModalEl && defenseModalEl.classList.contains('active')) ||
         (hatchModalEl && hatchModalEl.classList.contains('active')) ||
-        (debugModalEl && debugModalEl.classList.contains('active')) ||
         (offlineModalEl && offlineModalEl.classList.contains('active')) ||
         (dailyGiftModalEl && dailyGiftModalEl.classList.contains('active'))
       );
@@ -9800,9 +10046,10 @@
 
     function resolveHatchedCreature(creatureDef, deferBanner = true) {
       const prevTiers = getCompletedBookTiersCount();
-      const isFirstDiscovery = recordDiscovery(creatureDef.id);
+      const isFirstDiscovery = recordDiscovery(creatureDef.id, deferBanner);
       const nextTiers = getCompletedBookTiersCount();
-      const tierBannerMsg = (isFirstDiscovery && nextTiers > prevTiers)
+      const tierCompleted = isFirstDiscovery && nextTiers > prevTiers;
+      const tierBannerMsg = tierCompleted
         ? `📖 ${creatureDef.rarity} Tier Complete! +10% Permanent Income!`
         : '';
 
@@ -9821,13 +10068,13 @@
         if (existing.level < CONFIG.MAX_CREATURE_LEVEL) {
           existing.level += 1;
           const msg = `Duplicate! ${creatureDef.name} leveled up to Lv.${existing.level}!`;
-          return { type: 'levelup', slotIndex: existingIndex, message: msg, isNewDiscovery: isFirstDiscovery, deferredBannerMsg: tierBannerMsg };
+          return { type: 'levelup', slotIndex: existingIndex, message: msg, isNewDiscovery: isFirstDiscovery, tierCompleted, deferredBannerMsg: tierBannerMsg };
         } else {
           const convertedCoins = getConversionCoins(creatureDef.id, existing.level);
           addCoins(convertedCoins);
           const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
           if (!deferBanner) showBanner(msg, true);
-          return { type: 'converted', coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery, deferredBannerMsg: msg };
+          return { type: 'converted', coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery, tierCompleted, deferredBannerMsg: tierBannerMsg || msg };
         }
       }
 
@@ -9836,7 +10083,7 @@
         state.ownedCreatures.push({ id: creatureDef.id, level: 1, kidnappedRemainingSec: 0 });
         const newSlotIndex = state.ownedCreatures.length - 1;
         const msg = `New ${creatureDef.name} joined Slot ${newSlotIndex + 1}!`;
-        return { type: 'placed', slotIndex: newSlotIndex, message: msg, isNewDiscovery: isFirstDiscovery, deferredBannerMsg: tierBannerMsg };
+        return { type: 'placed', slotIndex: newSlotIndex, message: msg, isNewDiscovery: isFirstDiscovery, tierCompleted, deferredBannerMsg: tierBannerMsg };
       }
 
       // c) Else (vault full): compare new Lv.1 income against lowest current income/sec owned creature
@@ -9862,13 +10109,13 @@
 
         const msg = `${creatureDef.name} replaced ${replacedDef.name} (+${formatNumber(convertedCoins)} coins)`;
         if (!deferBanner) showBanner(msg, true);
-        return { type: 'replaced', slotIndex: lowestIndex, coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery, deferredBannerMsg: msg };
+        return { type: 'replaced', slotIndex: lowestIndex, coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery, tierCompleted, deferredBannerMsg: tierBannerMsg || msg };
       } else {
         const convertedCoins = getConversionCoins(creatureDef.id, 1);
         addCoins(convertedCoins);
         const msg = `${creatureDef.name} converted (+${formatNumber(convertedCoins)} coins)`;
         if (!deferBanner) showBanner(msg, true);
-        return { type: 'converted', coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery, deferredBannerMsg: msg };
+        return { type: 'converted', coins: convertedCoins, message: msg, isNewDiscovery: isFirstDiscovery, tierCompleted, deferredBannerMsg: tierBannerMsg || msg };
       }
     }
 
@@ -9996,11 +10243,13 @@
           spawnFlyingCoin(cx, cy, 4);
         }
 
-        if (typeof outcome.slotIndex === 'number') {
+        if (outcome.tierCompleted) {
+          renderSlotsGrid();
+        } else if (typeof outcome.slotIndex === 'number') {
           updateSingleSlotPlate(outcome.slotIndex);
-          if (slotDomNodes[outcome.slotIndex]) {
-            triggerSquash(slotDomNodes[outcome.slotIndex].plate);
-          }
+        }
+        if (typeof outcome.slotIndex === 'number' && slotDomNodes[outcome.slotIndex]) {
+          triggerSquash(slotDomNodes[outcome.slotIndex].plate);
         }
 
         if (outcome.deferredBannerMsg) {
@@ -10030,9 +10279,7 @@
           tutorialOverlayEl.classList.remove('active');
         }
         saveGame();
-      } catch (err) {
-        console.warn('Non-fatal tutorial complete error:', err);
-      }
+      } catch (err) {}
     }
 
     function advanceTutorialOnVaultTap() {
@@ -10045,9 +10292,7 @@
         state.tutorialStep = 1;
         saveGame();
         updateTutorialOverlay(0);
-      } catch (err) {
-        console.warn('Non-fatal tutorial vault tap error:', err);
-      }
+      } catch (err) {}
     }
 
     function advanceTutorialOnFirstHatch() {
@@ -10058,9 +10303,7 @@
           tutorialWatchRemainingSec = 5.0;
           saveGame();
         }
-      } catch (err) {
-        console.warn('Non-fatal tutorial hatch advance error:', err);
-      }
+      } catch (err) {}
     }
 
     function updateTutorialOverlay(dtSec) {
@@ -10105,9 +10348,7 @@
           tutorialHandEl.style.setProperty('--tx', `${tx}px`);
           tutorialHandEl.style.setProperty('--ty', `${ty}px`);
         }
-      } catch (err) {
-        console.warn('Non-fatal tutorial update error:', err);
-      }
+      } catch (err) {}
     }
 
     let lastNextGoalUpdateMs = 0;
@@ -10177,9 +10418,7 @@
         if (nextGoalTextEl.textContent !== goalText) {
           nextGoalTextEl.textContent = goalText;
         }
-      } catch (err) {
-        console.warn('Non-fatal next goal update error:', err);
-      }
+      } catch (err) {}
     }
 
     function isAchievementMet(achId) {
@@ -10234,10 +10473,9 @@
         }
         if (anyUnlocked) {
           saveGame();
+          scheduleHUDUpdate(false);
         }
-      } catch (err) {
-        console.warn('Non-fatal achievement check error:', err);
-      }
+      } catch (err) {}
     }
 
     function renderBookModalContent() {
@@ -10326,9 +10564,7 @@
           `;
           bookAchievementsGridEl.appendChild(item);
         }
-      } catch (err) {
-        console.warn('Non-fatal book modal render error:', err);
-      }
+      } catch (err) {}
     }
 
     // Local Date & 7-Day Daily Gift Streak Helpers
@@ -10414,9 +10650,7 @@
         }
 
         openModal(dailyGiftModalEl);
-      } catch (err) {
-        console.warn('Non-fatal daily gift modal error:', err);
-      }
+      } catch (err) {}
     }
 
     function claimDailyGift() {
@@ -10440,9 +10674,7 @@
         showBanner(`🎁 Claimed Day ${info.dayNum} Daily Gift: +${formatNumber(info.coins)} coins!`, true, false);
         saveGame();
         scheduleHUDUpdate(false);
-      } catch (err) {
-        console.warn('Non-fatal claim daily gift error:', err);
-      }
+      } catch (err) {}
     }
 
     // Floating Golden Coin Runtime (Crosses screen ~once/min, 30s of income, max 1 at a time)
@@ -10486,9 +10718,7 @@
         const x = goldenCoinRuntime.startX + (goldenCoinRuntime.endX - goldenCoinRuntime.startX) * t;
         const y = goldenCoinRuntime.baseY + Math.sin(goldenCoinRuntime.elapsedSec * 3.2) * 14;
         floatingGoldCoinEl.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(1)`;
-      } catch (err) {
-        console.warn('Non-fatal golden coin update error:', err);
-      }
+      } catch (err) {}
     }
 
     function handleGoldenCoinTap(clientX, clientY) {
@@ -10516,9 +10746,7 @@
         // Update only coin display & button states without re-rendering the creature grid
         coinDisplayEl.textContent = formatNumber(state.coins);
         scheduleHUDUpdate(false);
-      } catch (err) {
-        console.warn('Non-fatal golden coin tap error:', err);
-      }
+      } catch (err) {}
     }
 
     // Creature Speech Bubbles (Every ~20s, never more than 1 at a time; updates only its own element)
@@ -10570,81 +10798,31 @@
           }
           creatureSpeechBubbleEl.classList.add('active');
         }
-      } catch (err) {
-        console.warn('Non-fatal speech bubble update error:', err);
-      }
+      } catch (err) {}
     }
 
     /* ==========================================================================
-       11. POINTER EVENT LISTENERS (Including Settings Reset & Debug 5-Tap Panel)
+       11. POINTER EVENT LISTENERS (Bound once with idempotency guard)
        ========================================================================== */
+    let eventsBound = false;
+
     function setupEvents() {
+      if (eventsBound) return;
+      eventsBound = true;
+
       window.addEventListener('contextmenu', (e) => e.preventDefault());
       window.addEventListener('pointerdown', () => {
         unlockAudio();
       }, { passive: true });
       window.addEventListener('resize', () => {
         updateCanvasSizes();
-        initCreatureArtCache(true);
-        for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
-          positionRaiderAlongLane(raidRuntime.activeRaiders[i]);
-        }
-      });
-
-      // Debug Tools: Tapping the coin counter 5 times quickly opens the Debug Panel
-      bindInstantTap(coinClusterEl, () => {
-        if (!DEBUG_TOOLS) return;
-        const now = performance.now();
-        debugTapTimestamps.push(now);
-        while (debugTapTimestamps.length > 0 && now - debugTapTimestamps[0] > CONFIG.DEBUG_TAP_WINDOW_MS) {
-          debugTapTimestamps.shift();
-        }
-        if (debugTapTimestamps.length >= CONFIG.DEBUG_TAP_COUNT) {
-          debugTapTimestamps.length = 0;
-          sfxUpgrade();
-          debugSpeedBtnEl.textContent = `⚡ Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`;
-          openModal(debugModalEl);
-        }
-      });
-
-      // Debug Panel Buttons
-      bindInstantTap(debugModalCloseEl, () => {
-        sfxPop();
-        closeModal(debugModalEl);
-      });
-
-      debugModalEl.addEventListener('pointerdown', (e) => {
-        if (e.target === debugModalEl) {
-          e.preventDefault();
-          unlockAudio();
-          sfxPop();
-          closeModal(debugModalEl);
-        }
-      });
-
-      bindInstantTap(debugAdd1mBtnEl, () => {
-        addCoins(CONFIG.DEBUG_ADD_COINS);
-        sfxCoin();
-        showBanner('🛠️ Debug: Added +1M coins!', false);
-        saveGame();
-        scheduleHUDUpdate(false);
-      });
-
-      bindInstantTap(debugSkip1hBtnEl, () => {
-        const oneHourCoins = Math.max(100, Math.round(getTotalIncomePerSecond() * CONFIG.DEBUG_SKIP_SECONDS));
-        addCoins(oneHourCoins);
-        sfxCoin();
-        showBanner(`🛠️ Debug: +${formatNumber(oneHourCoins)} (1h income)!`, false);
-        saveGame();
-        scheduleHUDUpdate(false);
-      });
-
-      bindInstantTap(debugSpeedBtnEl, () => {
-        debugSpeed10x = !debugSpeed10x;
-        sfxPop();
-        debugSpeedBtnEl.textContent = `⚡ Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`;
-        showBanner(`🛠️ Debug Speed ×10: ${debugSpeed10x ? 'ON' : 'OFF'}`, false);
-        scheduleHUDUpdate(false);
+        initCreatureArtCache(false);
+        requestAnimationFrame(() => {
+          refreshLayoutCache();
+          for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
+            positionRaiderAlongLane(raidRuntime.activeRaiders[i]);
+          }
+        });
       });
 
       // Settings Gear, Prestige & Reset Progress Confirmation
@@ -10729,6 +10907,7 @@
         closeModal(settingsModalEl);
         showBanner('Progress reset! Started fresh with 100 coins.', false);
         updateHUD(false);
+        updateNextGoalBar(true);
       });
 
       // Egg Selector Tabs
@@ -10834,6 +11013,17 @@
         });
       }
 
+      if (dailyGiftModalEl) {
+        dailyGiftModalEl.addEventListener('pointerdown', (e) => {
+          if (e.target === dailyGiftModalEl) {
+            e.preventDefault();
+            unlockAudio();
+            sfxPop();
+            closeModal(dailyGiftModalEl);
+          }
+        });
+      }
+
       // Tutorial Skip Button
       if (tutorialSkipBtnEl) {
         bindInstantTap(tutorialSkipBtnEl, () => {
@@ -10909,6 +11099,7 @@
         if (pendingOfflineCoins > 0) {
           const reward = pendingOfflineCoins;
           pendingOfflineCoins = 0;
+          pendingOfflineDurationSec = 0;
           addCoins(reward);
           sfxHatchFanfare('Epic');
           const cx = viewportW * 0.5;
@@ -10919,6 +11110,7 @@
         closeModal(offlineModalEl);
         saveGame();
         scheduleHUDUpdate(false);
+        checkAndShowDailyGiftModal();
       });
 
       // Background / hidden tab tracking:
@@ -10933,6 +11125,7 @@
           flushSave();
         } else {
           lastFrameTime = performance.now();
+          syncModalOpenClass();
           if (hiddenTimestamp > 0 && hasGameStarted) {
             const awayElapsedSec = (now - hiddenTimestamp) / 1000;
             hiddenTimestamp = 0;
@@ -10948,6 +11141,7 @@
             hiddenTimestamp = 0;
           }
           state.lastSavedAt = now;
+          scheduleHUDUpdate(false);
         }
       });
 
@@ -10963,6 +11157,8 @@
     let lastFrameTime = performance.now();
     let hudRefreshAccumulator = 0;
     let nextGoalRefreshAccumulator = 0;
+    let gameLoopRunning = false;
+    let autosaveIntervalId = null;
 
     function gameLoop(now) {
       requestAnimationFrame(gameLoop);
@@ -10977,6 +11173,9 @@
       const clampedDeltaMs = Math.min(rawDeltaMs, CONFIG.MAX_DELTA_MS);
       const baseDtSec = clampedDeltaMs / 1000;
       const modalOpen = isAnyModalOpen();
+      if (document.body.classList.contains('modal-open') !== modalOpen) {
+        syncModalOpenClass();
+      }
 
       // While Title Screen is visible (before PLAY is tapped), only drift background stars
       if (!hasGameStarted) {
@@ -10987,8 +11186,8 @@
       }
 
       const incomeBlocked = isIncomeBlockingModalOpen();
-      const gameDtSec = modalOpen ? 0 : (debugSpeed10x ? baseDtSec * CONFIG.DEBUG_SPEED_MULT : baseDtSec);
-      const incomeDtSec = incomeBlocked ? 0 : (debugSpeed10x ? baseDtSec * CONFIG.DEBUG_SPEED_MULT : baseDtSec);
+      const gameDtSec = modalOpen ? 0 : baseDtSec;
+      const incomeDtSec = incomeBlocked ? 0 : baseDtSec;
 
       // 1. Add passive income per second (keeps running while Book or Settings modal is open)
       const incomePerSec = getTotalIncomePerSecond();
@@ -10996,7 +11195,10 @@
         addCoins(incomePerSec * incomeDtSec);
       }
 
-      // 2. Update Raid timers, Golden Coin, Speech Bubbles, Defender Income Pops, and Tutorial (paused while any modal is open)
+      // 2. Always tick down kidnapped timers so creatures never stay stuck kidnapped while a modal is open
+      updateKidnapTimers(baseDtSec);
+
+      // 3. Update Raid timers, Golden Coin, Speech Bubbles, Defender Income Pops, and Tutorial (paused while any modal is open)
       if (!modalOpen) {
         updateRaidSystem(gameDtSec);
         updateGoldenCoin(baseDtSec);
@@ -11008,7 +11210,10 @@
         tutorialOverlayEl.classList.remove('active');
       }
 
-      // 3. Smoothly roll displayedCoins toward actual state.coins
+      // 4. Smoothly roll displayedCoins toward actual state.coins
+      if (!Number.isFinite(state.displayedCoins) || state.displayedCoins < 0) {
+        state.displayedCoins = safeNumber(state.coins, 0);
+      }
       const diff = state.coins - state.displayedCoins;
       if (Math.abs(diff) < 0.05) {
         state.displayedCoins = state.coins;
@@ -11016,7 +11221,7 @@
         state.displayedCoins += diff * Math.min(1, baseDtSec * CONFIG.COIN_ROLL_SPEED);
       }
 
-      // 4. Batch coin counter display & button affordability states to 10x/sec (100ms) without re-rendering creature grid
+      // 5. Batch coin counter display & button affordability states to 10x/sec (100ms) without re-rendering creature grid
       hudRefreshAccumulator += baseDtSec;
       if (hudRefreshAccumulator >= 0.1) {
         hudRefreshAccumulator = 0;
@@ -11026,17 +11231,18 @@
         }
         lastDisplayedCoinText = formattedCoinStr;
         coinDisplayEl.textContent = formattedCoinStr;
+        coinDisplayEl.setAttribute('data-coin-text', formattedCoinStr);
         updateHUD(true);
       }
 
-      // 5. Update Next Goal bar text at most twice per second (every 500ms), updating only its own element
+      // 6. Update Next Goal bar text at most twice per second (every 500ms), updating only its own element
       nextGoalRefreshAccumulator += baseDtSec;
       if (nextGoalRefreshAccumulator >= (CONFIG.NEXT_GOAL_UPDATE_INTERVAL_SEC || 0.5)) {
         nextGoalRefreshAccumulator = 0;
         updateNextGoalBar();
       }
 
-      // 6. Update & draw particles (paused while modal open, except during 1s Legendary/Mythic hatch confetti burst)
+      // 7. Update & draw particles (paused while modal open, except during 1s Legendary/Mythic hatch confetti burst)
       if (!modalOpen || rareHatchConfettiRemainingSec > 0) {
         updateAndDrawParticles(baseDtSec);
       }
@@ -11048,24 +11254,16 @@
     function init() {
       try {
         updateCanvasSizes();
-      } catch (err) {
-        console.error('Canvas size init error:', err);
-      }
+      } catch (err) {}
       try {
         initCreatureArtCache();
-      } catch (err) {
-        console.error('Art cache init error:', err);
-      }
+      } catch (err) {}
       try {
         initTitleScreenCreatures();
-      } catch (err) {
-        console.error('Title screen creatures init error:', err);
-      }
+      } catch (err) {}
       try {
         initStars();
-      } catch (err) {
-        console.error('Stars init error:', err);
-      }
+      } catch (err) {}
       initSlotsGrid();
       initArenaDefendersAndPops();
       loadGame();
@@ -11077,14 +11275,19 @@
       syncArenaDefenders(true);
       updateNextGoalBar(true);
 
-      setInterval(() => {
-        if (!document.hidden && hasGameStarted) {
-          saveGame();
-        }
-      }, CONFIG.AUTOSAVE_INTERVAL_MS);
+      if (!autosaveIntervalId) {
+        autosaveIntervalId = setInterval(() => {
+          if (!document.hidden && hasGameStarted) {
+            saveGame();
+          }
+        }, CONFIG.AUTOSAVE_INTERVAL_MS);
+      }
 
       lastFrameTime = performance.now();
-      requestAnimationFrame(gameLoop);
+      if (!gameLoopRunning) {
+        gameLoopRunning = true;
+        requestAnimationFrame(gameLoop);
+      }
     }
 
     init();
