@@ -2705,10 +2705,10 @@
       opacity: 0.85;
     }
 
-    .bottom-bar {
+      .bottom-bar {
       width: 100%;
       display: grid;
-      grid-template-columns: 1.15fr 1.25fr 1.05fr 0.85fr;
+      grid-template-columns: 1.24fr 1.24fr 0.92fr 0.80fr;
       gap: 4px;
     }
 
@@ -2716,7 +2716,7 @@
       width: 100%;
       min-width: 0;
       min-height: 48px;
-      padding: 3px 4px 5px;
+      padding: 2px 3px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2732,8 +2732,9 @@
     .btn-main-label {
       position: relative;
       z-index: 2;
-      font-size: clamp(13px, 3vw, 15px);
+      font-size: clamp(13px, 2.9vw, 15px);
       font-weight: 900;
+      letter-spacing: -0.01em;
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -2865,6 +2866,228 @@
       .bottom-bar .btn-3d {
         min-height: 48px;
         padding: 2px 3px 4px;
+      }
+    }
+
+    /* Short, wide windows (907x510, 800x450, 1216x684, 1280x720):
+       Only when wider than tall (landscape) and height <= 760px, use two columns:
+       - Left column: Raid arena + Vault crystal, full height
+       - Right column: Top bar, Next Goal bar, Creature grid, Egg tabs, Bottom buttons */
+    @media (orientation: landscape) and (max-height: 760px) {
+      :root {
+        --crystal-size: clamp(54px, min(9vw, 13vh), 78px);
+        --crystal-size: clamp(54px, min(9vw, 13dvh), 78px);
+        --plate-size: clamp(46px, calc((100vh - 264px) / 3), 66px);
+        --plate-size: clamp(46px, calc((100dvh - 264px) / 3), 66px);
+      }
+
+      #app {
+        max-width: none;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        margin: 0;
+        padding: 6px 8px;
+        display: grid;
+        grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+        grid-template-rows: 42px 22px minmax(0, 1fr) 77px;
+        column-gap: 8px;
+        row-gap: 4px;
+        align-items: stretch;
+        justify-content: stretch;
+        overflow: hidden;
+      }
+
+      .arena {
+        display: contents;
+      }
+
+      .raid-vault-stage {
+        grid-column: 1;
+        grid-row: 1 / 5;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        flex: none;
+      }
+
+      #raid-area {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 6px;
+        min-height: 0;
+      }
+
+      .top-bar {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        height: 42px;
+        min-height: 42px;
+        max-height: 42px;
+        padding: 2px 8px;
+        gap: 6px;
+      }
+
+      .coin-badge {
+        width: 32px;
+        height: 32px;
+        font-size: 17px;
+      }
+
+      .coin-amount {
+        font-size: clamp(22px, 2.5vw, 25px);
+      }
+
+      .income-rate {
+        font-size: clamp(11px, 1.3vw, 12.5px);
+      }
+
+      .stat-chip {
+        font-size: clamp(10px, 1.15vw, 11px);
+        padding: 2px 6px;
+      }
+
+      .btn-icon-top {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        min-height: 34px;
+        font-size: 16px;
+      }
+
+      #next-goal-bar {
+        grid-column: 2;
+        grid-row: 2;
+        width: 100%;
+        height: 22px;
+        min-height: 22px;
+        max-height: 22px;
+        padding: 1px 8px;
+        font-size: clamp(11px, 1.3vw, 12.5px);
+      }
+
+      .creature-glass-panel {
+        grid-column: 2;
+        grid-row: 3;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        padding: 4px 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .slots-grid {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        gap: 2px 6px;
+        align-items: center;
+        align-content: space-evenly;
+      }
+
+      .slot-caption {
+        margin-top: -8px;
+        padding: 1px 3px;
+      }
+
+      .slot-name {
+        font-size: clamp(11px, 1.3vw, 12.5px);
+      }
+
+      .slot-income {
+        font-size: clamp(11px, 1.25vw, 12px);
+      }
+
+      .bottom-dock {
+        grid-column: 2;
+        grid-row: 4;
+        width: 100%;
+        height: 77px;
+        gap: 3px;
+        justify-content: space-between;
+      }
+
+      .egg-selector-bar {
+        gap: 4px;
+      }
+
+      .egg-tab-btn {
+        height: 26px;
+        min-height: 26px;
+        font-size: clamp(13px, 1.45vw, 14px);
+        padding: 1px 6px;
+      }
+
+      .bottom-bar {
+        grid-template-columns: 1.22fr 1.34fr 0.86fr 0.78fr;
+        gap: 4px;
+      }
+
+      .bottom-bar .btn-3d {
+        height: 48px;
+        min-height: 48px;
+        padding: 2px 3px 4px;
+      }
+
+      .btn-main-label {
+        font-size: clamp(13px, 1.45vw, 14px);
+        letter-spacing: -0.015em;
+      }
+
+      .btn-sub-label {
+        font-size: clamp(11px, 1.25vw, 12px);
+      }
+
+      .vault-pill {
+        font-size: clamp(11px, 1.3vw, 12.5px);
+        padding: 3px 8px;
+      }
+
+      #tutorial-bar {
+        top: 52px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 540px) {
+      .title-center-card {
+        gap: 12px;
+      }
+
+      .title-logo-wrap {
+        padding: 14px 18px;
+      }
+
+      .title-logo-crest {
+        font-size: 46px;
+      }
+
+      .title-logo-main {
+        font-size: clamp(32px, 6vw, 44px);
+      }
+
+      .title-logo-sub {
+        font-size: clamp(22px, 4.2vw, 30px);
+      }
+
+      #title-play-btn {
+        min-height: 54px;
+        padding: 10px 32px;
+        font-size: 22px;
+      }
+
+      #hatch-modal .modal-card {
+        padding: 12px 14px;
+      }
+
+      .egg-stage {
+        height: 118px;
+        margin: 4px 0 6px;
       }
     }
 
@@ -4216,7 +4439,7 @@
 
       <nav class="bottom-bar" aria-label="Game Actions">
         <button id="hatch-btn" class="btn-3d btn-pink" type="button">
-          <span id="hatch-main-label" class="btn-main-label">🥚 Hatch</span>
+          <span id="hatch-main-label" class="btn-main-label">🥚 Hatch Basic</span>
           <span id="hatch-cost-label" class="btn-sub-label">🪙 50</span>
         </button>
 
@@ -8256,10 +8479,13 @@
       } catch (err) {}
     }
 
+    let initialPopupsPending = false;
+
     function startGameFromTitle() {
       try {
         if (hasGameStarted) return;
         hasGameStarted = true;
+        initialPopupsPending = true;
         unlockAudio();
         sfxUpgrade();
         if (titleScreenEl) {
@@ -8278,8 +8504,11 @@
               checkAndShowDailyGiftModal();
             }
           } catch (err) {}
+          initialPopupsPending = false;
         }, 210);
-      } catch (err) {}
+      } catch (err) {
+        initialPopupsPending = false;
+      }
     }
     const vaultBtnEl = document.getElementById('vault-btn');
     const vaultDoorShieldEl = document.getElementById('vault-door-shield');
@@ -8433,6 +8662,9 @@
         statusBannerEl.textContent = displayMsg;
         statusBannerEl.classList.add('show');
         toggleABClass(statusBannerEl, 'pop-a', 'pop-b');
+        if (tutorialOverlayEl) {
+          tutorialOverlayEl.classList.remove('active');
+        }
 
         if (playSound) {
           sfxBanner();
@@ -8457,6 +8689,9 @@
         achievementBannerEl.textContent = message;
         achievementBannerEl.classList.add('show');
         toggleABClass(achievementBannerEl, 'pop-a', 'pop-b');
+        if (tutorialOverlayEl) {
+          tutorialOverlayEl.classList.remove('active');
+        }
         sfxBanner();
 
         achBannerTimer = setTimeout(() => {
@@ -10623,7 +10858,12 @@
           return;
         }
 
-        if (isAnyModalOpen()) {
+        if (
+          initialPopupsPending ||
+          isAnyModalOpen() ||
+          (statusBannerEl && statusBannerEl.classList.contains('show')) ||
+          (achievementBannerEl && achievementBannerEl.classList.contains('show'))
+        ) {
           tutorialOverlayEl.classList.remove('active');
           return;
         }
