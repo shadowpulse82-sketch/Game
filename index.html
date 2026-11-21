@@ -3064,6 +3064,284 @@
       }
     }
 
+    /* Large desktop landscape windows (1366x768, 1600x900, 1920x1080, 2560x1440 and larger):
+       Uses the same two-column landscape layout (raid arena on left, everything else on right)
+       and scales plates, crystal, bars, and text with window height up to clean maximums. */
+    @media (orientation: landscape) and (min-height: 761px) {
+      :root {
+        --crystal-size: clamp(78px, 12.5vh, 120px);
+        --crystal-size: clamp(78px, 12.5dvh, 120px);
+        --plate-size: clamp(68px, 11.5vh, 116px);
+        --plate-size: clamp(68px, 11.5dvh, 116px);
+        --top-bar-h: clamp(46px, 6.2vh, 68px);
+        --top-bar-h: clamp(46px, 6.2dvh, 68px);
+        --goal-bar-h: clamp(26px, 3.4vh, 38px);
+        --goal-bar-h: clamp(26px, 3.4dvh, 38px);
+        --egg-bar-h: clamp(30px, 4.0vh, 44px);
+        --egg-bar-h: clamp(30px, 4.0dvh, 44px);
+        --action-bar-h: clamp(54px, 6.8vh, 74px);
+        --action-bar-h: clamp(54px, 6.8dvh, 74px);
+        --dock-gap: clamp(4px, 0.6vh, 8px);
+        --dock-gap: clamp(4px, 0.6dvh, 8px);
+        --bottom-dock-h: calc(var(--egg-bar-h) + var(--action-bar-h) + var(--dock-gap));
+      }
+
+      #app {
+        max-width: none;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        margin: 0;
+        padding: clamp(8px, 1.1dvh, 16px) clamp(10px, 1.2vw, 20px);
+        display: grid;
+        grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+        grid-template-rows: var(--top-bar-h) var(--goal-bar-h) minmax(0, 1fr) var(--bottom-dock-h);
+        column-gap: clamp(10px, 1.1vw, 18px);
+        row-gap: clamp(6px, 0.8dvh, 12px);
+        align-items: stretch;
+        justify-content: stretch;
+        overflow: hidden;
+      }
+
+      .arena {
+        display: contents;
+      }
+
+      .raid-vault-stage {
+        grid-column: 1;
+        grid-row: 1 / 5;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        flex: none;
+      }
+
+      #raid-area {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 8px;
+        min-height: 0;
+      }
+
+      #vault-btn {
+        max-width: 120px;
+        max-height: 120px;
+      }
+
+      .vault-tap-tag {
+        font-size: clamp(10.5px, 1.3dvh, 13px);
+        padding: 1px 8px;
+      }
+
+      .vault-pill {
+        font-size: clamp(12.5px, 1.6dvh, 16px);
+        padding: 4px 12px;
+      }
+
+      #buy-slot-btn {
+        width: clamp(44px, 5.4dvh, 56px);
+        height: clamp(44px, 5.4dvh, 56px);
+        min-width: clamp(44px, 5.4dvh, 56px);
+        min-height: clamp(44px, 5.4dvh, 56px);
+      }
+
+      .buy-badge-plus {
+        font-size: clamp(13px, 1.7dvh, 17px);
+      }
+
+      .buy-badge-price {
+        font-size: clamp(10.5px, 1.3dvh, 13px);
+        max-width: 50px;
+      }
+
+      #raid-hud-pill {
+        font-size: clamp(13.5px, 1.7dvh, 17px);
+        padding: 3px 16px;
+      }
+
+      .arena-defender {
+        width: clamp(50px, 6.8dvh, 72px);
+        height: clamp(50px, 6.8dvh, 72px);
+      }
+
+      #guard-dog-actor {
+        width: clamp(52px, 7dvh, 74px);
+        height: clamp(52px, 7dvh, 74px);
+      }
+
+      .top-bar {
+        grid-column: 2;
+        grid-row: 1;
+        width: 100%;
+        height: var(--top-bar-h);
+        min-height: var(--top-bar-h);
+        max-height: var(--top-bar-h);
+        padding: 3px 12px;
+        gap: 8px;
+      }
+
+      .coin-badge {
+        width: clamp(36px, 4.5dvh, 48px);
+        height: clamp(36px, 4.5dvh, 48px);
+        font-size: clamp(19px, 2.4dvh, 25px);
+      }
+
+      .coin-amount {
+        font-size: clamp(25px, 3.2dvh, 34px);
+      }
+
+      .income-rate {
+        font-size: clamp(13px, 1.65dvh, 17px);
+      }
+
+      .stat-chip {
+        font-size: clamp(11.5px, 1.45dvh, 15px);
+        padding: 3px 10px;
+      }
+
+      .btn-icon-top {
+        width: clamp(38px, 4.8dvh, 50px);
+        height: clamp(38px, 4.8dvh, 50px);
+        min-width: clamp(38px, 4.8dvh, 50px);
+        min-height: clamp(38px, 4.8dvh, 50px);
+        font-size: clamp(17px, 2.2dvh, 22px);
+      }
+
+      #next-goal-bar {
+        grid-column: 2;
+        grid-row: 2;
+        width: 100%;
+        height: var(--goal-bar-h);
+        min-height: var(--goal-bar-h);
+        max-height: var(--goal-bar-h);
+        padding: 2px 12px;
+        font-size: clamp(12.5px, 1.6dvh, 16px);
+      }
+
+      .creature-glass-panel {
+        grid-column: 2;
+        grid-row: 3;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        padding: clamp(6px, 0.9dvh, 14px) clamp(8px, 1.1vw, 18px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .slots-grid {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        gap: clamp(4px, 0.8dvh, 12px) clamp(8px, 1.1vw, 18px);
+        align-items: center;
+        align-content: space-evenly;
+      }
+
+      .slot-level-badge,
+      .slot-star-badge {
+        font-size: clamp(11px, 1.4dvh, 14px);
+        padding: 2px 7px;
+      }
+
+      .slot-new-badge {
+        font-size: clamp(10.5px, 1.3dvh, 13px);
+        padding: 1px 7px;
+      }
+
+      .slot-caption {
+        margin-top: -10px;
+        padding: 2px 6px;
+        border-radius: 10px;
+      }
+
+      .slot-name {
+        font-size: clamp(12.5px, 1.6dvh, 16.5px);
+      }
+
+      .slot-income {
+        font-size: clamp(12px, 1.5dvh, 15.5px);
+      }
+
+      .empty-plus {
+        font-size: clamp(22px, 2.8dvh, 30px);
+      }
+
+      .buy-plate-icon {
+        font-size: clamp(18px, 2.3dvh, 24px);
+      }
+
+      .buy-plate-cost {
+        font-size: clamp(11px, 1.4dvh, 14px);
+      }
+
+      .locked-icon {
+        font-size: clamp(20px, 2.6dvh, 28px);
+      }
+
+      .bottom-dock {
+        grid-column: 2;
+        grid-row: 4;
+        width: 100%;
+        height: var(--bottom-dock-h);
+        gap: var(--dock-gap);
+        justify-content: space-between;
+      }
+
+      .egg-selector-bar {
+        gap: clamp(5px, 0.7vw, 10px);
+      }
+
+      .egg-tab-btn {
+        height: var(--egg-bar-h);
+        min-height: var(--egg-bar-h);
+        font-size: clamp(13.5px, 1.75dvh, 17px);
+        padding: 2px 10px;
+        border-radius: 13px;
+      }
+
+      .bottom-bar {
+        grid-template-columns: 1.22fr 1.34fr 0.86fr 0.78fr;
+        gap: clamp(5px, 0.7vw, 10px);
+      }
+
+      .bottom-bar .btn-3d {
+        height: var(--action-bar-h);
+        min-height: var(--action-bar-h);
+        padding: 3px 6px 5px;
+      }
+
+      .btn-main-label {
+        font-size: clamp(14px, 1.8dvh, 18px);
+        letter-spacing: -0.01em;
+      }
+
+      .btn-sub-label {
+        font-size: clamp(12px, 1.5dvh, 15px);
+      }
+
+      #tutorial-bar {
+        top: var(--tut-bar-top, 58px);
+        left: var(--tut-bar-left, calc(12px + (100vw - 36px) * 0.225));
+        width: min(calc((100vw - 36px) * 0.45 - 16px), var(--tut-bar-max-w, 460px));
+        max-width: var(--tut-bar-max-w, calc((100vw - 36px) * 0.45 - 16px));
+        padding: 8px 14px;
+      }
+
+      #tutorial-step-text {
+        font-size: clamp(13.5px, 1.7dvh, 16.5px);
+      }
+
+      #tutorial-skip-btn {
+        font-size: clamp(12.5px, 1.55dvh, 15px);
+        min-height: clamp(36px, 4.4dvh, 44px);
+      }
+    }
+
     @media (orientation: landscape) and (max-height: 540px) {
       .title-center-card {
         gap: 12px;
@@ -7957,7 +8235,7 @@
 
     function refreshLayoutCache() {
       try {
-        layoutCache.isTwoColumnLandscape = (viewportW > viewportH && viewportH <= 760);
+        layoutCache.isTwoColumnLandscape = (viewportW > viewportH);
         if (coinTargetEl) {
           const rect = coinTargetEl.getBoundingClientRect();
           if (rect.width > 0) {
@@ -7982,9 +8260,13 @@
           }
         }
         if (tutorialOverlayEl && layoutCache.raidAreaWidth > 0) {
+          const hudPillBottomOffset = (layoutCache.isTwoColumnLandscape && viewportH > 760)
+            ? Math.min(68, Math.max(48, Math.round(viewportH * 0.062)))
+            : 48;
+          const maxBannerWidth = (layoutCache.isTwoColumnLandscape && viewportH > 760) ? 460 : 380;
           const barLeft = Math.round(layoutCache.raidAreaLeft + layoutCache.raidAreaWidth * 0.5);
-          const barTop = Math.round(layoutCache.raidAreaTop + 48);
-          const barMaxW = Math.max(210, Math.min(380, Math.round(layoutCache.raidAreaWidth - 12)));
+          const barTop = Math.round(layoutCache.raidAreaTop + hudPillBottomOffset);
+          const barMaxW = Math.max(210, Math.min(maxBannerWidth, Math.round(layoutCache.raidAreaWidth - 14)));
           tutorialOverlayEl.style.setProperty('--tut-bar-left', `${barLeft}px`);
           tutorialOverlayEl.style.setProperty('--tut-bar-top', `${barTop}px`);
           tutorialOverlayEl.style.setProperty('--tut-bar-max-w', `${barMaxW}px`);
@@ -8021,7 +8303,8 @@
         layoutCache.crystalStageX = layoutCache.vaultX - layoutCache.stageLeft;
         layoutCache.crystalStageY = layoutCache.vaultY - layoutCache.stageTop;
 
-        const computedDogSize = Math.min(56, Math.max(44, Math.min(viewportW * 0.13, viewportH * 0.07)));
+        const maxDogCap = (layoutCache.isTwoColumnLandscape && viewportH > 760) ? 74 : 56;
+        const computedDogSize = Math.min(maxDogCap, Math.max(44, Math.min(viewportW * 0.13, viewportH * 0.07)));
         layoutCache.dogRadius = Math.ceil(computedDogSize * 0.5);
         // Dog center always stays at least (crystal radius + dog radius + 8px) away from crystal center
         layoutCache.dogMinClearance = layoutCache.crystalRadius + layoutCache.dogRadius + 8;
