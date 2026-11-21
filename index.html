@@ -2705,11 +2705,17 @@
       opacity: 0.85;
     }
 
-      .bottom-bar {
+    .bottom-bar {
       width: 100%;
       display: grid;
-      grid-template-columns: 1.24fr 1.24fr 0.92fr 0.80fr;
+      grid-template-columns: 1fr 1.05fr 1.05fr 0.9fr;
       gap: 4px;
+    }
+
+    @media (min-width: 430px) {
+      .bottom-bar {
+        grid-template-columns: 1.22fr 1.34fr 0.86fr 0.78fr;
+      }
     }
 
     .bottom-bar .btn-3d {
@@ -3050,7 +3056,11 @@
       }
 
       #tutorial-bar {
-        top: 52px;
+        top: var(--tut-bar-top, 54px);
+        left: var(--tut-bar-left, calc(8px + (100vw - 24px) * 0.225));
+        width: min(calc((100vw - 24px) * 0.45 - 12px), var(--tut-bar-max-w, 380px));
+        max-width: var(--tut-bar-max-w, calc((100vw - 24px) * 0.45 - 12px));
+        padding: 6px 10px;
       }
     }
 
@@ -3713,10 +3723,11 @@
 
     #tutorial-bar {
       position: absolute;
-      top: 84px;
-      left: 50%;
+      top: var(--tut-bar-top, 78px);
+      left: var(--tut-bar-left, 50%);
       transform: translateX(-50%);
-      width: min(94%, 390px);
+      width: min(94%, var(--tut-bar-max-w, 380px));
+      max-width: var(--tut-bar-max-w, 380px);
       background: linear-gradient(180deg, #3D1E82 0%, #200E4B 100%);
       border: 3px solid #090418;
       border-radius: 18px;
@@ -3749,7 +3760,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      font-size: 36px;
+      font-size: 28px;
       line-height: 1;
       pointer-events: none;
       z-index: 69;
@@ -7926,6 +7937,11 @@
       dogMaxY: 110,
       hatchBtnX: 90,
       hatchBtnY: 600,
+      hatchBtnLeft: 8,
+      hatchBtnRight: 100,
+      hatchBtnTop: 576,
+      slotPlateRadius: 28,
+      isTwoColumnLandscape: false,
       hatchStageX: 180,
       hatchStageY: 280,
       guardDogHomeX: 120,
@@ -7933,8 +7949,15 @@
       slotCenters: []
     };
 
+    function isShortPortraitButtonMode() {
+      const w = viewportW || window.innerWidth || 360;
+      const h = viewportH || window.innerHeight || 640;
+      return w < 430 && h >= w;
+    }
+
     function refreshLayoutCache() {
       try {
+        layoutCache.isTwoColumnLandscape = (viewportW > viewportH && viewportH <= 760);
         if (coinTargetEl) {
           const rect = coinTargetEl.getBoundingClientRect();
           if (rect.width > 0) {
@@ -7957,6 +7980,14 @@
             layoutCache.raidAreaWidth = rRect.width;
             layoutCache.raidAreaHeight = Math.max(82, rRect.height);
           }
+        }
+        if (tutorialOverlayEl && layoutCache.raidAreaWidth > 0) {
+          const barLeft = Math.round(layoutCache.raidAreaLeft + layoutCache.raidAreaWidth * 0.5);
+          const barTop = Math.round(layoutCache.raidAreaTop + 48);
+          const barMaxW = Math.max(210, Math.min(380, Math.round(layoutCache.raidAreaWidth - 12)));
+          tutorialOverlayEl.style.setProperty('--tut-bar-left', `${barLeft}px`);
+          tutorialOverlayEl.style.setProperty('--tut-bar-top', `${barTop}px`);
+          tutorialOverlayEl.style.setProperty('--tut-bar-max-w', `${barMaxW}px`);
         }
         const stageEl = (raidAreaEl && raidAreaEl.parentElement) || null;
         if (stageEl) {
@@ -8038,6 +8069,9 @@
           if (hRect.width > 0) {
             layoutCache.hatchBtnX = hRect.left + hRect.width / 2;
             layoutCache.hatchBtnY = hRect.top + hRect.height / 2;
+            layoutCache.hatchBtnLeft = hRect.left;
+            layoutCache.hatchBtnRight = hRect.right;
+            layoutCache.hatchBtnTop = hRect.top;
           }
         }
         layoutCache.hatchStageX = viewportW * 0.5;
@@ -8048,10 +8082,12 @@
             if (node && node.plate) {
               const sRect = node.plate.getBoundingClientRect();
               if (sRect.width > 0) {
+                layoutCache.slotPlateRadius = Math.max(22, Math.round(sRect.width * 0.5));
                 layoutCache.slotCenters[i] = {
                   x: sRect.left + sRect.width / 2,
                   y: sRect.top + sRect.height / 2,
-                  top: sRect.top
+                  top: sRect.top,
+                  right: sRect.right
                 };
               }
             }
@@ -9316,9 +9352,12 @@
 
       // Egg Selector & Bottom Hatch Button
       updateEggSelectorUI();
+      const shortPortraitLabels = isShortPortraitButtonMode();
       const selEgg = CONFIG.EGG_TYPES[state.selectedEgg] || CONFIG.EGG_TYPES.basic;
       const eggCost = getEggCost(selEgg.id);
-      hatchMainLabelEl.textContent = `${selEgg.emoji} Hatch ${selEgg.shortName}`;
+      hatchMainLabelEl.textContent = shortPortraitLabels
+        ? `${selEgg.emoji} Hatch`
+        : `${selEgg.emoji} Hatch ${selEgg.shortName}`;
       hatchCostLabelEl.textContent = `🪙 ${formatNumber(eggCost)}`;
       if (state.coins >= eggCost && !isHatching) {
         hatchBtnEl.classList.remove('disabled');
@@ -9338,7 +9377,7 @@
       } else {
         quickUpgradeBtnEl.classList.remove('affordable');
         quickUpgradeBtnEl.classList.add('disabled');
-        quickUpgradeMainEl.textContent = 'Nothing to upgrade';
+        quickUpgradeMainEl.textContent = shortPortraitLabels ? 'Upgrade' : 'Nothing to upgrade';
         quickUpgradeSubEl.textContent = '';
       }
 
@@ -10870,30 +10909,51 @@
 
         tutorialOverlayEl.classList.add('active');
 
-        let targetPos = null;
+        let tx = 0;
+        let ty = 0;
+        let hasPos = false;
         if (state.tutorialStep === 0) {
           tutorialStepTextEl.textContent = '👆 Step 1/3: Tap the Vault Crystal to earn coins!';
-          targetPos = { x: layoutCache.vaultX, y: layoutCache.vaultY };
+          // Place hand next to the upper-right rim of the Vault Crystal without covering "TAP!", "Tap +1", or "Slots"
+          tx = Math.round(layoutCache.vaultX + (layoutCache.crystalRadius || 34) - 2);
+          ty = Math.round(layoutCache.vaultY - (layoutCache.crystalRadius || 34) - 18);
+          hasPos = true;
         } else if (state.tutorialStep === 1) {
           const basicCost = getEggCost('basic');
           if (state.coins < basicCost) {
             addCoins(basicCost - state.coins);
           }
           tutorialStepTextEl.textContent = '🥚 Step 2/3: Tap Hatch to get your first creature!';
-          targetPos = { x: layoutCache.hatchBtnX, y: layoutCache.hatchBtnY };
+          // Place hand next to the Hatch button edge without covering the button label or egg tab text
+          if (layoutCache.isTwoColumnLandscape || layoutCache.hatchBtnLeft > 36) {
+            tx = Math.round(layoutCache.hatchBtnLeft - 28);
+            ty = Math.round(layoutCache.hatchBtnTop + 10);
+          } else {
+            tx = Math.round(layoutCache.hatchBtnRight - 15);
+            ty = Math.round(layoutCache.hatchBtnTop + 12);
+          }
+          hasPos = true;
         } else if (state.tutorialStep === 2) {
           tutorialWatchRemainingSec = Math.max(0, (tutorialWatchRemainingSec || 5.0) - dtSec);
           tutorialStepTextEl.textContent = `✨ Step 3/3: Watch your creature earn coins! (${Math.ceil(tutorialWatchRemainingSec)}s)`;
-          targetPos = layoutCache.slotCenters[0] || { x: layoutCache.vaultX, y: layoutCache.vaultY };
           if (tutorialWatchRemainingSec <= 0) {
             completeTutorial();
             return;
           }
+          // Place hand next to Slot 1's circular plate on its right rim, above the name/income caption
+          const slot0 = layoutCache.slotCenters[0];
+          const pRad = layoutCache.slotPlateRadius || 28;
+          if (slot0) {
+            tx = Math.round(slot0.x + pRad - 2);
+            ty = Math.round(slot0.y - 18);
+          } else {
+            tx = Math.round(layoutCache.vaultX + (layoutCache.crystalRadius || 34) - 2);
+            ty = Math.round(layoutCache.vaultY - (layoutCache.crystalRadius || 34) - 18);
+          }
+          hasPos = true;
         }
 
-        if (targetPos) {
-          const tx = Math.round(targetPos.x - 16);
-          const ty = Math.round(targetPos.y + 4);
+        if (hasPos) {
           tutorialHandEl.style.setProperty('--tx', `${tx}px`);
           tutorialHandEl.style.setProperty('--ty', `${ty}px`);
         }
@@ -11366,8 +11426,10 @@
       window.addEventListener('resize', () => {
         updateCanvasSizes();
         initCreatureArtCache(false);
+        updateHUD(true);
         requestAnimationFrame(() => {
           refreshLayoutCache();
+          updateHUD(true);
           for (let i = 0; i < raidRuntime.activeRaiders.length; i++) {
             positionRaiderAlongLane(raidRuntime.activeRaiders[i]);
           }
